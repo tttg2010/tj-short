@@ -99,3 +99,14 @@ When a clip fails, change only one thing:
 
 If the same issue appears twice, stop rerolling and rewrite the clip contract or split the shot.
 
+## 9. Seedance2 Visible-Face Repair
+
+Short drama often needs facial acting. If Seedance2 rejects a realistic fictional-actor first frame as possible real-person content, do not immediately remove the face.
+
+Use a character-reference repair route:
+
+1. `face_pencil`: stylize only the face regions with colored-pencil/sketch treatment, while keeping body, wardrobe, action, pet, props, and scene photographic.
+2. `blur_feature`: use a blurred-face main composition image plus a facial-feature sheet. The main image controls composition, wardrobe, body action, props, and scene. The feature sheet controls fictional facial traits.
+3. If both fail, create a fuller character design board or three-view reference before more submissions.
+
+This route is only for self-owned fictional virtual characters. It is not for unlicensed real people, celebrities, influencers, or public figures.
