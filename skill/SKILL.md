@@ -73,7 +73,16 @@ The first response must start the diagnostic flow:
 2. If no product is provided, ask the user for product information before writing any story.
 3. Remind the user that full salpx video submission requires registration at `https://www.salpx.com` and a local `SALPX_API_KEY`.
 4. Produce only a short product diagnosis and three selectable briefs.
-5. Wait for the user to choose A, B, or C before writing the product proof bible, episode script, storyboard, first frames, or salpx prompts.
+5. End with a copyable next-step line that exposes model choices.
+6. Wait for the user to choose A, B, or C before writing the product proof bible, episode script, storyboard, first frames, or salpx prompts.
+
+Startup copyable next-step template:
+
+```text
+短剧带货：建议下一步（可复制）：短剧带货，选 [A/B/C]，视频模型 salpx / seedance-2-mini-480p（可选 salpx / omni_flash，salpx / seedance-2-fast），产品是：[产品名/产品一句话]
+```
+
+Do not default the copyable next-step line to `salpx / omni_flash` only. Recently, Seedance2 is the priority route, while Omni and Seedance2 Fast should remain visible alternatives.
 
 If the user says "generate video" before product diagnosis is complete, still follow the gate: product diagnosis -> three briefs -> user chooses A/B/C -> then production.
 

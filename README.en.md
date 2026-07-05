@@ -181,7 +181,7 @@ flowchart TD
 | Python | Python 3.9+ |
 | Python dependency | `requests` |
 | Video service | salpx relay |
-| Recommended model | `omni_flash`, `seedance-2-mini-480p`, Veo variants |
+| Recommended model | Current priority: `seedance-2-mini-480p`; optional: `seedance-2-fast`, `omni_flash`, Veo variants |
 | Aspect ratio | 9:16 |
 | Clip duration | omni fixed at 10 seconds; Seedance2/Veo follow model rules |
 | Caption strategy | No burned-in subtitles during generation; add captions in post |
@@ -264,10 +264,10 @@ Recommended starter:
 短剧带货启动
 ```
 
-If you already have a product image:
+After Codex gives A/B/C briefs, copy the next step:
 
 ```text
-短剧带货，选 A，视频模型选 salpx / omni_flash
+短剧带货，选 A，视频模型 salpx / seedance-2-mini-480p（可选 salpx / omni_flash，salpx / seedance-2-fast），产品是：your product in one sentence
 ```
 
 Codex should analyze the product and produce three briefs first. It should not jump straight into a full script.

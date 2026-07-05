@@ -182,7 +182,7 @@ flowchart TD
 | Python | Python 3.9+ |
 | Python 依赖 | `requests` |
 | 视频服务 | salpx 中转站 |
-| 推荐模型 | `omni_flash`、`seedance-2-mini-480p`、Veo variants |
+| 推荐模型 | 当前优先 `seedance-2-mini-480p`；可选 `seedance-2-fast`、`omni_flash`、Veo variants |
 | 视频比例 | 9:16 |
 | 单镜头时长 | omni 固定 10 秒；Seedance2/Veo 按模型规则 |
 | 字幕策略 | 生成阶段不内嵌字幕，后期加字幕 |
@@ -265,10 +265,10 @@ cp .env.example .env
 短剧带货启动
 ```
 
-如果已经有产品图：
+产品诊断给出 A/B/C 后，再复制下一步：
 
 ```text
-短剧带货，选 A，视频模型选 salpx / omni_flash
+短剧带货，选 A，视频模型 salpx / seedance-2-mini-480p（可选 salpx / omni_flash，salpx / seedance-2-fast），产品是：你的产品一句话
 ```
 
 Codex 接下来应该先分析产品素材，并给出三个可选 brief，而不是直接写完整剧本。
