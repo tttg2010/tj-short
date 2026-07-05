@@ -12,6 +12,7 @@ Seedance2 official prompt and production-reference update.
 - Added model routing discipline: Omni, Seedance2, and Veo must use separate prompt shapes, duration rules, reference handling, and review strategies.
 - Added a Seedance2 visible-human hard gate: role dossier deliverables must exist before first-frame grids or video prompts.
 - Added strict workflow phase gate: startup, brief selection, project files, role dossier, storyboard, first-frame grid, and video prompt/submission are separate phases.
+- Moved Seedance2 face handling earlier: official first-frame grids should use face-only `face_pencil`; full manga/anime/storyboard style is not an acceptable default fallback.
 
 This update treats official guidance as a production signal, not a blind prohibition. Multi-view boards remain useful, but direct model submission should be decided by actual provider/model behavior and recorded in the manifest.
 

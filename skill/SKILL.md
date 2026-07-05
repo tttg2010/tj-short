@@ -20,6 +20,7 @@ Version: `short-drama-ecommerce v0.8.25`
 - Added hard gate: Seedance2 visible-human projects must create role dossier board deliverables before first-frame grids or video prompts.
 - Added strict phase gate: startup, brief selection, project-file generation, dossier creation, storyboard, first-frame grid, and video prompt/submission must not collapse into one chat response.
 - Added user-facing prefix rule: TJ Short recommendations, status reports, and next-step suggestions should start with `短剧带货：`.
+- Added Seedance2 first-frame compliance rule: use local face-only `face_pencil` from grid/first-frame production; do not downgrade the whole frame to manga/anime/commercial storyboard style.
 
 ## v0.8.24 Changelog
 
@@ -172,6 +173,9 @@ Phase 4: first-frame grid
 
 - Generate a 12-panel grid only after Phase 1-3 gates are satisfied.
 - If a grid appears before role dossier assets for a Seedance2 visible-human route, mark the grid as `preview_only_invalid_missing_role_dossier`.
+- For Seedance2 visible-human routes, official first frames must preserve realistic photographic body, wardrobe, product, props, and scene. Only the face regions may receive `face_pencil` colored-pencil/sketch treatment.
+- Do not generate the official grid as full manga, anime, illustration, commercial storyboard, or cartoon style merely because face review is risky.
+- A full illustrated grid may only be marked `preview_only_style_board`, never `official_first_frame`.
 
 Phase 5: model-specific video prompts and submission
 
@@ -437,14 +441,37 @@ has_filed_asset_status_or_not_supported_reason: yes
 
 If any item is missing, stop and create the missing role/dossier files first.
 
+Seedance2 first-frame compliance starts at grid generation, not after a failed video submission.
+
+Required official first-frame route:
+
+```text
+photographic first-frame/grid
+-> face-only colored-pencil/sketch treatment
+-> body, wardrobe, product, props, and scene remain photographic
+-> submit as Seedance2 first-frame/reference
+```
+
+Forbidden downgrade for official first frames:
+
+```text
+full manga style
+full anime style
+full illustration style
+commercial storyboard style
+cartoon actor style
+```
+
+Those styles reduce the short-drama/live-action selling effect and should not be used as the face-compliance fallback unless the user explicitly asks for an animated/comic campaign.
+
 Use this escalation path:
 
 1. Start with a clean fictional virtual-actor dossier board and first frame.
 2. If the provider supports role/person filing, file the dossier board first and pass the filed asset reference into the Seedance2 route.
 3. Extract a clean face close-up and full/half-body wardrobe reference from the filed role board when possible.
 4. Write prompts with ordered media references such as `图片1`, `图片2`, and stable subject labels. Do not refer to the `asset_id` directly in prompt prose.
-5. If filing is unsupported or still rejected as possible real-person content, use `face_pencil`: apply colored-pencil or sketch treatment only to face regions while keeping body, wardrobe, action, and scene photographic.
-6. If `face_pencil` still fails, use `blur_feature`: blur the face regions in the main composition image and provide a separate facial-feature sheet as an additional reference.
+5. For official Seedance2 first frames and grids, use `face_pencil` by default: apply colored-pencil or sketch treatment only to face regions while keeping body, wardrobe, action, product, props, and scene photographic.
+6. If `face_pencil` still fails, use the two-image backup `blur_feature`: Image A is the main composition with blurred faces; Image B is the facial-feature sheet.
 7. Prompt the model that the main frame controls composition/body/wardrobe/action and the feature sheet controls fictional facial features.
 
 Do not use this process for unlicensed real people, celebrities, influencers, public figures, or attempts to bypass identity review. It is only for self-owned fictional virtual characters.

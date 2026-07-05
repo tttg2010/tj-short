@@ -50,7 +50,7 @@ Core rule:
 | v0.8.24 | Added Seedance2 filed role asset chain: character dossier board -> provider filing -> filed asset ID -> video generation with the filed asset; clarified that a watermark is not filing proof. |
 | v0.8.23 | Added character dossier board workflow: main portrait, three views, expression sheet, wardrobe/material details, product-contact details, and concise info panel as the standard role-subject example. |
 | v0.8.22 | Added AniShort-style subject libraries: role, scene, product/prop, and evidence libraries before the 12-shot production table. |
-| v0.8.22 | Added Seedance2 visible-face lessons: `face_pencil` and `blur_feature` before falling back to faceless shots. |
+| v0.8.22 | Added Seedance2 visible-face lessons: `face_pencil` and `blur_feature` before changing shot design. |
 | v0.8.22 | Added startup gate, salpx.com registration, and API Key setup reminders. |
 
 Full history: [docs/changelog.md](docs/changelog.md)
@@ -70,8 +70,9 @@ Full history: [docs/changelog.md](docs/changelog.md)
 - Seedance2 visible-human projects must create dossier deliverables first: `角色主体库.md`, `人物备案板需求.md`, and `Seedance2参考包计划.md`
 - Uses strict phases: startup only diagnoses and offers A/B/C; after selection, generate project files and dossier deliverables before storyboard grids, video prompts, or submissions
 - Keeps character dossier boards for design, filing, and review; for video generation, extracts face close-up, full/half-body wardrobe, scene, product, motion, and audio references
+- Seedance2 official first frames/grids should not downgrade the whole image to manga/anime. Use photographic frames with face-only `face_pencil`; the two-image blur + feature-sheet route is the backup.
 - Seedance2 prompts must refer to media by order, such as `图片1`, `视频1`, and `音频1`, rather than using asset IDs as character names
-- If filing is unavailable or still rejected, uses `face_pencil` or `blur_feature` virtual-character repair before falling back to faceless shots
+- If filing is unavailable or still rejected, uses `face_pencil` or `blur_feature` virtual-character repair before changing shot design
 - Keeps pacing decisions in post-production
 - Includes privacy and key-safety checks before public release
 
@@ -92,9 +93,11 @@ If Seedance2 flags a realistic first frame as possible real-person content, use 
 1. If salpx or the selected provider supports role/person filing, file the character dossier board first, then use the provider-scoped filed asset ID for Seedance2 generation.
 2. Keep the original filed platform reference; downloading and re-uploading may lose filing status.
 3. Extract single-person references from the dossier board: `图片1 = face close-up`, `图片2 = full/half-body wardrobe`, plus scene, product, motion, or audio references.
-4. Define the subject in prompt text: `将图片1中的面部特征、图片2中的服装造型定义为林夏`, then keep using the same role label.
-5. `face_pencil`: stylize only face regions with colored-pencil/sketch treatment while keeping body, wardrobe, action, and scene photographic.
-6. `blur_feature`: blur face regions in the main composition image and provide a separate facial-feature sheet for the fictional virtual character.
+4. For official first frames/grids, use `face_pencil` by default: stylize only face regions while keeping body, wardrobe, product, action, and scene photographic.
+5. Define the subject in prompt text: `将图片1中的面部特征、图片2中的服装造型定义为林夏`, then keep using the same role label.
+6. Backup route: `blur_feature` two-image package: blurred-face main composition plus separate facial-feature sheet.
+
+Forbidden default: turning official first frames into full manga, anime, illustration, or commercial storyboard style when face review is risky. That is only a preview style board, not the production first frame.
 
 Note: a LibTV-style watermark is not filing proof, and real filing IDs should not be committed to public repos. Public examples should use placeholders such as `asset-YYYYMMDDHHMMSS-xxxxx`.
 
