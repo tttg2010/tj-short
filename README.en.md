@@ -1,6 +1,6 @@
 # TJ Short
 
-Codex + salpx relay ecommerce short-drama skill: use Codex to generate product analysis, briefs, scripts, storyboards, first frames, prompts, captions, manifests, and delivery checks, then use salpx relay for omni, Seedance2, Veo, and other image-to-video execution.
+Codex + salpx relay ecommerce short-drama skill: use Codex to generate product analysis, briefs, scripts, storyboards, first frames, prompts, captions, manifests, and delivery checks, then use salpx relay for `gpt-image-2` image generation and omni, Seedance2, Veo, and other video execution.
 
 [中文版本](README.md)
 
@@ -12,12 +12,12 @@ Codex + salpx relay ecommerce short-drama skill: use Codex to generate product a
 
 TJ Short is a public-safe Codex Skill template for ecommerce short dramas. It is not only a writing framework and not only a video API wrapper. It lets Codex move a product image through a complete production chain:
 
-product analysis -> three briefs -> product proof bible -> four libraries plus shot table (role / scene / product-prop / evidence + 12-shot production table) -> character dossier boards -> 9:16 first frames -> `salpx` video-model prompts (omni fixed at 10 seconds; Seedance2/Veo follow model rules) -> captions and ad cutdown plan.
+product analysis -> three briefs -> product proof bible -> four libraries plus shot table (role / scene / product-prop / evidence + 12-shot production table) -> character dossier boards -> 9:16 first frames, optionally generated through salpx `gpt-image-2` -> `salpx` video-model prompts (omni fixed at 10 seconds; Seedance2/Veo follow model rules) -> captions and ad cutdown plan.
 
 The split is clear:
 
 - **Codex is the production brain**: judgment, writing, files, prompts, manifests, captions, reviews, and privacy checks.
-- **salpx is the video execution relay**: takes Codex-generated first frames and script-locked prompts into `omni_flash`, Seedance2, Veo, or another selected model and returns raw clips.
+- **salpx is the image/video execution relay**: runs `gpt-image-2` for storyboards and first frames when needed, then takes clean first frames and script-locked prompts into `omni_flash`, Seedance2, Veo, or another selected video model and returns raw clips.
 
 ## Skill Card
 
@@ -46,6 +46,7 @@ Core rule:
 
 | Version | Key updates |
 |---|---|
+| v0.8.26 | Added production-ready salpx API flow: `gpt-image-2` image generation, `omni_flash`, `seedance-2-mini-480p`, and Veo video generation, plus a reusable client for submit, poll, and download. |
 | v0.8.25 | Added Volcengine Seedance2 prompt rules and model routing: Seedance2, omni, and Veo use separate prompt shapes, duration rules, references, and review strategies. |
 | v0.8.24 | Added Seedance2 filed role asset chain: character dossier board -> provider filing -> filed asset ID -> video generation with the filed asset; clarified that a watermark is not filing proof. |
 | v0.8.23 | Added character dossier board workflow: main portrait, three views, expression sheet, wardrobe/material details, product-contact details, and concise info panel as the standard role-subject example. |
@@ -59,7 +60,7 @@ Full history: [docs/changelog.md](docs/changelog.md)
 
 - It is a Codex Skill, not just documentation
 - Codex handles strategy, scripts, storyboards, first frames, prompts, and delivery checklists
-- salpx executes image-to-video clips from Codex-generated first frames and prompts
+- salpx executes `gpt-image-2` image generation and image-to-video clips from Codex-generated first frames and prompts
 - Avoids the weak "pain point -> product -> happy customer -> CTA" ad pattern
 - Builds conflict, misunderstanding, and relationship pressure before product explanation
 - Uses product as evidence: records, actions, procedures, behavior changes, or key objects
@@ -201,9 +202,11 @@ flowchart TD
 | `docs/methodology.md` | Ecommerce short-drama methodology |
 | `docs/privacy-and-release.md` | Public-release privacy and key checklist |
 | `docs/seedance2-face-compliance.md` | Seedance2 visible-face, face_pencil, and blur_feature compliance notes |
+| `docs/salpx-api-production.md` | salpx API guide for gpt-image-2 image generation and omni/Seedance2/Veo video generation |
 | `examples/xiderdl-lucky/` | Sanitized sample script and screenshots |
 | `prompts/omni-fixed-10s-template.md` | salpx / omni_flash fixed 10-second prompt template |
-| `scripts/submit_salpx_omni_i2v.py` | Generic image-to-video submission helper |
+| `scripts/salpx_production_client.py` | Generic salpx image/video production client |
+| `scripts/submit_salpx_omni_i2v.py` | Legacy omni-only image-to-video submission helper |
 
 ## Installation
 
@@ -230,7 +233,7 @@ SALPX_API_KEY=your_salpx_api_key
 SALPX_BASE_URL=https://www.salpx.com/v1
 ```
 
-Without a salpx API Key, Codex can still generate product analysis, scripts, storyboards, first-frame prompts, and manifests, but it cannot submit image-to-video jobs from Codex.
+Without a salpx API Key, Codex can still generate product analysis, scripts, storyboards, first-frame prompts, and manifests, but it cannot submit salpx image or video jobs from Codex.
 
 Then say in Codex:
 
@@ -333,7 +336,18 @@ First frames must be clean 9:16 full-frame images with no subtitles, no inset, n
 
 ### Step 5: Codex Compiles Prompts And Submits Three Test Clips
 
-Use the fixed 10-second rule:
+If you need to generate storyboards, first frames, or product-proof images first, use `gpt-image-2`:
+
+```bash
+python3 scripts/salpx_production_client.py --env .env image \
+  --model gpt-image-2 \
+  --prompt "vertical 9:16 ecommerce short-drama first frame..." \
+  --size 1024x1792 \
+  --out-dir outputs/images \
+  --name ep01-shot01
+```
+
+When using `omni_flash`, use the fixed 10-second rule:
 
 ```json
 {
@@ -344,6 +358,31 @@ Use the fixed 10-second rule:
 ```
 
 The generic helper is a local execution example. In the full Codex workflow, Codex should first generate prompts, manifests, and checklists before submitting or guiding submission:
+
+```bash
+python3 scripts/salpx_production_client.py --env .env video \
+  --model omni_flash \
+  --image path/to/first-frame.png \
+  --prompt "10-second vertical 9:16 image-to-video..." \
+  --duration 10 \
+  --out outputs/shot.mp4
+```
+
+For `seedance-2-mini-480p`, use the API model name:
+
+```bash
+python3 scripts/salpx_production_client.py --env .env video \
+  --model seedance-2-mini-480p \
+  --image path/to/first-frame.png \
+  --prompt "7-second vertical 9:16 image-to-video..." \
+  --size 480x854 \
+  --duration 7 \
+  --out outputs/shot-seedance.mp4
+```
+
+For Veo, use the actual model ID shown in the salpx console. If that route does not support image-to-video, remove `--image`, submit text-to-video, and record `generation_mode=text_to_video` in the manifest.
+
+The older omni-only helper remains available:
 
 ```bash
 python3 scripts/submit_salpx_omni_i2v.py \

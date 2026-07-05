@@ -1,5 +1,22 @@
 # Changelog
 
+## short-drama-ecommerce v0.8.26
+
+salpx API production update.
+
+- Added `docs/salpx-api-production.md`, a concrete API guide for `gpt-image-2` image generation and salpx video generation.
+- Added `scripts/salpx_production_client.py`, a reusable client with two commands:
+  - `image`: calls `/v1/images/generations`, supports `gpt-image-2`, saves `b64_json` or downloaded image URLs.
+  - `video`: calls `/v1/videos`, supports text-to-video and image-to-video, polls async tasks, downloads mp4, and writes result JSON.
+- Added model mappings for production:
+  - user-facing `gpt-image2` / `gpt-image-2` -> API `gpt-image-2`
+  - user-facing `omni` -> API `omni_flash`
+  - user-facing `seedance2-mini-480p` -> API `seedance-2-mini-480p`
+  - Veo -> salpx console model ID, recorded in the manifest
+- Added `.env.example` fields for `SALPX_IMAGE_MODEL` and `SALPX_VIDEO_MODEL`, while keeping `SALPX_OMNI_MODEL` for the older omni helper script.
+- Added public-release rule: TJ Short must ship production scripts and salpx API docs, so a GitHub user can generate images and videos after adding their own key.
+- Repeated the key-safety rule: real salpx API keys must stay in `.env` or runtime secrets and must not be committed, echoed, or written into prompts/manifests.
+
 ## short-drama-ecommerce v0.8.25
 
 Seedance2 official prompt and production-reference update.

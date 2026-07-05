@@ -1,13 +1,22 @@
 ---
 name: tj-short
-description: Codex ecommerce short-drama skill v0.8.25. Use when the user wants to create product-selling short dramas, generate product-proof scripts, subject libraries, character dossier boards, filed role assets, Seedance2 production references, first frames, salpx video prompts, captions, manifests, delivery checklists, and Seedance2 visible-face repair inside Codex.
+description: Codex ecommerce short-drama skill v0.8.26. Use when the user wants to create product-selling short dramas, generate product-proof scripts, subject libraries, character dossier boards, filed role assets, Seedance2 production references, first frames, salpx gpt-image-2 images, salpx video prompts, captions, manifests, delivery checklists, and Seedance2 visible-face repair inside Codex.
 ---
 
 # TJ Short
 
 TJ Short is a Codex Skill for ecommerce short dramas.
 
-Version: `short-drama-ecommerce v0.8.25`
+Version: `short-drama-ecommerce v0.8.26`
+
+## v0.8.26 Changelog
+
+- Added `docs/salpx-api-production.md`: a production-ready salpx API guide for `gpt-image-2` image generation and `omni_flash`, `gemini_omni_flash`, `seedance-2-mini-480p`, and Veo video generation.
+- Added `scripts/salpx_production_client.py`: a reusable public-safe client with `image` and `video` commands, base64 first-frame upload, async polling, video download, and result JSON output.
+- Added environment variables `SALPX_IMAGE_MODEL` and `SALPX_VIDEO_MODEL`, while keeping `SALPX_OMNI_MODEL` for backwards compatibility with the old omni sample script.
+- Added model-name mapping: `seedance2-mini-480p` in user language maps to API model `seedance-2-mini-480p`; `omni` maps to `omni_flash`; Veo model IDs must come from the salpx console and be recorded in the manifest.
+- Added distribution rule: public TJ Short releases must include working salpx production docs and scripts, not only prompts.
+- Added privacy rule: real salpx API keys stay in `.env` or runtime secrets only, never in skill files, prompts, manifests, docs, or chat output.
 
 ## v0.8.25 Changelog
 
@@ -64,6 +73,13 @@ Then test with:
 
 Full video generation requires a salpx API key. Tell users to register at `https://www.salpx.com`, create or copy their API Key, and put it into local `.env` as `SALPX_API_KEY`. Without a salpx API key, Codex can still generate scripts, storyboards, first frames, prompts, and manifests, but it cannot complete salpx video submission from Codex.
 
+For production calls, use `docs/salpx-api-production.md` and `scripts/salpx_production_client.py`. The script supports:
+
+```text
+image: gpt-image-2 for storyboards, first frames, product-proof images
+video: omni_flash, gemini_omni_flash, seedance-2-mini-480p, and provider-supported Veo model IDs
+```
+
 ## Startup Gate Rule
 
 When the user says `短剧带货启动`, do not immediately generate a full script, a video package, a generic workplace story, a fashion story, or a made-up sample project.
@@ -99,6 +115,7 @@ Codex is the production brain:
 
 salpx is the video execution relay:
 
+- runs `gpt-image-2` for storyboard grids, first frames, and product-proof images when needed
 - receives clean 9:16 first frames
 - runs `omni_flash`, Seedance 2.0 variants, Veo variants, or another selected video model
 - returns image-to-video clips for review and post-production
@@ -114,6 +131,7 @@ Use this skill when the user says:
 - product short drama
 - 用 Codex 生成短剧带货
 - salpx / omni_flash 图生视频
+- salpx / gpt-image-2 生图
 - salpx / seedance-2 / veo 图生视频
 - 产品图生成短剧脚本、首帧、提示词、字幕或投放切片
 
@@ -372,6 +390,56 @@ Seedance2 reference packaging:
 12. Write clip contracts and reference role maps.
 13. Write `salpx / omni_flash` prompts with fixed `duration=10`, or Seedance2 prompts with ordered media references.
 14. Prepare captions, manifest, and delivery checklist.
+
+## salpx API Production Rule
+
+TJ Short must be able to produce assets after a GitHub install. Do not ship only prompt advice.
+
+Before calling salpx, read `docs/salpx-api-production.md` and confirm:
+
+```text
+SALPX_API_KEY exists in .env or runtime environment
+SALPX_BASE_URL defaults to https://www.salpx.com/v1
+SALPX_IMAGE_MODEL defaults to gpt-image-2
+SALPX_VIDEO_MODEL defaults to omni_flash unless the user selected another model
+```
+
+Use `scripts/salpx_production_client.py` as the default public-safe helper:
+
+```bash
+python scripts/salpx_production_client.py --env .env image \
+  --model gpt-image-2 \
+  --prompt "<storyboard or first-frame prompt>" \
+  --size 1024x1792 \
+  --out-dir outputs/images \
+  --name ep01-shot01
+
+python scripts/salpx_production_client.py --env .env video \
+  --model seedance-2-mini-480p \
+  --image first_frames/ep01-shot03.png \
+  --prompt "<script-locked video prompt>" \
+  --size 480x854 \
+  --duration 7 \
+  --out outputs/videos/ep01-shot03.mp4
+```
+
+Model mappings:
+
+```text
+gpt-image2 / gpt-image-2 -> gpt-image-2
+omni / salpx omni -> omni_flash
+gemini omni -> gemini_omni_flash
+seedance2-mini-480p -> seedance-2-mini-480p
+veo -> the exact salpx console model ID, recorded in manifest
+```
+
+Generation rules:
+
+- Image generation uses `POST /images/generations` and saves either `b64_json` or downloaded image URLs into the project directory.
+- Video generation uses `POST /videos`. If the response returns a task ID, poll `/videos/{task_id}`, `/videos/{task_id}/result`, or `/videos/generations/{task_id}` until a video URL appears.
+- Do not echo or write real API keys. Real keys stay only in `.env`, shell env, or CI secrets.
+- Every generated file must be copied into the project directory and recorded in the manifest.
+- Every downloaded video must be inspected for actual duration, width, height, bytes, and whether it can enter final composition.
 
 ## Video Model Rules
 
