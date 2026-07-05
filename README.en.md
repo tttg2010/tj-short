@@ -96,8 +96,9 @@ Example script: [examples/xiderdl-lucky/ep01-high-conflict.md](examples/xiderdl-
 |---|---|---|
 | Product proof bible | Defines user, product action, proof, and claim boundaries | Yes |
 | Three briefs | Lets the team choose the story engine before writing scripts | Yes |
+| Four libraries plus shot table | Role, scene, product/prop, evidence libraries, and a 12-shot production table | Yes |
 | High-conflict episode script | 60-90 second episode with a strong first 5 seconds | Yes |
-| 12-shot storyboard | Locks narrative job, visuals, and product placement | Yes |
+| 12-shot production table | Each shot references subject libraries and focuses on action, emotion, camera, and dialogue | Yes |
 | Three test first frames | Validates hook, product proof, and ending hook | Yes |
 | Image-to-video prompts | Script-locked prompts for salpx video models | Yes |
 | Clip contracts | Defines what each clip can and cannot do | Yes |
@@ -117,7 +118,8 @@ flowchart TD
   C --> D["Codex generates three briefs"]
   D --> E["User chooses one story engine"]
   E --> F["Codex writes product proof bible"]
-  F --> G["Codex writes high-conflict script + 12-shot storyboard"]
+  F --> R["Codex builds four libraries: role / scene / product-prop / evidence"]
+  R --> G["Codex writes high-conflict script + 12-shot production table"]
   G --> H["Codex creates three 9:16 first-frame directions"]
   H --> I["Codex writes clip contracts + reference role map"]
   I --> J["Codex compiles salpx video-model prompts"]

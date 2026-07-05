@@ -4,6 +4,7 @@
 
 Seedance2 visible-face production update.
 
+- Added AniShort-inspired subject-library workflow: role, scene, product/prop, and evidence libraries before shot prompts.
 - Added a startup gate so `短剧带货启动` begins with product diagnosis and three briefs instead of a generic production package.
 - Added install/update reminder to restart Codex three times in the user-facing instructions.
 - Added salpx.com registration and API Key setup reminder for full video-generation testing from Codex.

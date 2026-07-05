@@ -16,6 +16,7 @@ Version: `short-drama-ecommerce v0.8.22`
 - Added `blur_feature`: use a blurred-face main composition image plus a facial-feature sheet when `face_pencil` still fails.
 - Clarified that faceless crops are not the default for dramatic scenes; preserve facial acting through virtual-character reference repair first.
 - Clarified multi-model salpx support: `omni_flash`, Seedance 2.0 variants, Veo variants, and user-selected salpx models.
+- Added AniShort-inspired subject-library method: role, scene, product/prop, and evidence libraries before shot prompts.
 
 ## Install Reload Rule
 
@@ -83,18 +84,51 @@ Do not make the product the hero.
 
 The story must first make the audience care about a person, pet, relationship, or consequence. The product enters later as evidence, a record, a memory object, a relationship token, or a turning point.
 
+## Subject Library Rule
+
+Use a subject-library workflow before writing image or video prompts.
+
+Do not let every shot reinvent the same people, rooms, products, and proof objects. Build reusable subjects first, then make each shot prompt reference those subjects and focus only on action, emotion, camera, dialogue, and continuity.
+
+Required libraries:
+
+1. Role library: each recurring person or pet gets one stable identity entry with age range, identity, face/fur traits, hair, wardrobe, expression baseline, relationship power, and product-contact behavior.
+2. Scene library: each recurring location gets one stable entry with layout, lighting, time of day, mood, camera-friendly anchors, and safety notes.
+3. Product/prop library: product pack, bowl, phone, receipt, report, accessory, package, or tool entries with shape, color, label visibility, handling rule, and what must not change.
+4. Evidence library: ecommerce-specific proof objects such as feeding action, before/after behavior, order record, vet-style note, ingredient card, comparison table, phone chat, or packaging detail. Each evidence item must say what misunderstanding it proves or overturns.
+5. Shot production table: each shot references subject IDs instead of repeating long descriptions.
+
+Shot prompts must be short and production-focused:
+
+```text
+shot_id:
+subjects:
+scene:
+evidence_or_prop:
+narrative_job:
+action:
+emotion_shift:
+camera:
+dialogue_or_lip_sync:
+continuity_locks:
+must_not_change:
+```
+
+For video prompts, write only what is missing from the first frame: action, camera motion, emotion change, dialogue/lip-sync target, timing, and what must remain unchanged. Do not restate the entire character face, wardrobe, product design, or scene if those are already controlled by subject libraries and first frames.
+
 ## Default Flow
 
 1. Analyze the product asset or product name.
 2. Produce three ecommerce short-drama briefs.
 3. Let the user choose one brief.
 4. Create the product proof bible.
-5. Write one high-conflict episode.
-6. Create a 12-shot storyboard.
-7. Generate or request three first frames: hook, product evidence, ending hook.
-8. Write clip contracts and reference role maps.
-9. Write `salpx / omni_flash` prompts with fixed `duration=10`.
-10. Prepare captions, manifest, and delivery checklist.
+5. Build four subject libraries: role, scene, product/prop, and evidence.
+6. Write one high-conflict episode.
+7. Create a 12-shot production table that references subject IDs.
+8. Generate or request three first frames: hook, product evidence, ending hook.
+9. Write clip contracts and reference role maps.
+10. Write `salpx / omni_flash` prompts with fixed `duration=10`.
+11. Prepare captions, manifest, and delivery checklist.
 
 ## Video Model Rules
 
@@ -120,9 +154,13 @@ Do not use this process for unlicensed real people, celebrities, influencers, pu
 ## Required Deliverables
 
 - Product proof bible
+- Role subject library
+- Scene subject library
+- Product/prop subject library
+- Evidence subject library
 - Three briefs
 - High-conflict episode script
-- 12-shot storyboard
+- 12-shot production table
 - Three first-frame prompts or images
 - Clip contracts
 - Reference role map

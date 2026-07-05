@@ -60,7 +60,38 @@ Weak product evidence:
 - uses fake data without process
 - can be swapped with any similar product
 
-## 6. Clip Contract
+## 6. Subject Libraries Before Shot Prompts
+
+TJ Short should follow a subject-library workflow inspired by canvas-based short-drama systems such as AniShort.
+
+The key idea: do not ask every shot prompt to reinvent the same actor, pet, room, product, and proof object. Create stable subject libraries first, then make each shot reference those subjects.
+
+Use four libraries:
+
+- Role library: stable identity for every recurring person or pet. Include age range, identity, face/fur traits, hair, wardrobe, expression baseline, relationship power, and product-contact behavior.
+- Scene library: stable location entries. Include layout, light, time, mood, camera anchors, and safety notes.
+- Product/prop library: product pack, bowl, phone, receipt, report, accessory, package, or tool. Include shape, color, label visibility, handling rule, and what must not change.
+- Evidence library: ecommerce-specific proof objects. Include feeding action, before/after behavior, order record, ingredient card, phone chat, packaging detail, comparison table, or report-style note. Each entry must say which misunderstanding it proves or overturns.
+
+Then build a shot production table:
+
+```text
+shot_id:
+subjects:
+scene:
+evidence_or_prop:
+narrative_job:
+action:
+emotion_shift:
+camera:
+dialogue_or_lip_sync:
+continuity_locks:
+must_not_change:
+```
+
+This keeps character identity and product proof stable while letting each shot prompt focus on movement, emotion, camera, and dialogue.
+
+## 7. Clip Contract
 
 Before generating video, define each clip:
 
@@ -75,7 +106,7 @@ Before generating video, define each clip:
 
 This keeps prompts from trying to generate the whole episode in one clip.
 
-## 7. Reference Role Map
+## 8. Reference Role Map
 
 Each reference asset should have one main job:
 
@@ -86,7 +117,7 @@ Each reference asset should have one main job:
 
 Do not let one reference control identity, scene, motion, style, product, and dialogue all at once.
 
-## 8. One-Variable Retake
+## 9. One-Variable Retake
 
 When a clip fails, change only one thing:
 
@@ -99,7 +130,7 @@ When a clip fails, change only one thing:
 
 If the same issue appears twice, stop rerolling and rewrite the clip contract or split the shot.
 
-## 9. Seedance2 Visible-Face Repair
+## 10. Seedance2 Visible-Face Repair
 
 Short drama often needs facial acting. If Seedance2 rejects a realistic fictional-actor first frame as possible real-person content, do not immediately remove the face.
 
