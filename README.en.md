@@ -1,6 +1,6 @@
 # TJ Short
 
-Ecommerce short-drama skill workflow: make the audience care about a person, pet, relationship, or consequence first, then let the product become proof inside the story.
+Codex + salpx relay ecommerce short-drama skill: use Codex to generate product analysis, briefs, scripts, storyboards, first frames, prompts, captions, manifests, and delivery checks, then use salpx / omni_flash for image-to-video execution.
 
 [中文版本](README.md)
 
@@ -10,13 +10,20 @@ Ecommerce short-drama skill workflow: make the audience care about a person, pet
 
 ## Overview
 
-TJ Short is a public-safe production template for ecommerce short dramas. It does not wrap ad copy in a plot. It organizes story design, product proof, image-to-video prompts, caption planning, and release checks into a reusable SOP.
+TJ Short is a public-safe Codex Skill template for ecommerce short dramas. It is not only a writing framework and not only a video API wrapper. It lets Codex move a product image through a complete production chain:
+
+product analysis -> three briefs -> product proof bible -> high-conflict script -> 12-shot storyboard -> 9:16 first frames -> `salpx / omni_flash` fixed 10-second prompts -> captions and ad cutdown plan.
+
+The split is clear:
+
+- **Codex is the production brain**: judgment, writing, files, prompts, manifests, captions, reviews, and privacy checks.
+- **salpx is the video execution relay**: takes Codex-generated first frames and script-locked prompts into `omni_flash` and returns fixed 10-second raw clips.
 
 ## Skill Card
 
 | Item | Description |
 |---|---|
-| One-line positioning | Workflow for ecommerce short-drama scripts, first frames, image-to-video clips, and delivery checks |
+| One-line positioning | A Codex Skill for generating ecommerce short-drama projects and executing image-to-video through salpx |
 | Input | Product image, product name, audience, product action, proof, CTA |
 | Output | briefs, product proof bible, episode script, storyboard, first frames, Omni prompts, caption plan, ad cutdowns |
 | First-stage success | Validate 1 main episode plus 2 ad cutdowns before expanding into a series |
@@ -27,6 +34,7 @@ It is useful for:
 
 - pet products, consumer products, and tool products
 - teams validating 1 main episode plus 2 ad cutdowns
+- creators who want Codex to turn product assets into structured short-drama project files
 - creators using `salpx / omni_flash` for first-frame image-to-video
 - teams turning ecommerce short-drama production into a reusable skill or SOP
 
@@ -36,6 +44,9 @@ Core rule:
 
 ## Why Try It
 
+- It is a Codex Skill, not just documentation
+- Codex handles strategy, scripts, storyboards, first frames, prompts, and delivery checklists
+- salpx executes image-to-video clips from Codex-generated first frames and prompts
 - Avoids the weak "pain point -> product -> happy customer -> CTA" ad pattern
 - Builds conflict, misunderstanding, and relationship pressure before product explanation
 - Uses product as evidence: records, actions, procedures, behavior changes, or key objects
@@ -43,6 +54,18 @@ Core rule:
 - Treats `salpx / omni_flash` as fixed 10-second generation
 - Keeps pacing decisions in post-production
 - Includes privacy and key-safety checks before public release
+
+## How It Compares
+
+| Compared With | Where It Is Stronger | Where TJ Short Fits Better |
+|---|---|---|
+| OnlyShot | Deeper, heavier ecommerce short-drama production system | Lighter public Codex install for fast product validation |
+| short-drama | Stronger for entertainment series and general drama structure | More focused on conversion, product proof, and ad cutdowns |
+| Emily2040/seedance-2.0 | Stronger video generation discipline and state tracking | Brings those ideas into a Codex ecommerce delivery chain |
+| salpx / omni_flash | Executes image-to-video generation | Codex handles judgment, scripts, prompts, manifests, and checks |
+| Editing tools | Better for subtitles, dubbing, compositing, publishing | Better for creating the ecommerce short-drama structure from product assets |
+
+Detailed fair comparison: [docs/comparison.md](docs/comparison.md)
 
 ## Case Preview
 
@@ -76,27 +99,29 @@ Example script: [examples/xiderdl-lucky/ep01-high-conflict.md](examples/xiderdl-
 
 ```mermaid
 flowchart TD
-  A["Product asset / product name"] --> B["Product analysis"]
-  B --> C["Three ecommerce short-drama briefs"]
-  C --> D["Choose one story engine"]
-  D --> E["Product proof bible"]
-  E --> F["High-conflict episode script"]
-  F --> G["12-shot storyboard"]
-  G --> H["Three key first frames"]
-  H --> I["Clip contracts + reference role map"]
-  I --> J["salpx / omni_flash fixed 10-second test clips"]
-  J --> K["Review: story / product / lip sync / caption plan"]
-  K --> L{"Did the three tests pass?"}
-  L -- "Yes" --> M["Generate full 12-shot episode"]
-  L -- "No" --> N["One-variable retake or rewrite clip contract"]
-  M --> O["Post-production + captions + dubbing"]
-  O --> P["Main episode + 2 ad cutdowns"]
+  A["User in Codex: ecommerce short drama + product image"] --> B["Codex invokes TJ Short Skill"]
+  B --> C["Codex product analysis"]
+  C --> D["Codex generates three briefs"]
+  D --> E["User chooses one story engine"]
+  E --> F["Codex writes product proof bible"]
+  F --> G["Codex writes high-conflict script + 12-shot storyboard"]
+  G --> H["Codex creates three 9:16 first-frame directions"]
+  H --> I["Codex writes clip contracts + reference role map"]
+  I --> J["Codex compiles salpx / omni_flash fixed 10-second prompts"]
+  J --> K["salpx relay executes image-to-video"]
+  K --> L["Returns 10-second raw clips"]
+  L --> M["Codex reviews story / product / lip sync / caption plan"]
+  M --> N{"Did the three tests pass?"}
+  N -- "Yes" --> O["Codex expands to all 12 shots"]
+  N -- "No" --> P["Codex one-variable retake or rewrite"]
+  O --> Q["Captions + dubbing + ad cutdowns"]
 ```
 
 ## Environment
 
 | Item | Requirement |
 |---|---|
+| Codex | Install and run the TJ Short Skill |
 | Git | Clone and version control |
 | Python | Python 3.9+ |
 | Python dependency | `requests` |
@@ -106,7 +131,43 @@ flowchart TD
 | Clip duration | Fixed 10 seconds |
 | Caption strategy | No burned-in subtitles during generation; add captions in post |
 
+## Repository Contents
+
+| Path | Description |
+|---|---|
+| `skill/SKILL.md` | Skill file that can be copied into the Codex skills directory |
+| `README.md` | Full Chinese documentation |
+| `README.en.md` | Full English documentation |
+| `docs/comparison.md` | Fair comparison with OnlyShot, short-drama, Emily2040/seedance-2.0, salpx, and editing tools |
+| `docs/methodology.md` | Ecommerce short-drama methodology |
+| `docs/privacy-and-release.md` | Public-release privacy and key checklist |
+| `examples/xiderdl-lucky/` | Sanitized sample script and screenshots |
+| `prompts/omni-fixed-10s-template.md` | salpx / omni_flash fixed 10-second prompt template |
+| `scripts/submit_salpx_omni_i2v.py` | Generic image-to-video submission helper |
+
 ## Installation
+
+### Option A: Install As A Codex Skill
+
+```bash
+git clone https://github.com/tttg2010/tj-short.git
+mkdir -p ~/.codex/skills/tj-short
+cp tj-short/skill/SKILL.md ~/.codex/skills/tj-short/SKILL.md
+```
+
+Then say in Codex:
+
+```text
+短剧带货启动
+```
+
+Or:
+
+```text
+Use TJ Short to turn this product image into an ecommerce short-drama project.
+```
+
+### Option B: Use The Scripts And Templates Only
 
 ```bash
 git clone https://github.com/tttg2010/tj-short.git
@@ -121,7 +182,23 @@ Never commit real keys. `.env` is ignored by git.
 
 ## Usage SOP
 
-### Step 1: Product Diagnosis
+### Step 0: Start Inside Codex
+
+Recommended starter:
+
+```text
+短剧带货启动
+```
+
+If you already have a product image:
+
+```text
+短剧带货，选 A，视频模型选 salpx / omni_flash
+```
+
+Codex should analyze the product and produce three briefs first. It should not jump straight into a full script.
+
+### Step 1: Codex Product Diagnosis
 
 Answer:
 
@@ -147,7 +224,7 @@ Each brief should include:
 
 Only after one brief is selected should you write the full episode.
 
-### Step 3: Write The High-Conflict Episode
+### Step 3: Codex Writes The High-Conflict Episode
 
 Recommended rhythm:
 
@@ -160,7 +237,7 @@ Recommended rhythm:
 70-90s: relationship turn + next hook
 ```
 
-### Step 4: Create Three First Frames
+### Step 4: Codex Creates Three First Frames
 
 Do not generate the full episode immediately. Create:
 
@@ -170,7 +247,7 @@ Do not generate the full episode immediately. Create:
 
 First frames must be clean 9:16 full-frame images with no subtitles, no inset, no white border, and no blurred background extension.
 
-### Step 5: Submit Three Test Clips
+### Step 5: Codex Compiles Prompts And Submits Three Test Clips
 
 Use the fixed 10-second rule:
 
@@ -182,7 +259,7 @@ Use the fixed 10-second rule:
 }
 ```
 
-Generic helper:
+The generic helper is a local execution example. In the full Codex workflow, Codex should first generate prompts, manifests, and checklists before submitting or guiding submission:
 
 ```bash
 python3 scripts/submit_salpx_omni_i2v.py \
@@ -192,7 +269,7 @@ python3 scripts/submit_salpx_omni_i2v.py \
   --output outputs/shot.mp4
 ```
 
-### Step 6: Review Clips
+### Step 6: Codex Reviews Clips
 
 Check:
 
@@ -205,7 +282,7 @@ Check:
 
 Only expand to all 12 shots after the three tests pass.
 
-### Step 7: Final Delivery
+### Step 7: Codex Prepares Final Delivery
 
 The final episode should include:
 
@@ -224,11 +301,11 @@ If a user can complete these actions within 30 minutes, the skill deserves 5 sta
 
 | Rating | Standard |
 |---|---|
-| 1/5 | Concept only; unclear how to start |
-| 2/5 | Can write a script but cannot enter video production |
-| 3/5 | Can create first frames and prompts but lacks review criteria |
-| 4/5 | Can run three test clips and knows how to retake failures |
-| 5/5 | Can go from product image to main episode, cutdowns, captions, and release checks |
+| 1/5 | Concept only; unclear how to start inside Codex |
+| 2/5 | Codex can write a script but cannot enter video production |
+| 3/5 | Codex can create first frames and prompts but lacks review criteria |
+| 4/5 | Codex can run three test clips and knows how to retake failures |
+| 5/5 | Codex can go from product image to main episode, cutdowns, captions, and release checks |
 
 ## References
 
