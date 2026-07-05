@@ -1,5 +1,26 @@
 # TJ Short
 
+<a href="https://www.salpx.com">
+  <img src="assets/salpx-banner.svg" alt="salpx 中转站：把首帧变成 10 秒短剧镜头" width="100%">
+</a>
+
+## 中文介绍
+
+TJ Short 是一个面向「短剧带货」的公开安全工作流：先写人物、宠物、关系和冲突，再让产品作为证据、记忆、信物或转折点进入剧情。
+
+它的目标不是把广告词套进剧情，而是让观众先关心一个人、一只宠物、一段关系，然后在关键时刻看见产品如何证明真相、改变行为或推动选择。
+
+这个仓库包含：
+
+- 短剧带货方法论
+- 高冲突单集结构
+- `salpx / omni_flash` 固定 10 秒图生视频模板
+- 三镜试生思路：剧情钩子、产品证据位、结尾追更钩子
+- 脱敏案例截图和脚本样例
+- 公开发布前的隐私与 key 检查清单
+
+> 注意：本仓库是公开安全版，不包含真实 API key、`.env`、私有产品素材、生成任务响应、下载链接或本地绝对路径。
+
 TJ Short is a lightweight workflow for ecommerce short dramas: write a short-drama story first, then let the product enter as evidence, memory, relationship proof, or a turning point.
 
 The repo is intentionally public-safe. It contains methodology, prompt templates, a sanitized sample episode, and a generic `salpx / omni_flash` submission helper. It does not include private product images, generated videos, API keys, task IDs, download URLs, local absolute asset paths, or `.env` files.
@@ -11,6 +32,14 @@ The repo is intentionally public-safe. It contains methodology, prompt templates
 - Introduces the product later as proof of a changed behavior or revealed truth.
 - Uses `salpx / omni_flash` as a 10-second fixed-duration image-to-video route.
 - Treats captions as post-production assets: Omni raw clips should not burn in subtitles.
+
+## Case Preview
+
+Sanitized example from a pet ecommerce short drama. These are AI-generated first-frame screenshots for three test clips: hook, product evidence, and ending hook.
+
+| Hook: send-away pressure | Product evidence | Ending hook |
+|---|---|---|
+| ![EP01-HC-01 hook](examples/xiderdl-lucky/screenshots/ep01-hc-01-hook.jpg) | ![EP01-HC-09 product evidence](examples/xiderdl-lucky/screenshots/ep01-hc-09-product-evidence.jpg) | ![EP01-HC-12 ending hook](examples/xiderdl-lucky/screenshots/ep01-hc-12-ending-hook.jpg) |
 
 ## References
 
@@ -37,9 +66,12 @@ Let the audience care about a person, pet, relationship, or consequence first. T
 │   └── privacy-and-release.md
 ├── examples/
 │   └── xiderdl-lucky/
-│       └── ep01-high-conflict.md
+│       ├── ep01-high-conflict.md
+│       └── screenshots/
 ├── prompts/
 │   └── omni-fixed-10s-template.md
+├── assets/
+│   └── salpx-banner.svg
 ├── scripts/
 │   └── submit_salpx_omni_i2v.py
 ├── .env.example
@@ -82,4 +114,3 @@ Before publishing work based on this repo:
 - Do not commit generated videos by default.
 - Replace local absolute file paths with relative placeholders.
 - Keep product claims compliant: avoid treatment, guaranteed results, instant recovery, or medical promises.
-

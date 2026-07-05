@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="260" viewBox="0 0 1280 260" role="img" aria-labelledby="title desc">
+  <title id="title">salpx 中转站 banner</title>
+  <desc id="desc">A banner introducing salpx as an image-to-video relay for fixed 10-second omni_flash short-drama clips.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0b1220"/>
+      <stop offset="0.48" stop-color="#12323b"/>
+      <stop offset="1" stop-color="#1f4b39"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#7dd3fc"/>
+      <stop offset="1" stop-color="#86efac"/>
+    </linearGradient>
+    <filter id="softShadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="10" stdDeviation="16" flood-color="#000000" flood-opacity="0.28"/>
+    </filter>
+  </defs>
+  <rect width="1280" height="260" rx="0" fill="url(#bg)"/>
+  <path d="M0 198 C184 140 304 248 492 186 C686 122 792 46 992 96 C1114 127 1192 116 1280 62 L1280 260 L0 260 Z" fill="#ffffff" opacity="0.08"/>
+  <g transform="translate(78 56)">
+    <rect width="132" height="132" rx="28" fill="#ffffff" opacity="0.1" filter="url(#softShadow)"/>
+    <path d="M38 76 C62 36 88 36 112 76" fill="none" stroke="url(#accent)" stroke-width="12" stroke-linecap="round"/>
+    <path d="M42 98 H106" stroke="#ffffff" stroke-width="12" stroke-linecap="round"/>
+    <circle cx="40" cy="44" r="9" fill="#86efac"/>
+    <circle cx="110" cy="108" r="9" fill="#7dd3fc"/>
+  </g>
+  <g transform="translate(250 54)">
+    <text x="0" y="38" font-family="Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="26" fill="#86efac" font-weight="700">salpx 中转站</text>
+    <text x="0" y="88" font-family="Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="44" fill="#ffffff" font-weight="800">把首帧变成 10 秒短剧镜头</text>
+    <text x="0" y="128" font-family="Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="22" fill="#dbeafe">面向 salpx / omni_flash 的图生视频工作流：首帧、镜头契约、剧本锁定、后期字幕分离</text>
+  </g>
+  <g transform="translate(1012 84)">
+    <rect width="186" height="74" rx="37" fill="url(#accent)" filter="url(#softShadow)"/>
+    <text x="93" y="47" text-anchor="middle" font-family="Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="24" fill="#07111f" font-weight="800">访问 salpx</text>
+  </g>
+</svg>

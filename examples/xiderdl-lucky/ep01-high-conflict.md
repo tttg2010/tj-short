@@ -14,6 +14,14 @@ Target edit length: about 84 seconds.
 
 Generation route: `salpx / omni_flash`, fixed 10 seconds per raw clip, then edited down in post.
 
+## Screenshots
+
+These screenshots are AI-generated first frames for the three test clips. They are included as public-safe case visuals.
+
+| Hook | Product evidence | Ending hook |
+|---|---|---|
+| ![Hook first frame](screenshots/ep01-hc-01-hook.jpg) | ![Product evidence first frame](screenshots/ep01-hc-09-product-evidence.jpg) | ![Ending hook first frame](screenshots/ep01-hc-12-ending-hook.jpg) |
+
 | Shot | Time | Visual | Dialogue / Audio | Caption Intent |
 |---|---:|---|---|---|
 | 01 | 0-5s | A mother holds a leash and a phone on speaker. The dog hides near the table. | Adoption admin voice: "If he still cannot be cared for by 9 tomorrow, we will take him back." Mother: "Hear that? I am not forcing you." | Tomorrow at 9, they take him back. |
@@ -38,4 +46,3 @@ Submit these first:
 - `EP01-HC-12`: ending hook
 
 If these fail, do not generate the full episode yet.
-
