@@ -4,6 +4,7 @@
 
 Seedance2 visible-face production update.
 
+- Added a startup gate so `短剧带货启动` begins with product diagnosis and three briefs instead of a generic production package.
 - Added install/update reminder to restart Codex three times in the user-facing instructions.
 - Added salpx.com registration and API Key setup reminder for full video-generation testing from Codex.
 - Added `face_pencil` for short-drama clips where facial acting is required: only face regions are stylized, while body, wardrobe, action, props, pet, and scene remain photographic.

@@ -35,6 +35,20 @@ Then test with:
 
 Full video generation requires a salpx API key. Tell users to register at `https://www.salpx.com`, create or copy their API Key, and put it into local `.env` as `SALPX_API_KEY`. Without a salpx API key, Codex can still generate scripts, storyboards, first frames, prompts, and manifests, but it cannot complete salpx video submission from Codex.
 
+## Startup Gate Rule
+
+When the user says `短剧带货启动`, do not immediately generate a full script, a video package, a generic workplace story, a fashion story, or a made-up sample project.
+
+The first response must start the diagnostic flow:
+
+1. Ask for or inspect the product image/material.
+2. If no product is provided, ask the user for product information before writing any story.
+3. Remind the user that full salpx video submission requires registration at `https://www.salpx.com` and a local `SALPX_API_KEY`.
+4. Produce only a short product diagnosis and three selectable briefs.
+5. Wait for the user to choose A, B, or C before writing the product proof bible, episode script, storyboard, first frames, or salpx prompts.
+
+If the user says "generate video" before product diagnosis is complete, still follow the gate: product diagnosis -> three briefs -> user chooses A/B/C -> then production.
+
 Codex is the production brain:
 
 - analyzes product assets

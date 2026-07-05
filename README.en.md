@@ -230,6 +230,13 @@ If you already have a product image:
 
 Codex should analyze the product and produce three briefs first. It should not jump straight into a full script.
 
+Startup gate:
+
+- When the user says `短剧带货启动`, Codex must not immediately generate a full production package.
+- If no product image or product information is provided, Codex must ask for the product first. It must not invent generic workplace, fashion, or relationship examples.
+- Even when the user says "generate video", follow this order first: product diagnosis -> three briefs -> user chooses A/B/C.
+- Full salpx video submission requires registering at [salpx.com](https://www.salpx.com) and putting the API Key into the local `.env`.
+
 ### Step 1: Codex Product Diagnosis
 
 Answer:
