@@ -109,6 +109,13 @@ Use the dossier board as the role subject reference. Later first-frame and video
 
 Do not use real celebrities, public figures, influencer likenesses, private people, or readable private data in dossier boards. Use fictional characters only.
 
+Production nuance for Seedance2:
+
+- The dossier board is the master for design, filing, review, and extraction.
+- For direct Seedance2 video generation, prefer extracted single-person references over the full multi-view board.
+- Recommended extracted set: face close-up for identity, full/half-body image for wardrobe and posture, scene image for environment, optional motion video for camera/action rhythm, optional audio for ambience or voice.
+- If a specific provider route proves that full dossier boards work better, use that route deliberately and record it in the manifest.
+
 ## 8. Seedance2 Filed Role Assets
 
 For Seedance2 routes with visible human faces, a character board alone may not be enough. Some short-drama platforms use a filing step that turns a role board into a provider-side asset record.
@@ -135,7 +142,62 @@ Public examples should use placeholders such as `asset-YYYYMMDDHHMMSS-xxxxx`. Do
 
 If hair, clothing, age, facial structure, or other strong identity cues change, treat it as a new role-board version and file again if the provider requires it.
 
-## 9. Clip Contract
+## 9. Seedance2 Prompt Packaging
+
+Seedance2 should receive clear media ordering and subject definitions.
+
+Key rule from official documentation: even when a request passes an asset as `asset://<asset ID>`, the prompt still refers to that media as `图片1`, `视频1`, or `音频1` according to request order. Do not use the asset ID as the subject name inside the prompt.
+
+Recommended package for a visible-face ecommerce short-drama shot:
+
+```text
+图片1: role face close-up
+图片2: role full/half-body wardrobe reference
+图片3: scene reference
+图片4: product reference
+视频1: optional motion/camera reference
+音频1: optional ambience, voice, or rhythm reference
+```
+
+Prompt skeleton:
+
+```text
+将图片1中的面部特征、图片2中的服装造型定义为林夏。
+图片3作为客厅场景参考，图片4只用于产品外形参考。
+
+镜头1：固定近景，林夏坐在沙发边缘，手指攥紧包装袋，眼神躲闪，低声说{我不是故意忘记的}。
+镜头2：镜头缓慢推近，林夏抬头看向老狗，肩膀逐渐放松，把包装袋放到碗旁。
+
+全程高清真实摄影质感，人物面部稳定不变形，动作自然连贯，避免生成任何字幕、Logo、水印或可读文字。
+```
+
+Use a few ordered shots rather than a whole episode script. Prefer small continuous actions and one camera move per shot. Use `first_frame` / `last_frame` roles when strict start/end frames matter, and `return_last_frame=true` when chaining clips.
+
+## 10. Model Routing
+
+Pick the model route before writing prompts. TJ Short should not use one generic video prompt across all providers.
+
+```text
+omni_flash:
+  fixed 10-second raw clips
+  driven mainly by the first frame
+  prompt focuses on motion, camera, emotion shift, lip-sync, and continuity locks
+
+seedance2:
+  model/provider-specific duration
+  supports image, video, audio, text references
+  prompt uses ordered media labels such as 图片1, 视频1, 音频1
+  needs explicit subject definitions and careful visible-face asset handling
+
+veo:
+  provider-specific duration and reference behavior
+  prompt should focus on cinematic scene, camera/lens, lighting, motion, continuity, and constraints
+  do not assume Seedance2 media-label syntax unless the provider explicitly supports it
+```
+
+Recent TJ Short work focuses on Seedance2, but that does not change Omni or Veo rules. The manifest must record `model_route`, `duration_rule`, `reference_rule`, `prompt_syntax_rule`, `face_review_rule`, `output_ratio`, and `audio_mode`.
+
+## 11. Clip Contract
 
 Before generating video, define each clip:
 
@@ -150,7 +212,7 @@ Before generating video, define each clip:
 
 This keeps prompts from trying to generate the whole episode in one clip.
 
-## 10. Reference Role Map
+## 12. Reference Role Map
 
 Each reference asset should have one main job:
 
@@ -161,7 +223,7 @@ Each reference asset should have one main job:
 
 Do not let one reference control identity, scene, motion, style, product, and dialogue all at once.
 
-## 11. One-Variable Retake
+## 13. One-Variable Retake
 
 When a clip fails, change only one thing:
 
@@ -174,15 +236,17 @@ When a clip fails, change only one thing:
 
 If the same issue appears twice, stop rerolling and rewrite the clip contract or split the shot.
 
-## 12. Seedance2 Visible-Face Repair
+## 14. Seedance2 Visible-Face Repair
 
 Short drama often needs facial acting. If Seedance2 rejects a realistic fictional-actor first frame as possible real-person content, do not immediately remove the face.
 
 Use a character-reference repair route:
 
 1. If the provider supports role filing, file the dossier board and use the filed asset reference.
-2. `face_pencil`: stylize only the face regions with colored-pencil/sketch treatment, while keeping body, wardrobe, action, pet, props, and scene photographic.
-3. `blur_feature`: use a blurred-face main composition image plus a facial-feature sheet. The main image controls composition, wardrobe, body action, props, and scene. The feature sheet controls fictional facial traits.
-4. If both repair methods fail, create a fuller character design board or three-view reference before more submissions.
+2. Extract single-person Seedance2 references from the role board: face close-up plus full/half-body wardrobe reference.
+3. Define media by order in the prompt: `图片1`, `图片2`, `视频1`, `音频1`.
+4. `face_pencil`: stylize only the face regions with colored-pencil/sketch treatment, while keeping body, wardrobe, action, pet, props, and scene photographic.
+5. `blur_feature`: use a blurred-face main composition image plus a facial-feature sheet. The main image controls composition, wardrobe, body action, props, and scene. The feature sheet controls fictional facial traits.
+6. If both repair methods fail, create a fuller character design board or three-view reference before more submissions.
 
 This route is only for self-owned fictional virtual characters. It is not for unlicensed real people, celebrities, influencers, or public figures.

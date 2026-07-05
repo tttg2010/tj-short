@@ -1,5 +1,18 @@
 # Changelog
 
+## short-drama-ecommerce v0.8.25
+
+Seedance2 official prompt and production-reference update.
+
+- Added Volcengine Seedance2 prompt rules: prompts must refer to media as `图片1`, `视频1`, `音频1` by request order, even when the request URL uses `asset://<asset ID>`.
+- Clarified the production use of character dossier boards: keep them for design, filing, and review, but extract clean single-person references before Seedance2 video generation.
+- Added the practical reference package: face close-up, full/half-body wardrobe image, scene image, optional motion-reference video, and optional audio.
+- Added prompt structure for subject definition, ordered shot timing, restrained action, one camera move per shot, and global constraints.
+- Added Seedance2 API production notes: use `first_frame` / `last_frame` for strict start/end frames, `return_last_frame=true` for continuous clips, `ratio=adaptive` when matching first-frame aspect ratio, and model-specific duration instead of Omni's fixed 10 seconds.
+- Added model routing discipline: Omni, Seedance2, and Veo must use separate prompt shapes, duration rules, reference handling, and review strategies.
+
+This update treats official guidance as a production signal, not a blind prohibition. Multi-view boards remain useful, but direct model submission should be decided by actual provider/model behavior and recorded in the manifest.
+
 ## short-drama-ecommerce v0.8.24
 
 Seedance2 filed-role asset chain update.

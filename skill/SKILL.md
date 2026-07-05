@@ -1,13 +1,22 @@
 ---
 name: tj-short
-description: Codex ecommerce short-drama skill v0.8.24. Use when the user wants to create product-selling short dramas, generate product-proof scripts, subject libraries, character dossier boards, filed role assets, first frames, salpx video prompts, captions, manifests, delivery checklists, and Seedance2 visible-face repair inside Codex.
+description: Codex ecommerce short-drama skill v0.8.25. Use when the user wants to create product-selling short dramas, generate product-proof scripts, subject libraries, character dossier boards, filed role assets, Seedance2 production references, first frames, salpx video prompts, captions, manifests, delivery checklists, and Seedance2 visible-face repair inside Codex.
 ---
 
 # TJ Short
 
 TJ Short is a Codex Skill for ecommerce short dramas.
 
-Version: `short-drama-ecommerce v0.8.24`
+Version: `short-drama-ecommerce v0.8.25`
+
+## v0.8.25 Changelog
+
+- Added official Seedance2 prompt lessons from Volcengine docs.
+- Clarified that `Asset ID` belongs in the request URL such as `asset://...`, while prompts must still refer to `图片1`, `视频1`, or `音频1` by content order.
+- Reframed character dossier boards as planning, filing, and extraction masters, not always the best direct Seedance2 video reference.
+- Added production rule: use dossier boards to create clean single-person references, then submit face close-up + full-body/wardrobe reference + scene/shot/audio references for Seedance2.
+- Added prompt rules for subject labels, time-sequenced shots, restrained motion, one camera move per shot, no subtitles/logos/watermarks, and model duration/ratio handling.
+- Added model routing rule: do not write one generic video prompt for Omni, Seedance2, and Veo. Choose model-specific prompt shape, duration, references, and review strategy.
 
 ## v0.8.24 Changelog
 
@@ -156,12 +165,20 @@ Use fictional characters only. No celebrity resemblance, no real brand logo, no 
 
 For ecommerce short drama, the dossier board must include the character's product-contact behavior, but it must not turn the board into an ad. The product or prop should be shown as a handling reference, evidence object, or relationship object.
 
+Production nuance:
+
+- Keep dossier boards for role design, team review, filing, and consistency.
+- Do not blindly submit a full multi-view dossier board as the main Seedance2 person reference.
+- For Seedance2 video generation, extract or generate clean single-person references from the dossier board: one face close-up for identity, one full-body/half-body image for wardrobe and posture, and separate scene/product references.
+- Multi-view boards can help humans and filing systems, but may confuse the video model if it reads several angles as several people.
+- If actual tests show a provider handles a dossier board well, use it deliberately and record that provider/model result in the manifest.
+
 ## Seedance2 Role Filing Asset Rule
 
 For Seedance2 clips with visible human faces, the preferred route is:
 
 ```text
-fictional role design -> character dossier board -> provider/platform filing -> filed asset ID -> video generation using the filed asset
+fictional role design -> character dossier board -> provider/platform filing -> filed asset ID -> extracted Seedance2 references -> video generation
 ```
 
 This rule is based on the behavior of AniShort-style character boards: filed status is loaded as project asset data, successful filing returns a platform asset number, and the platform states that downloaded/re-uploaded images can lose filed status. Therefore, a visible watermark such as `LibTV` is not proof of filing. The important object is the provider-side filed asset record.
@@ -186,6 +203,52 @@ model_route:
 
 Never fabricate asset IDs, reuse another creator's filed assets, claim a watermark equals authorization, or use filing to process unlicensed real people, celebrities, influencers, public figures, or private people.
 
+## Seedance2 Official Prompt Rule
+
+For Seedance2 routes, build prompts around content-order references:
+
+- Request payload may use normal URLs or `asset://<asset ID>` when the provider supports filed or authorized assets.
+- Prompt text must still refer to media as `图片1`, `图片2`, `视频1`, `音频1` according to the order in the request content. Do not write "asset-xxxx is the actor" in the prompt.
+- If a subject has multiple references, define the binding explicitly: `图片1中的面部特征和图片2中的服装造型定义为林夏`.
+- Every later mention should use the same label: `林夏（图片1面部，图片2服装）`.
+- For multi-person shots, define each person separately and keep labels stable.
+
+Seedance2 prompt structure:
+
+```text
+素材定义:
+图片1 = 角色面部特写
+图片2 = 角色全身/半身服装参考
+图片3 = 场景参考
+视频1 = 运镜/动作节奏参考
+音频1 = 环境声/对白音色/音乐氛围
+
+主体定义:
+将图片1中的面部特征、图片2中的服装造型定义为角色A。
+
+镜头1:
+运镜或切换方式 + 角色动作与表情 + 位置/空间变化 + 音频/台词。
+
+全局约束:
+高清真实摄影质感；人物面部稳定不变形；动作自然连贯；避免生成任何字幕、Logo、水印、可读文字；同一画面禁止重复生成同款人物。
+```
+
+Motion rules:
+
+- Prefer low, continuous, controllable movement: slowly raises hand, turns head, breathes, pauses, looks down, steps back.
+- Describe body parts and intensity: fingers tighten, shoulders relax, eyes avoid contact, jaw tightens.
+- Avoid asking one shot to do many high-speed actions unless the clip is intentionally a separate action/montage shot.
+- Use one camera move per shot: fixed camera, slow push-in, steady lateral move, handheld follow, or close-up cut. Do not stack push, pull, pan, tilt, and orbit in the same shot.
+- Do not over-specify exact seconds inside Seedance2 prompts. Use shot order unless the provider route has proven stable with timing.
+
+Seedance2 reference packaging:
+
+- Recommended 4-5 references, not every available asset.
+- For visible-face short drama: face close-up, full-body/wardrobe image, scene image, optional motion-reference video, optional audio.
+- For product evidence shots: product image should control product shape only; the first frame controls composition; the prompt controls action and dialogue.
+- Use `first_frame` and `last_frame` roles when strict start/end frames matter. Otherwise use multimodal references and clearly name their jobs.
+- Use `return_last_frame=true` when generating several continuous clips and the next clip should start from the previous ending.
+
 ## Default Flow
 
 1. Analyze the product asset or product name.
@@ -195,20 +258,66 @@ Never fabricate asset IDs, reuse another creator's filed assets, claim a waterma
 5. Build four subject libraries: role, scene, product/prop, and evidence.
 6. Generate character dossier boards for key human roles.
 7. If Seedance2 with visible faces is planned and the provider supports it, file the role boards and record filed asset metadata.
-8. Write one high-conflict episode.
-9. Create a 12-shot production table that references subject IDs.
-10. Generate or request three first frames: hook, product evidence, ending hook.
-11. Write clip contracts and reference role maps.
-12. Write `salpx / omni_flash` prompts with fixed `duration=10`.
-13. Prepare captions, manifest, and delivery checklist.
+8. Extract Seedance2-ready references from role boards: face close-up, full/half-body wardrobe reference, scene/product references, optional motion/audio references.
+9. Write one high-conflict episode.
+10. Create a 12-shot production table that references subject IDs.
+11. Generate or request three first frames: hook, product evidence, ending hook.
+12. Write clip contracts and reference role maps.
+13. Write `salpx / omni_flash` prompts with fixed `duration=10`, or Seedance2 prompts with ordered media references.
+14. Prepare captions, manifest, and delivery checklist.
 
 ## Video Model Rules
+
+Always choose the video model route before writing generation prompts.
+
+Do not reuse one generic prompt across Omni, Seedance2, and Veo. Each model has different duration assumptions, reference behavior, motion tolerance, audio behavior, and review risks.
+
+Model route table:
+
+```text
+omni_flash:
+  role: fast image-to-video raw clip generation through salpx
+  duration: fixed 10 seconds
+  best_for: one clear first frame, simple acting/action, quick trial clips
+  prompt_style: describe only motion, camera, emotion shift, lip-sync target, continuity locks
+  avoid: model-specific Seedance2 media numbering, asset_id filing language, overlong multimodal instructions
+
+seedance2:
+  role: multimodal video generation/edit/extend with stronger reference control
+  duration: selected model/provider capability, commonly seconds such as 4-15 on official routes
+  best_for: visible-face acting, product handling, image/video/audio reference mixing, first/last-frame control
+  prompt_style: ordered media references (`图片1`, `视频1`, `音频1`), subject definition, shot sequence, restrained actions, one camera move per shot
+  review_focus: role filing, authorized/fictional face handling, asset:// references in request body, no direct asset IDs in prompt prose
+
+veo:
+  role: cinematic generation with strong scene language and visual continuity, provider-dependent
+  duration: selected Veo/provider capability
+  best_for: cinematic mood, complex environments, polished motion, broad visual storytelling
+  prompt_style: concise cinematic description, camera/lens/lighting, subject continuity, negative constraints if supported
+  avoid: assuming Seedance2's 图片1/视频1 syntax unless the selected provider explicitly maps references that way
+```
 
 `salpx / omni_flash` is fixed at 10 seconds per raw clip.
 
 Never write 5-second, 6-second, or 8-second submission durations for Omni. Fast pacing is done in post-production by cutting the 10-second raw clip.
 
 Seedance 2.0 and Veo model durations depend on the selected model and provider route. Do not assume Omni's fixed 10-second rule applies to non-Omni models.
+
+For official Seedance2 routes, current common output duration is model-dependent and generally in seconds, often within a 4-15 second range for Seedance 2.0 series routes. Use the selected provider/model capability, not a hardcoded Omni duration.
+
+Use `ratio="9:16"` for native vertical output when supported. Use `ratio="adaptive"` when the first frame's aspect ratio should drive output or when avoiding frame distortion from mismatched image dimensions.
+
+Before submitting any clip, include `model_route` in the manifest and validate that the prompt follows that route's rules:
+
+```text
+model_route: omni_flash | seedance2 | veo | other
+duration_rule:
+reference_rule:
+prompt_syntax_rule:
+face_review_rule:
+output_ratio:
+audio_mode:
+```
 
 ## Seedance2 Visible-Face Rule
 
@@ -218,9 +327,11 @@ Use this escalation path:
 
 1. Start with a clean fictional virtual-actor dossier board and first frame.
 2. If the provider supports role/person filing, file the dossier board first and pass the filed asset reference into the Seedance2 route.
-3. If filing is unsupported or still rejected as possible real-person content, use `face_pencil`: apply colored-pencil or sketch treatment only to face regions while keeping body, wardrobe, action, and scene photographic.
-4. If `face_pencil` still fails, use `blur_feature`: blur the face regions in the main composition image and provide a separate facial-feature sheet as an additional reference.
-5. Prompt the model that the main frame controls composition/body/wardrobe/action and the feature sheet controls fictional facial features.
+3. Extract a clean face close-up and full/half-body wardrobe reference from the filed role board when possible.
+4. Write prompts with ordered media references such as `图片1`, `图片2`, and stable subject labels. Do not refer to the `asset_id` directly in prompt prose.
+5. If filing is unsupported or still rejected as possible real-person content, use `face_pencil`: apply colored-pencil or sketch treatment only to face regions while keeping body, wardrobe, action, and scene photographic.
+6. If `face_pencil` still fails, use `blur_feature`: blur the face regions in the main composition image and provide a separate facial-feature sheet as an additional reference.
+7. Prompt the model that the main frame controls composition/body/wardrobe/action and the feature sheet controls fictional facial features.
 
 Do not use this process for unlicensed real people, celebrities, influencers, public figures, or attempts to bypass identity review. It is only for self-owned fictional virtual characters.
 
@@ -229,6 +340,7 @@ Do not use this process for unlicensed real people, celebrities, influencers, pu
 - Product proof bible
 - Role subject library and character dossier boards for key roles
 - Filed role asset table for Seedance2 routes when supported
+- Seedance2 reference package: ordered face/body/scene/product/motion/audio references
 - Scene subject library
 - Product/prop subject library
 - Evidence subject library

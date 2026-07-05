@@ -46,6 +46,7 @@ Core rule:
 
 | Version | Key updates |
 |---|---|
+| v0.8.25 | Added Volcengine Seedance2 prompt rules and model routing: Seedance2, omni, and Veo use separate prompt shapes, duration rules, references, and review strategies. |
 | v0.8.24 | Added Seedance2 filed role asset chain: character dossier board -> provider filing -> filed asset ID -> video generation with the filed asset; clarified that a watermark is not filing proof. |
 | v0.8.23 | Added character dossier board workflow: main portrait, three views, expression sheet, wardrobe/material details, product-contact details, and concise info panel as the standard role-subject example. |
 | v0.8.22 | Added AniShort-style subject libraries: role, scene, product/prop, and evidence libraries before the 12-shot production table. |
@@ -64,7 +65,10 @@ Full history: [docs/changelog.md](docs/changelog.md)
 - Uses product as evidence: records, actions, procedures, behavior changes, or key objects
 - Tests three clips first: hook, product evidence, ending hook
 - Treats omni as fixed 10-second generation; Seedance2 and Veo follow selected model rules
+- Separates video models: Seedance2 uses ordered media labels and subject definitions; omni describes motion after the first frame; Veo uses cinematic scene/camera language
 - For Seedance2 visible faces, prefers character dossier board -> provider filing -> filed asset reference; a watermark is not filing proof
+- Keeps character dossier boards for design, filing, and review; for video generation, extracts face close-up, full/half-body wardrobe, scene, product, motion, and audio references
+- Seedance2 prompts must refer to media by order, such as `图片1`, `视频1`, and `音频1`, rather than using asset IDs as character names
 - If filing is unavailable or still rejected, uses `face_pencil` or `blur_feature` virtual-character repair before falling back to faceless shots
 - Keeps pacing decisions in post-production
 - Includes privacy and key-safety checks before public release
@@ -77,9 +81,10 @@ If Seedance2 flags a realistic first frame as possible real-person content, use 
 
 1. If salpx or the selected provider supports role/person filing, file the character dossier board first, then use the provider-scoped filed asset ID for Seedance2 generation.
 2. Keep the original filed platform reference; downloading and re-uploading may lose filing status.
-3. `face_pencil`: stylize only face regions with colored-pencil/sketch treatment while keeping body, wardrobe, action, and scene photographic.
-4. `blur_feature`: blur face regions in the main composition image and provide a separate facial-feature sheet for the fictional virtual character.
-5. If needed, add character three-views or a design board.
+3. Extract single-person references from the dossier board: `图片1 = face close-up`, `图片2 = full/half-body wardrobe`, plus scene, product, motion, or audio references.
+4. Define the subject in prompt text: `将图片1中的面部特征、图片2中的服装造型定义为林夏`, then keep using the same role label.
+5. `face_pencil`: stylize only face regions with colored-pencil/sketch treatment while keeping body, wardrobe, action, and scene photographic.
+6. `blur_feature`: blur face regions in the main composition image and provide a separate facial-feature sheet for the fictional virtual character.
 
 Note: a LibTV-style watermark is not filing proof, and real filing IDs should not be committed to public repos. Public examples should use placeholders such as `asset-YYYYMMDDHHMMSS-xxxxx`.
 
