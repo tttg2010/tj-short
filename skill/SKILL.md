@@ -1,13 +1,28 @@
 ---
 name: tj-short
-description: Codex ecommerce short-drama skill v0.8.22. Use when the user wants to create product-selling short dramas, generate product-proof scripts, first frames, salpx video prompts, captions, manifests, delivery checklists, and Seedance2 visible-face repair inside Codex.
+description: Codex ecommerce short-drama skill v0.8.24. Use when the user wants to create product-selling short dramas, generate product-proof scripts, subject libraries, character dossier boards, filed role assets, first frames, salpx video prompts, captions, manifests, delivery checklists, and Seedance2 visible-face repair inside Codex.
 ---
 
 # TJ Short
 
 TJ Short is a Codex Skill for ecommerce short dramas.
 
-Version: `short-drama-ecommerce v0.8.22`
+Version: `short-drama-ecommerce v0.8.24`
+
+## v0.8.24 Changelog
+
+- Added Seedance2 role-filing asset chain learned from AniShort-style filed character boards.
+- Treat human/realistic role filing as a server-side asset status, not as a watermark or a prompt phrase.
+- When a provider supports filing, register the approved character dossier board first, record the returned filed asset ID, and use that platform-scoped asset in Seedance2 generation.
+- Clarified that downloaded and re-uploaded images may lose filing status; keep the original filed asset reference.
+- Added manifest fields for `filed_asset_id`, `filing_status`, `filing_scope`, `role_board_version`, and `source_asset_url`.
+
+## v0.8.23 Changelog
+
+- Added character dossier board workflow for role subjects.
+- Role subject images should be reference boards, not only single cinematic portraits.
+- A character dossier board should include main portrait, front/side/back full-body views, expression sheet, wardrobe/product-contact details, and a concise info panel.
+- Shot prompts should reference the approved role dossier board and avoid re-describing the full face, wardrobe, and product-contact setup in every shot.
 
 ## v0.8.22 Changelog
 
@@ -92,7 +107,7 @@ Do not let every shot reinvent the same people, rooms, products, and proof objec
 
 Required libraries:
 
-1. Role library: each recurring person or pet gets one stable identity entry with age range, identity, face/fur traits, hair, wardrobe, expression baseline, relationship power, and product-contact behavior.
+1. Role library: each recurring person or pet gets one stable identity entry with age range, identity, face/fur traits, hair, wardrobe, expression baseline, relationship power, and product-contact behavior. For important recurring human roles, generate a character dossier board instead of a single portrait.
 2. Scene library: each recurring location gets one stable entry with layout, lighting, time of day, mood, camera-friendly anchors, and safety notes.
 3. Product/prop library: product pack, bowl, phone, receipt, report, accessory, package, or tool entries with shape, color, label visibility, handling rule, and what must not change.
 4. Evidence library: ecommerce-specific proof objects such as feeding action, before/after behavior, order record, vet-style note, ingredient card, comparison table, phone chat, or packaging detail. Each evidence item must say what misunderstanding it proves or overturns.
@@ -116,6 +131,61 @@ must_not_change:
 
 For video prompts, write only what is missing from the first frame: action, camera motion, emotion change, dialogue/lip-sync target, timing, and what must remain unchanged. Do not restate the entire character face, wardrobe, product design, or scene if those are already controlled by subject libraries and first frames.
 
+## Character Dossier Board Rule
+
+When the user asks for a role subject image, default to a character dossier board unless they explicitly ask for a single portrait or first frame.
+
+A good role dossier board contains:
+
+- large main portrait
+- full-body three views: front, side, back
+- expression set: anxious, guilty, tender, relieved, angry, confused, or project-specific emotions
+- wardrobe and material details
+- product-contact or prop-contact details
+- close-up visual memory points such as eyes, hair, hands, accessory, pet interaction, or package handling
+- concise identity panel with name, age range, role, relationship, emotional baseline, and product-contact behavior
+
+Prompt pattern:
+
+```text
+Create a horizontal premium character reference board / character design sheet.
+Layout: large portrait, front/side/back full-body views, expression sheet, detail panels, concise info panel.
+Keep the same face, hair, wardrobe, body proportions, and emotional baseline across all panels.
+Use fictional characters only. No celebrity resemblance, no real brand logo, no readable private text.
+```
+
+For ecommerce short drama, the dossier board must include the character's product-contact behavior, but it must not turn the board into an ad. The product or prop should be shown as a handling reference, evidence object, or relationship object.
+
+## Seedance2 Role Filing Asset Rule
+
+For Seedance2 clips with visible human faces, the preferred route is:
+
+```text
+fictional role design -> character dossier board -> provider/platform filing -> filed asset ID -> video generation using the filed asset
+```
+
+This rule is based on the behavior of AniShort-style character boards: filed status is loaded as project asset data, successful filing returns a platform asset number, and the platform states that downloaded/re-uploaded images can lose filed status. Therefore, a visible watermark such as `LibTV` is not proof of filing. The important object is the provider-side filed asset record.
+
+When the selected salpx/provider route supports role filing or real-person/realistic-person asset registration:
+
+1. File the approved fictional character dossier board before Seedance2 generation.
+2. Record the returned asset ID as a provider-scoped reference. Use a placeholder format in public docs: `asset-YYYYMMDDHHMMSS-xxxxx`.
+3. Keep and reuse the original filed asset URL or provider asset reference. Do not download and re-upload it as a new image.
+4. If hair, clothing, age, face, or strong visual identity changes, treat it as a new role-board version and file again if the provider requires it.
+5. Put filing metadata in the manifest:
+
+```text
+role_id:
+role_board_version:
+filing_status: filed | not_supported | pending | failed
+filed_asset_id:
+filing_scope:
+source_asset_url:
+model_route:
+```
+
+Never fabricate asset IDs, reuse another creator's filed assets, claim a watermark equals authorization, or use filing to process unlicensed real people, celebrities, influencers, public figures, or private people.
+
 ## Default Flow
 
 1. Analyze the product asset or product name.
@@ -123,12 +193,14 @@ For video prompts, write only what is missing from the first frame: action, came
 3. Let the user choose one brief.
 4. Create the product proof bible.
 5. Build four subject libraries: role, scene, product/prop, and evidence.
-6. Write one high-conflict episode.
-7. Create a 12-shot production table that references subject IDs.
-8. Generate or request three first frames: hook, product evidence, ending hook.
-9. Write clip contracts and reference role maps.
-10. Write `salpx / omni_flash` prompts with fixed `duration=10`.
-11. Prepare captions, manifest, and delivery checklist.
+6. Generate character dossier boards for key human roles.
+7. If Seedance2 with visible faces is planned and the provider supports it, file the role boards and record filed asset metadata.
+8. Write one high-conflict episode.
+9. Create a 12-shot production table that references subject IDs.
+10. Generate or request three first frames: hook, product evidence, ending hook.
+11. Write clip contracts and reference role maps.
+12. Write `salpx / omni_flash` prompts with fixed `duration=10`.
+13. Prepare captions, manifest, and delivery checklist.
 
 ## Video Model Rules
 
@@ -144,17 +216,19 @@ When Seedance2 clips need visible actor faces, do not default to faceless crops.
 
 Use this escalation path:
 
-1. Start with a clean fictional virtual-actor first frame.
-2. If a realistic face is rejected as possible real-person content, use `face_pencil`: apply colored-pencil or sketch treatment only to face regions while keeping body, wardrobe, action, and scene photographic.
-3. If `face_pencil` still fails, use `blur_feature`: blur the face regions in the main composition image and provide a separate facial-feature sheet as an additional reference.
-4. Prompt the model that the main frame controls composition/body/wardrobe/action and the feature sheet controls fictional facial features.
+1. Start with a clean fictional virtual-actor dossier board and first frame.
+2. If the provider supports role/person filing, file the dossier board first and pass the filed asset reference into the Seedance2 route.
+3. If filing is unsupported or still rejected as possible real-person content, use `face_pencil`: apply colored-pencil or sketch treatment only to face regions while keeping body, wardrobe, action, and scene photographic.
+4. If `face_pencil` still fails, use `blur_feature`: blur the face regions in the main composition image and provide a separate facial-feature sheet as an additional reference.
+5. Prompt the model that the main frame controls composition/body/wardrobe/action and the feature sheet controls fictional facial features.
 
 Do not use this process for unlicensed real people, celebrities, influencers, public figures, or attempts to bypass identity review. It is only for self-owned fictional virtual characters.
 
 ## Required Deliverables
 
 - Product proof bible
-- Role subject library
+- Role subject library and character dossier boards for key roles
+- Filed role asset table for Seedance2 routes when supported
 - Scene subject library
 - Product/prop subject library
 - Evidence subject library

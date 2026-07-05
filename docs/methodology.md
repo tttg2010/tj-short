@@ -91,7 +91,51 @@ must_not_change:
 
 This keeps character identity and product proof stable while letting each shot prompt focus on movement, emotion, camera, and dialogue.
 
-## 7. Clip Contract
+## 7. Character Dossier Boards
+
+For important recurring roles, a single vertical portrait is not enough. Generate a character dossier board so later shots can preserve identity, wardrobe, expression range, and product-contact behavior.
+
+A character dossier board should include:
+
+- main portrait
+- front, side, and back full-body views
+- expression sheet
+- wardrobe/material close-ups
+- product-contact or prop-contact close-ups
+- visual memory points such as eyes, hair, hands, accessories, pet interaction, or package handling
+- concise info panel: name, age range, role, relationship, emotional baseline, and product-contact behavior
+
+Use the dossier board as the role subject reference. Later first-frame and video prompts should reference the role ID and board, then focus only on the current shot's action, emotion, camera, dialogue, and continuity locks.
+
+Do not use real celebrities, public figures, influencer likenesses, private people, or readable private data in dossier boards. Use fictional characters only.
+
+## 8. Seedance2 Filed Role Assets
+
+For Seedance2 routes with visible human faces, a character board alone may not be enough. Some short-drama platforms use a filing step that turns a role board into a provider-side asset record.
+
+Working interpretation from AniShort-style boards:
+
+- the filing status is loaded as project asset data
+- a successful filing returns a platform asset number
+- filed assets are scoped to the platform/project/user route
+- downloading and re-uploading an image can break the filed status
+- a watermark is not the filing record
+
+Use this chain when the provider supports it:
+
+```text
+fictional role design
+-> character dossier board
+-> provider/platform filing
+-> filed asset ID and source asset URL
+-> Seedance2 generation using the filed asset reference
+```
+
+Public examples should use placeholders such as `asset-YYYYMMDDHHMMSS-xxxxx`. Do not publish real asset IDs, signed URLs, task IDs, or private upload paths.
+
+If hair, clothing, age, facial structure, or other strong identity cues change, treat it as a new role-board version and file again if the provider requires it.
+
+## 9. Clip Contract
 
 Before generating video, define each clip:
 
@@ -106,7 +150,7 @@ Before generating video, define each clip:
 
 This keeps prompts from trying to generate the whole episode in one clip.
 
-## 8. Reference Role Map
+## 10. Reference Role Map
 
 Each reference asset should have one main job:
 
@@ -117,7 +161,7 @@ Each reference asset should have one main job:
 
 Do not let one reference control identity, scene, motion, style, product, and dialogue all at once.
 
-## 9. One-Variable Retake
+## 11. One-Variable Retake
 
 When a clip fails, change only one thing:
 
@@ -130,14 +174,15 @@ When a clip fails, change only one thing:
 
 If the same issue appears twice, stop rerolling and rewrite the clip contract or split the shot.
 
-## 10. Seedance2 Visible-Face Repair
+## 12. Seedance2 Visible-Face Repair
 
 Short drama often needs facial acting. If Seedance2 rejects a realistic fictional-actor first frame as possible real-person content, do not immediately remove the face.
 
 Use a character-reference repair route:
 
-1. `face_pencil`: stylize only the face regions with colored-pencil/sketch treatment, while keeping body, wardrobe, action, pet, props, and scene photographic.
-2. `blur_feature`: use a blurred-face main composition image plus a facial-feature sheet. The main image controls composition, wardrobe, body action, props, and scene. The feature sheet controls fictional facial traits.
-3. If both fail, create a fuller character design board or three-view reference before more submissions.
+1. If the provider supports role filing, file the dossier board and use the filed asset reference.
+2. `face_pencil`: stylize only the face regions with colored-pencil/sketch treatment, while keeping body, wardrobe, action, pet, props, and scene photographic.
+3. `blur_feature`: use a blurred-face main composition image plus a facial-feature sheet. The main image controls composition, wardrobe, body action, props, and scene. The feature sheet controls fictional facial traits.
+4. If both repair methods fail, create a fuller character design board or three-view reference before more submissions.
 
 This route is only for self-owned fictional virtual characters. It is not for unlicensed real people, celebrities, influencers, or public figures.

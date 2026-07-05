@@ -12,7 +12,7 @@ Codex + salpx relay ecommerce short-drama skill: use Codex to generate product a
 
 TJ Short is a public-safe Codex Skill template for ecommerce short dramas. It is not only a writing framework and not only a video API wrapper. It lets Codex move a product image through a complete production chain:
 
-product analysis -> three briefs -> product proof bible -> high-conflict script -> 12-shot storyboard -> 9:16 first frames -> `salpx` video-model prompts (omni fixed at 10 seconds; Seedance2/Veo follow model rules) -> captions and ad cutdown plan.
+product analysis -> three briefs -> product proof bible -> four libraries plus shot table (role / scene / product-prop / evidence + 12-shot production table) -> character dossier boards -> 9:16 first frames -> `salpx` video-model prompts (omni fixed at 10 seconds; Seedance2/Veo follow model rules) -> captions and ad cutdown plan.
 
 The split is clear:
 
@@ -42,6 +42,18 @@ Core rule:
 
 > The product is not the hero. Characters, pets, relationships, and consequences come first. The product proves the truth later.
 
+## Version Highlights
+
+| Version | Key updates |
+|---|---|
+| v0.8.24 | Added Seedance2 filed role asset chain: character dossier board -> provider filing -> filed asset ID -> video generation with the filed asset; clarified that a watermark is not filing proof. |
+| v0.8.23 | Added character dossier board workflow: main portrait, three views, expression sheet, wardrobe/material details, product-contact details, and concise info panel as the standard role-subject example. |
+| v0.8.22 | Added AniShort-style subject libraries: role, scene, product/prop, and evidence libraries before the 12-shot production table. |
+| v0.8.22 | Added Seedance2 visible-face lessons: `face_pencil` and `blur_feature` before falling back to faceless shots. |
+| v0.8.22 | Added startup gate, salpx.com registration, and API Key setup reminders. |
+
+Full history: [docs/changelog.md](docs/changelog.md)
+
 ## Why Try It
 
 - It is a Codex Skill, not just documentation
@@ -52,7 +64,8 @@ Core rule:
 - Uses product as evidence: records, actions, procedures, behavior changes, or key objects
 - Tests three clips first: hook, product evidence, ending hook
 - Treats omni as fixed 10-second generation; Seedance2 and Veo follow selected model rules
-- When Seedance2 rejects visible actor faces, uses `face_pencil` or `blur_feature` virtual-character repair before falling back to faceless shots
+- For Seedance2 visible faces, prefers character dossier board -> provider filing -> filed asset reference; a watermark is not filing proof
+- If filing is unavailable or still rejected, uses `face_pencil` or `blur_feature` virtual-character repair before falling back to faceless shots
 - Keeps pacing decisions in post-production
 - Includes privacy and key-safety checks before public release
 
@@ -62,9 +75,13 @@ Short-drama clips often need facial acting. Do not default to faceless crops.
 
 If Seedance2 flags a realistic first frame as possible real-person content, use this escalation:
 
-1. `face_pencil`: stylize only face regions with colored-pencil/sketch treatment while keeping body, wardrobe, action, and scene photographic.
-2. `blur_feature`: blur face regions in the main composition image and provide a separate facial-feature sheet for the fictional virtual character.
-3. If needed, add character three-views or a design board.
+1. If salpx or the selected provider supports role/person filing, file the character dossier board first, then use the provider-scoped filed asset ID for Seedance2 generation.
+2. Keep the original filed platform reference; downloading and re-uploading may lose filing status.
+3. `face_pencil`: stylize only face regions with colored-pencil/sketch treatment while keeping body, wardrobe, action, and scene photographic.
+4. `blur_feature`: blur face regions in the main composition image and provide a separate facial-feature sheet for the fictional virtual character.
+5. If needed, add character three-views or a design board.
+
+Note: a LibTV-style watermark is not filing proof, and real filing IDs should not be committed to public repos. Public examples should use placeholders such as `asset-YYYYMMDDHHMMSS-xxxxx`.
 
 Full SOP: [docs/seedance2-face-compliance.md](docs/seedance2-face-compliance.md)
 
@@ -84,6 +101,12 @@ Detailed fair comparison: [docs/comparison.md](docs/comparison.md)
 
 Sanitized pet ecommerce short-drama example. These first frames represent the hook, product evidence, and ending hook.
 
+### Character Dossier Board
+
+Key role subjects should not rely on a single attractive portrait. A reusable character dossier board locks the main portrait, front/side/back views, expression set, wardrobe/material details, product-contact behavior, and visual keywords. Later first-frame, storyboard, and video prompts should reference this role subject instead of reinventing the character in every shot.
+
+![ROLE-01 Lin Xia character dossier](examples/xiderdl-lucky/screenshots/role-01-linxia-character-dossier.png)
+
 | Hook: send-away pressure | Product evidence | Ending hook |
 |---|---|---|
 | ![EP01-HC-01 hook](examples/xiderdl-lucky/screenshots/ep01-hc-01-hook.jpg) | ![EP01-HC-09 product evidence](examples/xiderdl-lucky/screenshots/ep01-hc-09-product-evidence.jpg) | ![EP01-HC-12 ending hook](examples/xiderdl-lucky/screenshots/ep01-hc-12-ending-hook.jpg) |
@@ -97,6 +120,8 @@ Example script: [examples/xiderdl-lucky/ep01-high-conflict.md](examples/xiderdl-
 | Product proof bible | Defines user, product action, proof, and claim boundaries | Yes |
 | Three briefs | Lets the team choose the story engine before writing scripts | Yes |
 | Four libraries plus shot table | Role, scene, product/prop, evidence libraries, and a 12-shot production table | Yes |
+| Character dossier boards | Lock key roles with main portrait, three views, expression sheet, wardrobe/materials, and product-contact behavior | Yes |
+| Seedance2 filed asset table | Tracks fictional role filing status, filed asset ID placeholder, board version, and provider scope | Required for Seedance2 visible-face routes |
 | High-conflict episode script | 60-90 second episode with a strong first 5 seconds | Yes |
 | 12-shot production table | Each shot references subject libraries and focuses on action, emotion, camera, and dialogue | Yes |
 | Three test first frames | Validates hook, product proof, and ending hook | Yes |

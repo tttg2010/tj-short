@@ -1,5 +1,28 @@
 # Changelog
 
+## short-drama-ecommerce v0.8.24
+
+Seedance2 filed-role asset chain update.
+
+- Added AniShort-style role filing insight: realistic human role references should be treated as platform-scoped filed assets when the provider supports filing.
+- Documented that the key object is the provider-side filed asset record and asset ID, not a visible watermark.
+- Clarified that downloaded and re-uploaded images may lose filing status; keep the original filed asset URL or provider asset reference.
+- Added manifest fields for `filed_asset_id`, `filing_status`, `filing_scope`, `role_board_version`, and `source_asset_url`.
+- Clarified the safe route: fictional role design -> character dossier board -> provider filing -> filed asset reference -> Seedance2 generation.
+- Kept `face_pencil` and `blur_feature` as fallback repair methods when filing is unavailable or still rejected.
+
+This update does not support fabricating asset IDs, reusing another creator's filed assets, or processing unlicensed real people, celebrities, influencers, public figures, or private people.
+
+## short-drama-ecommerce v0.8.23
+
+Character dossier board update.
+
+- Added role-subject dossier board workflow learned from AniShort-style character boards.
+- Key recurring roles should use a horizontal board with main portrait, front/side/back views, expression sheet, wardrobe/material details, product-contact details, and concise info panel.
+- Clarified the difference between a single cinematic role portrait and a reusable character dossier board.
+- Added prompt guidance so later shot prompts reference the approved role board instead of re-describing identity in every shot.
+- README now includes a visible version history section so important updates are shown on the GitHub introduction page, not only in `docs/changelog.md`.
+
 ## short-drama-ecommerce v0.8.22
 
 Seedance2 visible-face production update.
