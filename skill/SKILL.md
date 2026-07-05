@@ -17,6 +17,9 @@ Version: `short-drama-ecommerce v0.8.25`
 - Added production rule: use dossier boards to create clean single-person references, then submit face close-up + full-body/wardrobe reference + scene/shot/audio references for Seedance2.
 - Added prompt rules for subject labels, time-sequenced shots, restrained motion, one camera move per shot, no subtitles/logos/watermarks, and model duration/ratio handling.
 - Added model routing rule: do not write one generic video prompt for Omni, Seedance2, and Veo. Choose model-specific prompt shape, duration, references, and review strategy.
+- Added hard gate: Seedance2 visible-human projects must create role dossier board deliverables before first-frame grids or video prompts.
+- Added strict phase gate: startup, brief selection, project-file generation, dossier creation, storyboard, first-frame grid, and video prompt/submission must not collapse into one chat response.
+- Added user-facing prefix rule: TJ Short recommendations, status reports, and next-step suggestions should start with `短剧带货：`.
 
 ## v0.8.24 Changelog
 
@@ -95,6 +98,8 @@ salpx is the video execution relay:
 Use this skill when the user says:
 
 - 短剧带货
+- 短剧带货启动
+- 启动短剧带货
 - ecommerce short drama
 - product short drama
 - 用 Codex 生成短剧带货
@@ -107,6 +112,81 @@ Use this skill when the user says:
 Do not make the product the hero.
 
 The story must first make the audience care about a person, pet, relationship, or consequence. The product enters later as evidence, a record, a memory object, a relationship token, or a turning point.
+
+## Strict Phase Gate
+
+Do not collapse the workflow into one chat answer. TJ Short must move through phases and produce files at the correct phase.
+
+Phase 0: startup
+
+- Triggered by `短剧带货启动`, `启动短剧带货`, or similar.
+- Ask for product material or inspect the provided product.
+- Output only product diagnosis and A/B/C brief options.
+- Do not write 12 shots, first-frame prompts, video prompts, captions, or sales copy yet.
+
+Phase 1: user selects A/B/C
+
+- Create project files instead of dumping the whole package in chat.
+- Required files:
+
+```text
+项目首页.md
+产品素材分析.md
+产品证明圣经.md
+短剧主线.md
+角色主体库.md
+人物备案板需求.md
+Seedance2参考包计划.md
+场景主体库.md
+产品道具库.md
+证据主体库.md
+项目状态胶囊.md
+```
+
+- For Seedance2 visible-human routes, stop here if the dossier files are missing.
+- Do not generate first-frame grids yet.
+- Do not write full `salpx / omni_flash` or Seedance2 video prompt packs yet, except a short note naming the planned model route.
+
+Phase 2: episode and 12-shot production table
+
+- Generate `完整前三集剧本.md` or the requested episode script.
+- Generate `第1集12镜头分镜表.md`, `镜头契约表.md`, `参考资产角色表.md`, and `generation_manifest.csv`.
+- Each shot must reference role/scene/product/evidence IDs.
+
+Phase 3: role dossier image or Seedance2 reference package
+
+- Generate or request character dossier boards.
+- Extract or plan `图片1=face close-up`, `图片2=full/half-body wardrobe`, `图片3=scene`, `图片4=product`, optional `视频1`, optional `音频1`.
+- Do not substitute this with a generic reference-asset table.
+
+Phase 4: first-frame grid
+
+- Generate a 12-panel grid only after Phase 1-3 gates are satisfied.
+- If a grid appears before role dossier assets for a Seedance2 visible-human route, mark the grid as `preview_only_invalid_missing_role_dossier`.
+
+Phase 5: model-specific video prompts and submission
+
+- Only now write the full model-specific prompt pack.
+- Use separate prompt rules for `omni_flash`, `seedance2`, and `veo`.
+- Do not submit video tasks until `generation_manifest.csv` has model route, duration rule, reference rule, prompt syntax rule, face review rule, output ratio, and audio mode.
+
+## User-Facing Reply Style
+
+During TJ Short workflow, start user-facing recommendations, status reports, and next-step suggestions with:
+
+```text
+短剧带货：
+```
+
+Examples:
+
+```text
+短剧带货：已完成产品诊断，下面给你 A/B/C 三个方向。
+短剧带货：当前缺少人物备案板需求文件，先补这个，再做首帧宫格。
+短剧带货：建议下一步生成 Seedance2 参考包，不要直接提交视频。
+```
+
+Do not use the prefix inside generated script dialogue, subtitles, filenames, CSV rows, or model prompts unless the content itself requires it.
 
 ## Subject Library Rule
 
@@ -143,6 +223,20 @@ For video prompts, write only what is missing from the first frame: action, came
 ## Character Dossier Board Rule
 
 When the user asks for a role subject image, default to a character dossier board unless they explicitly ask for a single portrait or first frame.
+
+For any Seedance2 route with recurring visible human roles, character dossier boards are not optional. Do not skip directly from script/storyboard to first-frame grids or video prompts.
+
+Minimum required dossier deliverables before Seedance2 first-frame generation:
+
+```text
+角色主体库.md
+人物备案板需求.md
+Seedance2参考包计划.md
+```
+
+If image generation is not requested yet, still create the textual dossier-board spec and reference extraction plan. If image generation is requested, generate the board or clearly mark it as `pending_image_generation`.
+
+Do not treat a generic `参考资产角色表.md` as a substitute for a dossier board. The role asset table tracks references; the dossier board defines and stabilizes the character.
 
 A good role dossier board contains:
 
@@ -256,7 +350,7 @@ Seedance2 reference packaging:
 3. Let the user choose one brief.
 4. Create the product proof bible.
 5. Build four subject libraries: role, scene, product/prop, and evidence.
-6. Generate character dossier boards for key human roles.
+6. Create the required role dossier deliverables for key human roles: `角色主体库.md`, `人物备案板需求.md`, and `Seedance2参考包计划.md`.
 7. If Seedance2 with visible faces is planned and the provider supports it, file the role boards and record filed asset metadata.
 8. Extract Seedance2-ready references from role boards: face close-up, full/half-body wardrobe reference, scene/product references, optional motion/audio references.
 9. Write one high-conflict episode.
@@ -322,6 +416,17 @@ audio_mode:
 ## Seedance2 Visible-Face Rule
 
 When Seedance2 clips need visible actor faces, do not default to faceless crops. Short drama depends on facial acting.
+
+Before generating Seedance2 prompts, first-frame grids, or video submissions, verify:
+
+```text
+has_role_subject_library: yes
+has_character_dossier_spec: yes
+has_seedance2_reference_package_plan: yes
+has_filed_asset_status_or_not_supported_reason: yes
+```
+
+If any item is missing, stop and create the missing role/dossier files first.
 
 Use this escalation path:
 

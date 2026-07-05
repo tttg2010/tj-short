@@ -67,6 +67,8 @@ Full history: [docs/changelog.md](docs/changelog.md)
 - Treats omni as fixed 10-second generation; Seedance2 and Veo follow selected model rules
 - Separates video models: Seedance2 uses ordered media labels and subject definitions; omni describes motion after the first frame; Veo uses cinematic scene/camera language
 - For Seedance2 visible faces, prefers character dossier board -> provider filing -> filed asset reference; a watermark is not filing proof
+- Seedance2 visible-human projects must create dossier deliverables first: `角色主体库.md`, `人物备案板需求.md`, and `Seedance2参考包计划.md`
+- Uses strict phases: startup only diagnoses and offers A/B/C; after selection, generate project files and dossier deliverables before storyboard grids, video prompts, or submissions
 - Keeps character dossier boards for design, filing, and review; for video generation, extracts face close-up, full/half-body wardrobe, scene, product, motion, and audio references
 - Seedance2 prompts must refer to media by order, such as `图片1`, `视频1`, and `音频1`, rather than using asset IDs as character names
 - If filing is unavailable or still rejected, uses `face_pencil` or `blur_feature` virtual-character repair before falling back to faceless shots
@@ -76,6 +78,14 @@ Full history: [docs/changelog.md](docs/changelog.md)
 ## Seedance2 Visible Faces
 
 Short-drama clips often need facial acting. Do not default to faceless crops.
+
+Hard gate: create role dossier deliverables before first-frame grids and video prompts. A generic reference asset table is not enough.
+
+Workflow gate:
+
+1. Startup phase: product diagnosis and A/B/C only.
+2. After brief selection: generate product proof bible, role subject library, character dossier spec, and Seedance2 reference package plan.
+3. After the role gate passes: generate 12-shot storyboard, first-frame grid, and model-specific prompt packs.
 
 If Seedance2 flags a realistic first frame as possible real-person content, use this escalation:
 

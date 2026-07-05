@@ -10,6 +10,8 @@ Seedance2 official prompt and production-reference update.
 - Added prompt structure for subject definition, ordered shot timing, restrained action, one camera move per shot, and global constraints.
 - Added Seedance2 API production notes: use `first_frame` / `last_frame` for strict start/end frames, `return_last_frame=true` for continuous clips, `ratio=adaptive` when matching first-frame aspect ratio, and model-specific duration instead of Omni's fixed 10 seconds.
 - Added model routing discipline: Omni, Seedance2, and Veo must use separate prompt shapes, duration rules, reference handling, and review strategies.
+- Added a Seedance2 visible-human hard gate: role dossier deliverables must exist before first-frame grids or video prompts.
+- Added strict workflow phase gate: startup, brief selection, project files, role dossier, storyboard, first-frame grid, and video prompt/submission are separate phases.
 
 This update treats official guidance as a production signal, not a blind prohibition. Multi-view boards remain useful, but direct model submission should be decided by actual provider/model behavior and recorded in the manifest.
 

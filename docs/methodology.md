@@ -116,6 +116,16 @@ Production nuance for Seedance2:
 - Recommended extracted set: face close-up for identity, full/half-body image for wardrobe and posture, scene image for environment, optional motion video for camera/action rhythm, optional audio for ambience or voice.
 - If a specific provider route proves that full dossier boards work better, use that route deliberately and record it in the manifest.
 
+Hard gate: if the project uses Seedance2 with recurring visible human roles, do not proceed to first-frame grids, image-to-video prompts, or video submission until these exist:
+
+```text
+角色主体库.md
+人物备案板需求.md
+Seedance2参考包计划.md
+```
+
+If images have not been generated yet, the dossier-board spec is still required. A generic reference-asset table does not replace it.
+
 ## 8. Seedance2 Filed Role Assets
 
 For Seedance2 routes with visible human faces, a character board alone may not be enough. Some short-drama platforms use a filing step that turns a role board into a provider-side asset record.
