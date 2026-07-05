@@ -1,99 +1,179 @@
 # TJ Short
 
+短剧带货 Skill 工作流：先让观众在乎一个人、一只宠物、一段关系，再让产品成为剧情里的证据。
+
+[English Version](README.en.md)
+
 <a href="https://www.salpx.com">
   <img src="assets/salpx-banner.svg" alt="salpx 中转站：把首帧变成 10 秒短剧镜头" width="100%">
 </a>
 
-## 中文介绍
+## 项目简介
 
-TJ Short 是一个面向「短剧带货」的公开安全工作流：先写人物、宠物、关系和冲突，再让产品作为证据、记忆、信物或转折点进入剧情。
+TJ Short 是一个公开安全的「短剧带货」生产模板。它不是把广告词套进剧情，而是把短剧、产品证明、图生视频、字幕后期和发布检查整理成一套可复用 SOP。
 
-它的目标不是把广告词套进剧情，而是让观众先关心一个人、一只宠物、一段关系，然后在关键时刻看见产品如何证明真相、改变行为或推动选择。
+## Skill Card
 
-这个仓库包含：
+| 项目 | 说明 |
+|---|---|
+| 一句话定位 | 面向短剧带货的脚本、首帧、图生视频和交付检查工作流 |
+| 输入 | 产品图、产品名、目标人群、产品动作、可信证据、CTA |
+| 输出 | brief、产品证明圣经、单集剧本、分镜、首帧、Omni 提示词、字幕计划、投放切片 |
+| 第一阶段成功标准 | 先跑通 1 集正片 + 2 条投放切片，而不是一开始做大系列 |
+| 推荐视频路线 | `salpx / omni_flash`，固定 10 秒镜头 |
+| 不适用 | 只有硬广需求、没有产品动作、没有可信证据、想直接承诺疗效或收益的项目 |
 
-- 短剧带货方法论
-- 高冲突单集结构
-- `salpx / omni_flash` 固定 10 秒图生视频模板
-- 三镜试生思路：剧情钩子、产品证据位、结尾追更钩子
-- 脱敏案例截图和脚本样例
-- 公开发布前的隐私与 key 检查清单
+它适合：
 
-> 注意：本仓库是公开安全版，不包含真实 API key、`.env`、私有产品素材、生成任务响应、下载链接或本地绝对路径。
+- 宠物食品、宠物用品、消费品、工具类产品的短剧种草
+- 需要先做 1 集正片 + 2 条投放切片验证的团队
+- 想用 `salpx / omni_flash` 做首帧图生视频的创作者
+- 想把短剧带货流程沉淀成 Skill、模板或团队 SOP 的项目
 
-TJ Short is a lightweight workflow for ecommerce short dramas: write a short-drama story first, then let the product enter as evidence, memory, relationship proof, or a turning point.
+核心原则：
 
-The repo is intentionally public-safe. It contains methodology, prompt templates, a sanitized sample episode, and a generic `salpx / omni_flash` submission helper. It does not include private product images, generated videos, API keys, task IDs, download URLs, local absolute asset paths, or `.env` files.
+> 产品不是主角。人物、宠物、关系和代价先成立，产品只在关键时刻证明真相、改变行为或推动选择。
 
-## What This Project Does
+## 为什么值得试
 
-- Builds ecommerce short-drama scripts that avoid the common "pain point -> product -> happy customer -> CTA" ad pattern.
-- Keeps the first half of each episode focused on people, pets, conflict, pressure, and misunderstanding.
-- Introduces the product later as proof of a changed behavior or revealed truth.
-- Uses `salpx / omni_flash` as a 10-second fixed-duration image-to-video route.
-- Treats captions as post-production assets: Omni raw clips should not burn in subtitles.
+- 不写「痛点 -> 产品 -> 满意 -> 下单」的广告小剧情
+- 前 30%-50% 先建立冲突、误会和关系压力
+- 产品后置为证据位：喂养记录、操作过程、前后行为、关键物证
+- 图生视频前先做三镜试生：剧情钩子、产品证据位、结尾追更钩子
+- `salpx / omni_flash` 固定 10 秒生成，节奏压缩交给后期剪辑
+- 公开发布前默认做 key、隐私路径、任务响应和大文件检查
 
-## Case Preview
+## 案例预览
 
-Sanitized example from a pet ecommerce short drama. These are AI-generated first-frame screenshots for three test clips: hook, product evidence, and ending hook.
+脱敏案例：宠物营养咀嚼片短剧。三张图分别对应高冲突开场、产品证据位、结尾追更钩子。
 
-| Hook: send-away pressure | Product evidence | Ending hook |
+| 开场钩子：明早九点送走 | 产品证据：按体重拌粮记录 | 结尾钩子：明早确认 |
 |---|---|---|
 | ![EP01-HC-01 hook](examples/xiderdl-lucky/screenshots/ep01-hc-01-hook.jpg) | ![EP01-HC-09 product evidence](examples/xiderdl-lucky/screenshots/ep01-hc-09-product-evidence.jpg) | ![EP01-HC-12 ending hook](examples/xiderdl-lucky/screenshots/ep01-hc-12-ending-hook.jpg) |
 
-## References
+案例脚本见：[examples/xiderdl-lucky/ep01-high-conflict.md](examples/xiderdl-lucky/ep01-high-conflict.md)
 
-This project was shaped by and openly credits these references:
+## 交付物说明
 
-- **OnlyShot**: ecommerce short-drama production thinking, especially product-as-proof and projectized delivery.
-- **short-drama**: short-drama structure, episode beats, storyboard and video-production discipline.
-- **Emily2040/seedance-2.0**: clip-contract style production thinking, state tracking, reference-role separation, and one-variable retake discipline.
+一个合格的 TJ Short 项目建议交付这些文件：
 
-This repository is not an official distribution of those projects. It is a practical, sanitized working template inspired by them.
+| 交付物 | 用途 | 是否必需 |
+|---|---|---|
+| 产品证明圣经 | 明确产品帮谁、完成什么动作、凭什么可信 | 必需 |
+| 三个方案 brief | 先选剧情发动机，避免直接写成广告 | 必需 |
+| 单集高冲突剧本 | 60-90 秒短剧正片，前 5 秒强冲突 | 必需 |
+| 12 镜头分镜表 | 锁定每个镜头的剧情作用、画面和产品露出 | 必需 |
+| 三张试生首帧 | 先验证钩子、产品证据位、结尾钩子 | 必需 |
+| 图生视频提示词 | 给 `salpx / omni_flash` 执行的剧本锁定 prompt | 必需 |
+| 镜头契约表 | 写清每镜头只做什么、保留什么给后续 | 必需 |
+| 参考资产角色表 | 区分首帧、产品图、字幕、视频参考各自职责 | 必需 |
+| generation manifest | 记录模型、首帧、提示词、任务状态和输出路径 | 必需 |
+| 口播与字幕清单 | 后期字幕和配音的信息源 | 必需 |
+| 字幕合成计划 | 确保 Omni raw 视频后期加字幕 | 必需 |
+| 投放切片脚本 | 从正片中拆 35-60 秒广告素材 | 推荐 |
+| 可发布性评分表 | 判断是否可发、可审片或必须重写 | 推荐 |
 
-## Core Rule
+## 流程架构
 
-Do not make a product the hero.
-
-Let the audience care about a person, pet, relationship, or consequence first. Then use the product to prove what changed.
-
-## Folder Structure
-
-```text
-.
-├── docs/
-│   ├── methodology.md
-│   └── privacy-and-release.md
-├── examples/
-│   └── xiderdl-lucky/
-│       ├── ep01-high-conflict.md
-│       └── screenshots/
-├── prompts/
-│   └── omni-fixed-10s-template.md
-├── assets/
-│   └── salpx-banner.svg
-├── scripts/
-│   └── submit_salpx_omni_i2v.py
-├── .env.example
-├── .gitignore
-├── LICENSE
-└── README.md
+```mermaid
+flowchart TD
+  A["产品素材 / 产品名"] --> B["产品素材分析"]
+  B --> C["三个短剧带货 brief"]
+  C --> D["选定一个剧情发动机"]
+  D --> E["产品证明圣经"]
+  E --> F["高冲突单集剧本"]
+  F --> G["12 镜头分镜表"]
+  G --> H["三张关键首帧"]
+  H --> I["镜头契约 + 参考资产角色表"]
+  I --> J["salpx / omni_flash 固定 10 秒试生"]
+  J --> K["审片：剧情 / 产品 / 口型 / 字幕计划"]
+  K --> L{"通过三镜试生？"}
+  L -- "是" --> M["扩展全 12 镜头"]
+  L -- "否" --> N["one-variable retake 或重写镜头契约"]
+  M --> O["后期剪辑 + 字幕 + 配音"]
+  O --> P["正片 + 2 条投放切片"]
 ```
 
-## Quick Start
+## 使用环境
 
-1. Pick one product and one emotional pain point.
-2. Write three brief concepts, then choose one.
-3. Write one 60-90 second episode with high conflict and dense dialogue.
-4. Create three test first frames: hook, product evidence, ending hook.
-5. Submit only those three `salpx / omni_flash` test clips first.
-6. Review the result before generating the full episode.
+| 项目 | 要求 |
+|---|---|
+| Git | 用于克隆和版本管理 |
+| Python | Python 3.9+ |
+| Python 依赖 | `requests` |
+| 视频服务 | salpx 中转站 |
+| 推荐模型 | `omni_flash` |
+| 视频比例 | 9:16 |
+| 单镜头时长 | 固定 10 秒 |
+| 字幕策略 | 生成阶段不内嵌字幕，后期加字幕 |
 
-## salpx / omni_flash Rule
+## 如何安装
 
-`omni_flash` is treated as a fixed 10-second model path in this workflow.
+```bash
+git clone https://github.com/tttg2010/tj-short.git
+cd tj-short
+python3 -m pip install requests
+cp .env.example .env
+```
 
-Even if the edited episode uses 6-8 second information beats, each generated raw clip should be submitted with:
+然后在本地 `.env` 填入你的 salpx 配置。参考 `.env.example`，真实 key 只保存在本地。
+
+注意：`.env` 已在 `.gitignore` 中，真实 key 不应提交到 GitHub。
+
+## 如何使用：SOP 流程
+
+### Step 1：做产品诊断
+
+先回答 4 个问题：
+
+- 卖什么？
+- 卖给谁？
+- 产品动作是什么？
+- 凭什么让观众相信？
+
+如果产品动作和可信证据说不清，不要进入出片。
+
+### Step 2：写三个 brief
+
+每个 brief 只写到可选择深度：
+
+- 剧情发动机
+- 人物关系
+- 前 5 秒危机
+- 误会与真相
+- 产品证据位
+- 主卖点
+- CTA
+- AI 可拍性
+
+用户选中一个 brief 后，再写完整剧本。
+
+### Step 3：写高冲突单集
+
+推荐节奏：
+
+```text
+0-5s：外部压力或关系威胁
+5-20s：对白冲突
+20-40s：误会升级
+40-55s：真相浮出
+55-70s：产品作为证据进入
+70-90s：关系反转 + 追更钩子
+```
+
+### Step 4：先做三张首帧
+
+不要直接生成全片。先做：
+
+- `HC-01`：开场强钩子
+- `HC-09`：产品证据位
+- `HC-12`：结尾追更钩子
+
+首帧必须是干净 9:16 全屏图，不要字幕、画中画、白边框或模糊补边。
+
+### Step 5：提交三镜试生
+
+使用固定 10 秒规则：
 
 ```json
 {
@@ -103,14 +183,75 @@ Even if the edited episode uses 6-8 second information beats, each generated raw
 }
 ```
 
-Cut pacing belongs in post-production, not in the salpx submission duration.
+通用脚本：
 
-## Public Safety
+```bash
+python3 scripts/submit_salpx_omni_i2v.py \
+  --env .env \
+  --first-frame path/to/first-frame.png \
+  --prompt-file path/to/prompt.txt \
+  --output outputs/shot.mp4
+```
 
-Before publishing work based on this repo:
+### Step 6：审片
 
-- Do not commit `.env`, real keys, private URLs, API responses, or downloaded task JSON.
-- Do not commit raw user product assets unless you own the rights and intentionally want them public.
-- Do not commit generated videos by default.
-- Replace local absolute file paths with relative placeholders.
-- Keep product claims compliant: avoid treatment, guaranteed results, instant recovery, or medical promises.
+检查：
+
+- 是否完成本镜头剧情任务
+- 是否提前泄露后续信息
+- 是否产品硬广化
+- 是否出现字幕、乱码、画中画或白边
+- 是否台词归属错误
+- 是否需要后期配音
+
+三镜通过后，再扩展到全 12 镜头。
+
+### Step 7：后期交付
+
+最终成片必须补：
+
+- 字幕
+- 配音或可用原声
+- 原音低混
+- 抽帧预览
+- 发布前评分
+- 投放切片
+
+无字幕 raw 视频只能算素材，不算可发布成片。
+
+## 星级评价标准
+
+如果你在 30 分钟内能完成下面动作，这个 Skill 就值得给 5 星：
+
+| 星级 | 判断标准 |
+|---|---|
+| 1 星 | 只能读概念，不知道怎么开始 |
+| 2 星 | 能写脚本，但不能进入视频生产 |
+| 3 星 | 能写出首帧和提示词，但缺少验收标准 |
+| 4 星 | 能跑三镜试生，并知道失败后怎么补拍 |
+| 5 星 | 能从产品图到正片、切片、字幕和发布检查完整跑通 |
+
+## 参考来源
+
+本项目的工作流受到以下项目或方法启发，并在公开仓库中明确致谢：
+
+- **OnlyShot**：短剧带货、产品证据位、项目化交付思路
+- **short-drama**：短剧结构、分镜、出片流程
+- **Emily2040/seedance-2.0**：镜头契约、项目状态胶囊、参考资产职责、one-variable retake
+
+本仓库不是这些项目的官方发行版，而是一个公开安全、可复用的实践模板。
+
+## 公开安全
+
+本仓库不包含：
+
+- 真实 API key
+- `.env`
+- 私有产品原图
+- API 响应
+- task ID
+- 下载 URL
+- 本地绝对路径
+- 生成视频文件
+
+发布前请阅读：[docs/privacy-and-release.md](docs/privacy-and-release.md)
