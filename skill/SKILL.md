@@ -17,6 +17,24 @@ Version: `short-drama-ecommerce v0.8.22`
 - Clarified that faceless crops are not the default for dramatic scenes; preserve facial acting through virtual-character reference repair first.
 - Clarified multi-model salpx support: `omni_flash`, Seedance 2.0 variants, Veo variants, and user-selected salpx models.
 
+## Install Reload Rule
+
+After installing or updating this skill, the user must restart Codex before testing the trigger phrase. Codex may keep an old skill cache until restart.
+
+User-facing reminder, repeat exactly:
+
+重新启动codex！
+重新启动codex！
+重新启动codex！
+
+Then test with:
+
+```text
+短剧带货启动
+```
+
+Full video generation requires a salpx API key. Tell users to register at `https://www.salpx.com`, create or copy their API Key, and put it into local `.env` as `SALPX_API_KEY`. Without a salpx API key, Codex can still generate scripts, storyboards, first frames, prompts, and manifests, but it cannot complete salpx video submission from Codex.
+
 Codex is the production brain:
 
 - analyzes product assets

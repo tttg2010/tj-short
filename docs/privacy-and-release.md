@@ -24,6 +24,18 @@ Use this before pushing a short-drama project to a public repository.
 - `.env.example`
 - public-safe README
 
+## User Setup Reminder
+
+After installing or updating the Codex Skill, users must restart Codex before testing:
+
+```text
+重新启动codex！
+重新启动codex！
+重新启动codex！
+```
+
+For full video generation, users need a salpx account and API Key from [salpx.com](https://www.salpx.com). The key must stay in local `.env` and must never be committed.
+
 ## Key Scan
 
 Before pushing, run a text scan for:

@@ -170,6 +170,23 @@ mkdir -p ~/.codex/skills/tj-short
 cp tj-short/skill/SKILL.md ~/.codex/skills/tj-short/SKILL.md
 ```
 
+After installing or updating the Skill, restart Codex. Otherwise Codex may still use an old cached Skill:
+
+```text
+重新启动codex！
+重新启动codex！
+重新启动codex！
+```
+
+To fully test video generation from Codex, register at [salpx.com](https://www.salpx.com), get an API Key, and put it into your local `.env`:
+
+```env
+SALPX_API_KEY=your_salpx_api_key
+SALPX_BASE_URL=https://www.salpx.com/v1
+```
+
+Without a salpx API Key, Codex can still generate product analysis, scripts, storyboards, first-frame prompts, and manifests, but it cannot submit image-to-video jobs from Codex.
+
 Then say in Codex:
 
 ```text
@@ -191,7 +208,7 @@ python3 -m pip install requests
 cp .env.example .env
 ```
 
-Fill in your local `.env` by following `.env.example`. Keep real keys local only.
+Register at [salpx.com](https://www.salpx.com), get an API Key, and fill in your local `.env` by following `.env.example`. Keep real keys local only.
 
 Never commit real keys. `.env` is ignored by git.
 

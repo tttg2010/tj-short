@@ -171,6 +171,23 @@ mkdir -p ~/.codex/skills/tj-short
 cp tj-short/skill/SKILL.md ~/.codex/skills/tj-short/SKILL.md
 ```
 
+安装或更新 Skill 后，必须重新启动 Codex，否则 Codex 可能还在使用旧缓存：
+
+```text
+重新启动codex！
+重新启动codex！
+重新启动codex！
+```
+
+要在 Codex 里完整尝试短剧带货视频生成，请先到 [salpx.com](https://www.salpx.com) 中转站注册用户，获取 API Key，然后填入本地 `.env`：
+
+```env
+SALPX_API_KEY=你的_salpx_api_key
+SALPX_BASE_URL=https://www.salpx.com/v1
+```
+
+没有 salpx API Key 时，Codex 仍可生成产品分析、剧本、分镜、首帧提示词和 manifest，但不能在 Codex 中完整提交图生视频任务。
+
 然后在 Codex 里直接说：
 
 ```text
@@ -192,7 +209,7 @@ python3 -m pip install requests
 cp .env.example .env
 ```
 
-然后在本地 `.env` 填入你的 salpx 配置。参考 `.env.example`，真实 key 只保存在本地。
+然后到 [salpx.com](https://www.salpx.com) 注册用户并获取 API Key，在本地 `.env` 填入你的 salpx 配置。参考 `.env.example`，真实 key 只保存在本地。
 
 注意：`.env` 已在 `.gitignore` 中，真实 key 不应提交到 GitHub。
 
