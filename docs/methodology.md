@@ -246,7 +246,46 @@ When a clip fails, change only one thing:
 
 If the same issue appears twice, stop rerolling and rewrite the clip contract or split the shot.
 
-## 14. Seedance2 Visible-Face Candidate Flow
+## 14. Grid-First First-Frame Production
+
+Default first-frame production should be grid-first, not 12 standalone generations.
+
+Standard flow:
+
+```text
+4x3 contact sheet
+-> cut into EP01-01.png through EP01-12.png
+-> run layout and content precheck
+-> retake only failed cells or selected trial cells
+```
+
+Why:
+
+- one generation call can cover the whole episode rhythm
+- the 12 frames share lighting, wardrobe, scene grammar, and visual continuity
+- cost is lower than generating 12 standalone images upfront
+- cutting from a fixed grid makes review and manifest tracking easier
+
+Required outputs:
+
+```text
+storyboards/contact_sheet.png
+storyboards/cut_report.md
+first_frames/EP01-01.png
+...
+first_frames/EP01-12.png
+```
+
+Standalone first-frame generation is allowed only when:
+
+- the user explicitly asks for standalone frames
+- the grid cannot produce a cuttable 4x3 layout after retry
+- a specific cell fails precheck
+- a selected trial clip needs a higher-quality retake
+
+Do not justify 12 standalone first-frame generations by saying they are "cleaner for Seedance2". Clean Seedance2 frames should come from a clean grid and selective retakes.
+
+## 15. Seedance2 Visible-Face Candidate Flow
 
 Short drama often needs facial acting. For Seedance2 visible-person shots, do not wait until video submission fails. The face-compliance route starts at the grid/first-frame stage.
 

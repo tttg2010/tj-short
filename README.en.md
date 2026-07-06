@@ -46,6 +46,7 @@ Core rule:
 
 | Version | Key updates |
 |---|---|
+| v0.8.28 | Added grid-first cost control: generate one 4x3 contact sheet first, then auto-cut 12 independent 9:16 first frames; do not generate 12 standalone first frames upfront unless explicitly requested or the grid/cut workflow fails. |
 | v0.8.27 | Corrected the Seedance2 visible-person first-frame flow: from the grid/first-frame stage, generate `face_pencil` strong / medium / `blur_feature` candidates for the same shot, precheck them one by one, then choose the passing frame with the most complete face and acting information; no-person product frames are only for API smoke tests or product-evidence shots. |
 | v0.8.26 | Added production-ready salpx API flow: `gpt-image-2` image generation, `omni_flash`, `seedance-2-mini-480p`, and Veo video generation, plus a reusable client for submit, poll, and download. |
 | v0.8.25 | Added Volcengine Seedance2 prompt rules and model routing: Seedance2, omni, and Veo use separate prompt shapes, duration rules, references, and review strategies. |
@@ -66,6 +67,7 @@ Full history: [docs/changelog.md](docs/changelog.md)
 - Builds conflict, misunderstanding, and relationship pressure before product explanation
 - Uses product as evidence: records, actions, procedures, behavior changes, or key objects
 - Tests three clips first: hook, product evidence, ending hook
+- Uses grid-first first-frame production: one 4x3 contact sheet -> auto-cut 12 independent 9:16 frames; standalone frames are for failed cells, selected retakes, or trial-clip polish only
 - Treats omni as fixed 10-second generation; Seedance2 and Veo follow selected model rules
 - Separates video models: Seedance2 uses ordered media labels and subject definitions; omni describes motion after the first frame; Veo uses cinematic scene/camera language
 - For Seedance2 visible faces, prefers character dossier board -> provider filing -> filed asset reference; a watermark is not filing proof
@@ -89,7 +91,9 @@ Workflow gate:
 
 1. Startup phase: product diagnosis and A/B/C only.
 2. After brief selection: generate product proof bible, role subject library, character dossier spec, and Seedance2 reference package plan.
-3. After the role gate passes: generate 12-shot storyboard, first-frame grid, and model-specific prompt packs.
+3. After the role gate passes: generate 12-shot storyboard, 4x3 first-frame grid, cut report, and model-specific prompt packs.
+
+Cost gate: do not generate 12 standalone first frames upfront. Standard flow is `4x3 grid -> cut 12 frames -> precheck -> retake only failed cells or selected trial cells`.
 
 For Seedance2 visible-person official first frames, start the candidate workflow at the grid/first-frame stage:
 

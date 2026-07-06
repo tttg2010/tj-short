@@ -1,13 +1,20 @@
 ---
 name: tj-short
-description: Codex ecommerce short-drama skill v0.8.27. Use when the user wants to create product-selling short dramas, generate product-proof scripts, subject libraries, character dossier boards, filed role assets, Seedance2 production references, first frames, salpx gpt-image-2 images, salpx video prompts, captions, manifests, delivery checklists, and Seedance2 visible-face repair inside Codex.
+description: Codex ecommerce short-drama skill v0.8.28. Use when the user wants to create product-selling short dramas, generate product-proof scripts, subject libraries, character dossier boards, filed role assets, Seedance2 production references, storyboard grids, first frames, salpx gpt-image-2 images, salpx video prompts, captions, manifests, delivery checklists, and Seedance2 visible-face repair inside Codex.
 ---
 
 # TJ Short
 
 TJ Short is a Codex Skill for ecommerce short dramas.
 
-Version: `short-drama-ecommerce v0.8.27`
+Version: `short-drama-ecommerce v0.8.28`
+
+## v0.8.28 Changelog
+
+- Added grid-first cost-control rule: generate one 4x3 storyboard/first-frame contact sheet first, then auto-cut 12 independent 9:16 frames.
+- Prohibited generating 12 independent first frames upfront unless the user explicitly requests it or the grid/cut workflow fails.
+- Clarified that independent first-frame generation is only for failed grid cells, selected retakes, or 3-shot trial clips after the grid is reviewed.
+- Updated the default flow from "generate three first frames" to "generate 12-panel grid -> cut -> precheck -> retake selected cells".
 
 ## v0.8.27 Changelog
 
@@ -198,6 +205,14 @@ Phase 3: role dossier image or Seedance2 reference package
 Phase 4: first-frame grid
 
 - Generate a 12-panel grid only after Phase 1-3 gates are satisfied.
+- Cost-control default: generate one 4x3 grid/contact sheet first, then cut it into 12 independent 9:16 first frames.
+- Do not generate 12 independent first-frame images upfront. That wastes image-generation budget and breaks storyboard consistency.
+- Independent first-frame generation is allowed only when:
+  - the user explicitly asks for standalone frames,
+  - the grid generator cannot produce a cuttable 4x3 layout after a reasonable retry,
+  - one or more grid cells fail precheck and need retake,
+  - the team has selected 3 key trial clips and wants higher-quality retakes for those cells.
+- The official output should include both `storyboards/contact_sheet.png` and `first_frames/EP01-01.png` through `EP01-12.png` cut from the grid when possible.
 - If a grid appears before role dossier assets for a Seedance2 visible-human route, mark the grid as `preview_only_invalid_missing_role_dossier`.
 - For Seedance2 visible-human routes, official first frames must preserve realistic photographic body, wardrobe, product, props, and scene. Only the face regions may receive `face_pencil` colored-pencil/sketch treatment.
 - Do not generate the official grid as full manga, anime, illustration, commercial storyboard, or cartoon style merely because face review is risky.
@@ -394,7 +409,7 @@ Seedance2 reference packaging:
 8. Extract Seedance2-ready references from role boards: face close-up, full/half-body wardrobe reference, scene/product references, optional motion/audio references.
 9. Write one high-conflict episode.
 10. Create a 12-shot production table that references subject IDs.
-11. Generate or request three first frames: hook, product evidence, ending hook.
+11. Generate one 4x3 storyboard/first-frame grid for EP01, then cut it into 12 independent 9:16 first frames.
 12. Write clip contracts and reference role maps.
 13. Write `salpx / omni_flash` prompts with fixed `duration=10`, or Seedance2 prompts with ordered media references.
 14. Prepare captions, manifest, and delivery checklist.

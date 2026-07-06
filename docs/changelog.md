@@ -1,5 +1,14 @@
 # Changelog
 
+## short-drama-ecommerce v0.8.28
+
+Grid-first first-frame production update.
+
+- Added cost-control rule: generate one 4x3 storyboard/first-frame contact sheet first, then auto-cut 12 independent 9:16 first frames.
+- Prohibited generating 12 standalone first frames upfront unless the user explicitly requests that workflow or the grid/cut method fails.
+- Clarified valid standalone first-frame use cases: failed grid cells, selected retakes, or 3-shot trial-clip polish after grid review.
+- Updated default flow language from "generate three first frames" to "generate 12-panel grid -> cut -> precheck -> retake selected cells".
+
 ## short-drama-ecommerce v0.8.27
 
 Seedance2 visible-face first-frame workflow correction.

@@ -9,7 +9,7 @@
 真实 key 只放在 `.env`、shell 环境或 CI secret，不写进项目文档、prompt、manifest 或聊天回复。
 
 ```bash
-export SALPX_API_KEY="sk-..."
+export SALPX_API_KEY="your_salpx_api_key_here"
 export SALPX_BASE_URL="https://www.salpx.com/v1"
 
 # 可选，项目可覆盖
