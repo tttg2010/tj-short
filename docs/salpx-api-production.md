@@ -63,6 +63,18 @@ Content-Type: application/json
 - 9:16 独立首帧：推荐 `1024x1792` 或后期规范到 `720x1280` / `1080x1920`。
 - 产品证明图：UI、对比、使用场景、包装/材质特写。
 
+Seedance2 可见人物镜头的正式首帧不能只生成一张高拟真人脸图。宫格/首帧阶段必须按同一镜头生成三候选：
+
+```text
+candidate A: face_pencil_strong
+candidate B: face_pencil_medium
+candidate C: blur_feature = blurred main frame + facial-feature sheet
+```
+
+逐张做 Seedance2 预检测或受控单镜头测试。能过的候选里，选择人脸信息、表情、唇形、眼神和表演最完整的一张；失败图不重复原图硬撞，记录原因后换资产路线。
+
+无人物产品首帧只用于产品证据镜头或 API 冒烟测试。它可以证明 salpx `/videos` 接口、轮询和下载链路可用，但不能作为人物表演镜头被拒后的默认正式替代。
+
 生图结果必须复制进项目目录，例如：
 
 ```text
@@ -170,6 +182,9 @@ data.url
 - prompt、API `duration`、manifest duration 必须一致。
 - 下载后必须读取真实 mp4 时长；偏差超过 0.5 秒，不能进正式合成。
 - Seedance2 字幕可以在 prompt 里写 `Burn in Chinese subtitle exactly:`，但字幕乱不能减少人物说话，台词长短按剧本。
+- 可见人物镜头提交前，必须先完成三候选首帧预检测：`face_pencil_strong`、`face_pencil_medium`、`blur_feature`。
+- 候选选择标准是“通过预检测 + 人脸信息保留最完整 + 表演最清楚”，不是“最重处理优先”。
+- 产品无人物图只代表 API 冒烟测试或产品证据镜头通过，不能替代人物表演镜头的正式首帧。
 
 推荐请求：
 
@@ -230,13 +245,15 @@ model_provider,model_name,generation_mode,source_frame,prompt_path,api_duration_
 
 1. 读 `.env`，确认 `SALPX_API_KEY` 和 `SALPX_BASE_URL`。
 2. gpt-image-2 生成宫格或首帧，保存进项目目录。
-3. 切 9:16 独立首帧，坏首帧隔离到 `rejected/`。
-4. 生成视频前写 `generation_manifest`。
-5. 用 `/videos` 提交 1-3 个关键镜头。
-6. 轮询任务，下载 mp4。
-7. 用 `ffprobe` 或等价方式验真实时长和尺寸。
-8. 写回 manifest 和复盘。
-9. 不合格镜头按 one-variable retake 补拍；能后期修的不要重生。
+3. 如果是 Seedance2 可见人物镜头，同一镜头生成 `face_pencil_strong`、`face_pencil_medium`、`blur_feature` 三候选。
+4. 逐张做 Seedance2 预检测；在通过候选里选人脸和表演信息最完整的一张。
+5. 切 9:16 独立首帧，坏首帧隔离到 `rejected/`，失败原因写入 manifest。
+6. 生成视频前写 `generation_manifest`。
+7. 用 `/videos` 提交 1-3 个关键镜头。
+8. 轮询任务，下载 mp4。
+9. 用 `ffprobe` 或等价方式验真实时长和尺寸。
+10. 写回 manifest 和复盘。
+11. 不合格镜头按 one-variable retake 补拍；能后期修的不要重生。
 
 ## 10. 安全与密钥
 

@@ -246,17 +246,21 @@ When a clip fails, change only one thing:
 
 If the same issue appears twice, stop rerolling and rewrite the clip contract or split the shot.
 
-## 14. Seedance2 Visible-Face Repair
+## 14. Seedance2 Visible-Face Candidate Flow
 
-Short drama often needs facial acting. If Seedance2 rejects a realistic fictional-actor first frame as possible real-person content, do not immediately remove the face.
+Short drama often needs facial acting. For Seedance2 visible-person shots, do not wait until video submission fails. The face-compliance route starts at the grid/first-frame stage.
 
-Use a character-reference repair route:
+Use a character-reference and candidate route:
 
 1. If the provider supports role filing, file the dossier board and use the filed asset reference.
 2. Extract single-person Seedance2 references from the role board: face close-up plus full/half-body wardrobe reference.
 3. Define media by order in the prompt: `图片1`, `图片2`, `视频1`, `音频1`.
-4. `face_pencil`: stylize only the face regions with colored-pencil/sketch treatment, while keeping body, wardrobe, action, pet, props, and scene photographic.
-5. `blur_feature`: use a blurred-face main composition image plus a facial-feature sheet. The main image controls composition, wardrobe, body action, props, and scene. The feature sheet controls fictional facial traits.
-6. If both repair methods fail, create a fuller character design board or three-view reference before more submissions.
+4. Generate three candidates for the same shot: `face_pencil_strong`, `face_pencil_medium`, and `blur_feature`.
+5. `face_pencil`: stylize only the face regions with colored-pencil/sketch treatment, while keeping body, wardrobe, action, pet, props, and scene photographic.
+6. `blur_feature`: use a blurred-face main composition image plus a facial-feature sheet. The main image controls composition, wardrobe, body action, props, and scene. The feature sheet controls fictional facial traits.
+7. Precheck candidates one by one. Among passing candidates, choose the one with the most complete face information and clearest acting.
+8. Do not resubmit a failed frame unchanged. If all three candidates fail, record the reasons, then change the reference package or ask the user whether the shot design should become product-only/faceless.
+
+No-person product frames are valid for API smoke tests and product-evidence shots only. They are not the default fallback for visible-face acting shots.
 
 This route is only for self-owned fictional virtual characters. It is not for unlicensed real people, celebrities, influencers, or public figures.

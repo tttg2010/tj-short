@@ -46,6 +46,7 @@ Core rule:
 
 | Version | Key updates |
 |---|---|
+| v0.8.27 | Corrected the Seedance2 visible-person first-frame flow: from the grid/first-frame stage, generate `face_pencil` strong / medium / `blur_feature` candidates for the same shot, precheck them one by one, then choose the passing frame with the most complete face and acting information; no-person product frames are only for API smoke tests or product-evidence shots. |
 | v0.8.26 | Added production-ready salpx API flow: `gpt-image-2` image generation, `omni_flash`, `seedance-2-mini-480p`, and Veo video generation, plus a reusable client for submit, poll, and download. |
 | v0.8.25 | Added Volcengine Seedance2 prompt rules and model routing: Seedance2, omni, and Veo use separate prompt shapes, duration rules, references, and review strategies. |
 | v0.8.24 | Added Seedance2 filed role asset chain: character dossier board -> provider filing -> filed asset ID -> video generation with the filed asset; clarified that a watermark is not filing proof. |
@@ -71,7 +72,8 @@ Full history: [docs/changelog.md](docs/changelog.md)
 - Seedance2 visible-human projects must create dossier deliverables first: `角色主体库.md`, `人物备案板需求.md`, and `Seedance2参考包计划.md`
 - Uses strict phases: startup only diagnoses and offers A/B/C; after selection, generate project files and dossier deliverables before storyboard grids, video prompts, or submissions
 - Keeps character dossier boards for design, filing, and review; for video generation, extracts face close-up, full/half-body wardrobe, scene, product, motion, and audio references
-- Seedance2 official first frames/grids should not downgrade the whole image to manga/anime. Use photographic frames with face-only `face_pencil`; the two-image blur + feature-sheet route is the backup.
+- Seedance2 official first frames/grids should not downgrade the whole image to manga/anime. For each visible-person shot, generate `face_pencil` strong, `face_pencil` medium, and `blur_feature` candidates, precheck them one by one, then choose the passing frame with the most complete face and acting information.
+- No-person product frames are only for API smoke tests or product-evidence shots; they must not silently replace visible-face acting shots.
 - Seedance2 prompts must refer to media by order, such as `图片1`, `视频1`, and `音频1`, rather than using asset IDs as character names
 - If filing is unavailable or still rejected, uses `face_pencil` or `blur_feature` virtual-character repair before changing shot design
 - Keeps pacing decisions in post-production
@@ -89,16 +91,19 @@ Workflow gate:
 2. After brief selection: generate product proof bible, role subject library, character dossier spec, and Seedance2 reference package plan.
 3. After the role gate passes: generate 12-shot storyboard, first-frame grid, and model-specific prompt packs.
 
-If Seedance2 flags a realistic first frame as possible real-person content, use this escalation:
+For Seedance2 visible-person official first frames, start the candidate workflow at the grid/first-frame stage:
 
 1. If salpx or the selected provider supports role/person filing, file the character dossier board first, then use the provider-scoped filed asset ID for Seedance2 generation.
 2. Keep the original filed platform reference; downloading and re-uploading may lose filing status.
 3. Extract single-person references from the dossier board: `图片1 = face close-up`, `图片2 = full/half-body wardrobe`, plus scene, product, motion, or audio references.
-4. For official first frames/grids, use `face_pencil` by default: stylize only face regions while keeping body, wardrobe, product, action, and scene photographic.
-5. Define the subject in prompt text: `将图片1中的面部特征、图片2中的服装造型定义为林夏`, then keep using the same role label.
-6. Backup route: `blur_feature` two-image package: blurred-face main composition plus separate facial-feature sheet.
+4. Generate three candidates for the same shot: `face_pencil_strong`, `face_pencil_medium`, and `blur_feature` (blurred main frame + facial-feature sheet).
+5. Precheck each candidate through Seedance2 or a controlled one-shot test.
+6. Among passing candidates, choose the one with the most complete face information and clearest acting; do not resubmit a failed frame unchanged.
+7. Define the subject in prompt text: `将图片1中的面部特征、图片2中的服装造型定义为林夏`, then keep using the same role label.
 
 Forbidden default: turning official first frames into full manga, anime, illustration, or commercial storyboard style when face review is risky. That is only a preview style board, not the production first frame.
+
+No-person product frames are valid only for product-evidence shots or salpx API smoke tests. They are not the default production fallback for rejected visible-face acting shots.
 
 Note: a LibTV-style watermark is not filing proof, and real filing IDs should not be committed to public repos. Public examples should use placeholders such as `asset-YYYYMMDDHHMMSS-xxxxx`.
 

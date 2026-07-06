@@ -1,5 +1,16 @@
 # Changelog
 
+## short-drama-ecommerce v0.8.27
+
+Seedance2 visible-face first-frame workflow correction.
+
+- Clarified that a no-person/product-only first frame is valid for API smoke tests or product-evidence shots only, not as the default replacement for a visible-face acting shot.
+- Moved Seedance2 face handling fully into the grid/first-frame stage: each visible-person shot must generate three candidates before video submission.
+- Standardized the candidate set: `face_pencil_strong`, `face_pencil_medium`, and `blur_feature` (`blurred_main + facial_feature_sheet`).
+- Added precheck selection logic: test candidates one by one, record pass/fail and reason, then choose the passing candidate with the most complete face information and clearest acting.
+- Repeated that failed images should not be submitted unchanged again; change treatment strength, reference package, or shot design instead.
+- Repeated that full manga/anime/commercial storyboard style is preview-only and not an official Seedance2 first frame for live-action ecommerce short drama.
+
 ## short-drama-ecommerce v0.8.26
 
 salpx API production update.

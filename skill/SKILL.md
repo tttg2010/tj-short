@@ -1,13 +1,21 @@
 ---
 name: tj-short
-description: Codex ecommerce short-drama skill v0.8.26. Use when the user wants to create product-selling short dramas, generate product-proof scripts, subject libraries, character dossier boards, filed role assets, Seedance2 production references, first frames, salpx gpt-image-2 images, salpx video prompts, captions, manifests, delivery checklists, and Seedance2 visible-face repair inside Codex.
+description: Codex ecommerce short-drama skill v0.8.27. Use when the user wants to create product-selling short dramas, generate product-proof scripts, subject libraries, character dossier boards, filed role assets, Seedance2 production references, first frames, salpx gpt-image-2 images, salpx video prompts, captions, manifests, delivery checklists, and Seedance2 visible-face repair inside Codex.
 ---
 
 # TJ Short
 
 TJ Short is a Codex Skill for ecommerce short dramas.
 
-Version: `short-drama-ecommerce v0.8.26`
+Version: `short-drama-ecommerce v0.8.27`
+
+## v0.8.27 Changelog
+
+- Clarified the difference between API smoke tests and production Seedance2 visible-face workflow.
+- Added hard rule: a no-person/product-only first frame may be used only to isolate salpx API availability, never as the default replacement for a short-drama acting shot.
+- Added required Seedance2 visible-face candidate set from the grid/first-frame stage: `face_pencil_strong`, `face_pencil_medium`, and `blur_feature` (`blurred_main + facial_feature_sheet`).
+- Added precheck workflow: test candidates one by one; record pass/fail and reason; among passing candidates choose the one with the most complete face, expression, lip-shape, and acting information.
+- Repeated that failed images are not retried unchanged, and full manga/anime/storyboard style remains preview-only, not an official first frame.
 
 ## v0.8.26 Changelog
 
@@ -498,6 +506,11 @@ audio_mode:
 
 When Seedance2 clips need visible actor faces, do not default to faceless crops. Short drama depends on facial acting.
 
+Do not confuse API smoke tests with production first-frame selection:
+
+- API smoke test: allowed to use a no-person product frame to verify salpx `/videos` submit, polling, and download behavior.
+- Production Seedance2 acting shot: must preserve the dramatic face route. Do not replace a visible-face acting shot with a product-only or faceless frame unless the user explicitly changes the shot design. If all compliant face candidates fail, record the reasons and ask for a shot-design decision instead of silently switching.
+
 Before generating Seedance2 prompts, first-frame grids, or video submissions, verify:
 
 ```text
@@ -515,7 +528,11 @@ Required official first-frame route:
 
 ```text
 photographic first-frame/grid
--> face-only colored-pencil/sketch treatment
+-> same shot candidate A: face_pencil_strong
+-> same shot candidate B: face_pencil_medium
+-> same shot candidate C: blur_feature = blurred main frame + facial-feature sheet
+-> Seedance2 precheck each candidate one by one
+-> select the passing candidate with the most complete face/acting information
 -> body, wardrobe, product, props, and scene remain photographic
 -> submit as Seedance2 first-frame/reference
 ```
@@ -538,9 +555,11 @@ Use this escalation path:
 2. If the provider supports role/person filing, file the dossier board first and pass the filed asset reference into the Seedance2 route.
 3. Extract a clean face close-up and full/half-body wardrobe reference from the filed role board when possible.
 4. Write prompts with ordered media references such as `图片1`, `图片2`, and stable subject labels. Do not refer to the `asset_id` directly in prompt prose.
-5. For official Seedance2 first frames and grids, use `face_pencil` by default: apply colored-pencil or sketch treatment only to face regions while keeping body, wardrobe, action, product, props, and scene photographic.
-6. If `face_pencil` still fails, use the two-image backup `blur_feature`: Image A is the main composition with blurred faces; Image B is the facial-feature sheet.
-7. Prompt the model that the main frame controls composition/body/wardrobe/action and the feature sheet controls fictional facial features.
+5. For official Seedance2 first frames and grids, generate the same shot as three candidates: `face_pencil_strong`, `face_pencil_medium`, and `blur_feature`.
+6. Precheck candidates one by one. If the provider has a precheck endpoint, use it; otherwise submit a controlled one-shot test and record the result in the manifest.
+7. Choose the passing candidate that preserves the most face information, expression, lip-shape, and acting clarity. Do not choose the strongest stylization just because it is safer if a more face-complete candidate passes.
+8. If all candidates fail, record the failure reasons, then ask whether to redesign the shot as product-only/faceless. Do not silently switch.
+9. Prompt the model that the main frame controls composition/body/wardrobe/action and the feature sheet controls fictional facial features.
 
 Do not use this process for unlicensed real people, celebrities, influencers, public figures, or attempts to bypass identity review. It is only for self-owned fictional virtual characters.
 
