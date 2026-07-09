@@ -1,5 +1,15 @@
 # Changelog
 
+## short-drama-ecommerce v0.8.29
+
+Cinematic shot-design update, distilled from a shared cinematography/prompt-engineering note on AI short-drama shot design.
+
+- Added `docs/methodology.md` Section 16, "Cinematic Shot-Design Language (Seven Elements)": frame size, angle, composition, lighting, color grade, camera movement, pacing, plus four reusable scene formulas (emotional build-up, suspense, romance, pressure) and a PPT-look precheck (foreground/midground/background layering, varied frame size).
+- Added `docs/methodology.md` Section 17, "Camera-as-Witness Prompt Law": describe the shooting process/imperfection instead of the finished picture, pair "has" lists with "has not" exclusion lists, and make timeline segments carry camera behavior, not only character action. Includes the six-block director-level prompt formula.
+- Added `Cinematic Shot-Design Rule` to the skill with compact versions of both sections for direct use when filling the shot production table's `camera:`/`emotion_shift:` fields and writing video prompts.
+- Clarified that the camera-imperfection language is a selective realism layer for documentary/handheld-style beats, not a blanket rule, and must not be applied to official Seedance2 face-compliance candidates (`face_pencil_strong/medium`, `blur_feature`).
+- Updated Phase 2 and the default flow to require applying the shot-design rule before finalizing the 12-shot table and first-frame grid.
+
 ## short-drama-ecommerce v0.8.28
 
 Grid-first first-frame production update.

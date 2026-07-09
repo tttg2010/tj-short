@@ -1,13 +1,22 @@
 ---
 name: tj-short
-description: Codex ecommerce short-drama skill v0.8.28. Use when the user wants to create product-selling short dramas, generate product-proof scripts, subject libraries, character dossier boards, filed role assets, Seedance2 production references, storyboard grids, first frames, salpx gpt-image-2 images, salpx video prompts, captions, manifests, delivery checklists, and Seedance2 visible-face repair inside Codex.
+description: Codex ecommerce short-drama skill v0.8.29. Use when the user wants to create product-selling short dramas, generate product-proof scripts, subject libraries, character dossier boards, filed role assets, Seedance2 production references, storyboard grids, first frames, salpx gpt-image-2 images, salpx video prompts, captions, manifests, delivery checklists, cinematic shot design, and Seedance2 visible-face repair inside Codex.
 ---
 
 # TJ Short
 
 TJ Short is a Codex Skill for ecommerce short dramas.
 
-Version: `short-drama-ecommerce v0.8.28`
+Version: `short-drama-ecommerce v0.8.29`
+
+## v0.8.29 Changelog
+
+- Added `Cinematic Shot-Design Rule`: seven shot-design elements (frame size, angle, composition, lighting, color grade, camera movement, pacing) and four reusable scene formulas (emotional build-up, suspense, romance, pressure) to fill the `camera:` and `emotion_shift:` fields of the shot production table.
+- Added `Camera-as-Witness Prompt Law`: three rules for writing realistic AI-video prompts — describe the shooting process/imperfection instead of the finished picture, pair every "has" list with a "has not" exclusion list, and make each timeline segment carry camera behavior, not only character action.
+- Added the six-block director-level prompt formula: 镜头语言 + 光影色彩 + 场景细节 + 角色表演 + 情绪风格 + 技术参数.
+- Added a PPT-look precheck: every shot needs foreground/midground/background layering, and frame size must vary across the 12-shot sequence instead of holding one medium shot throughout.
+- Clarified that handheld-imperfection language (Rule 1) is a selective realism layer, not a blanket rule, and must not be applied to official Seedance2 face-compliance candidates (`face_pencil_strong/medium`, `blur_feature`).
+- Source: distilled from a shared cinematography/prompt-engineering note on AI short-drama shot design (七要素/四公式/摄影机行为日志三铁律), adapted to fit TJ Short's existing subject-library and Seedance2 rules rather than adopted verbatim.
 
 ## v0.8.28 Changelog
 
@@ -195,6 +204,7 @@ Phase 2: episode and 12-shot production table
 - Generate `完整前三集剧本.md` or the requested episode script.
 - Generate `第1集12镜头分镜表.md`, `镜头契约表.md`, `参考资产角色表.md`, and `generation_manifest.csv`.
 - Each shot must reference role/scene/product/evidence IDs.
+- Apply the Cinematic Shot-Design Rule to each shot's `camera:` and `emotion_shift:` fields; do not leave them as a vague one-line description.
 
 Phase 3: role dossier image or Seedance2 reference package
 
@@ -273,6 +283,65 @@ must_not_change:
 ```
 
 For video prompts, write only what is missing from the first frame: action, camera motion, emotion change, dialogue/lip-sync target, timing, and what must remain unchanged. Do not restate the entire character face, wardrobe, product design, or scene if those are already controlled by subject libraries and first frames.
+
+## Cinematic Shot-Design Rule
+
+Do not fill the shot table's `camera:` field with a vague phrase like "medium shot, camera looks at her." AI short drama looks flat and PPT-like when every shot only proves the picture is pretty. A cinematic shot must answer: what information does it deliver, what emotion does it produce, how does it relate to the previous shot, does it move the story forward, and does it make the next shot worth waiting for. See `docs/methodology.md` Sections 16-17 for the full explanation.
+
+Seven elements to set per shot when writing `camera:` and `emotion_shift:`:
+
+```text
+景别 frame size: 远景/全景/中景/近景/特写/大特写 (distance = information + emotional intensity)
+角度 angle: 平视=equal 仰拍=power 俯拍=helpless 侧面=distant 背影=lonely 主观视角=immersive
+构图 composition: 三分法=natural/dialogue 居中=ritual/pressure 留白=loneliness/waiting
+光影 lighting: 柔光=warm 硬光=tense 逆光=mysterious 侧光=conflicted 顶光=oppressive 低光=threatening
+色调 color grade: 暖色调=intimacy 冷色调=distance 低饱和=realism/oppression 高饱和=dreamlike
+动势 camera movement: 推进=entering 拉远=detaching 跟随=immersion 摇移=exploring
+节奏 pacing: 快剪=tension 慢镜=emotion 停顿=reflection 切黑=beat ending
+```
+
+Four reusable scene formulas — use as a starting template, then adapt to the actual subjects:
+
+```text
+情绪递进 emotional build-up: 远景(环境) -> 中景(人物) -> 近景(情绪) -> 特写(线索) -> 停顿(悬念)
+悬疑 suspense: 冷色调 + 低照度 + 前景遮挡 + 缓慢推进 + 角色停顿 + 关键物体特写 + 突然切黑
+浪漫 romance: 暖色调 + 柔光 + 浅景深 + 慢动作 + 眼神特写 + 环境光斑 + 镜头缓慢环绕
+压迫 pressure: 低角度仰拍 + 居中构图 + 硬光阴影 + 低饱和 + 人物缓慢逼近 + 镜头轻微后退 + 节奏加快
+```
+
+PPT-look precheck before finalizing any first-frame grid:
+
+```text
+does every shot have foreground/midground/background layers, not just a subject floating in empty space?
+does frame size vary across the 12 shots instead of holding one medium shot throughout?
+is the character off-center or intentionally centered for a reason, not centered by default?
+```
+
+### Camera-as-Witness Prompt Law
+
+Apply as an optional realism layer on top of the existing Seedance2 motion rules and model routing rules below, not as a replacement for them.
+
+```text
+Rule 1 - describe the shooting process, not the finished result:
+  use: handheld micro-shake, focus hunting/racking, exposure drifting, mild compression noise
+  avoid as the whole instruction: "beautiful picture", "perfect composition", "cinematic color"
+  scope: selective realism layer for documentary/found-footage/tense handheld beats, not a blanket
+  rule for every shot in a polished commercial short drama, and never applied to official
+  Seedance2 face-compliance candidates (face_pencil_strong/medium, blur_feature).
+
+Rule 2 - use exclusion to set boundaries:
+  for every few things a scene "has," name at least one thing it "has not"
+  example: has = clothesline, utility pole, potted plant / has not = modern storefronts, ads
+
+Rule 3 - the timeline must carry camera behavior, not only character action:
+  weak:   00:00-00:15 girl walks in and finds the envelope
+  strong: 00:00-00:03 girl walks into corridor (handheld follow, shake)
+          00:03-00:07 light flickers (exposure drifting)
+          00:07-00:10 focus racks to envelope (focus hunting)
+          00:10-00:15 girl stops (frame micro-shake, cut to black)
+```
+
+Director-level prompt formula (six blocks): `镜头语言(景别+焦距+机位+运动方式+时长) + 光影色彩(光源+光比+色调+氛围) + 场景细节(场景+道具+材质+环境细节) + 角色表演(造型+动作+表情+情绪) + 情绪风格(情绪基调+艺术风格+电影类型) + 技术参数(画幅比例+画质+模型+其他参数)`.
 
 ## Character Dossier Board Rule
 
@@ -408,10 +477,10 @@ Seedance2 reference packaging:
 7. If Seedance2 with visible faces is planned and the provider supports it, file the role boards and record filed asset metadata.
 8. Extract Seedance2-ready references from role boards: face close-up, full/half-body wardrobe reference, scene/product references, optional motion/audio references.
 9. Write one high-conflict episode.
-10. Create a 12-shot production table that references subject IDs.
-11. Generate one 4x3 storyboard/first-frame grid for EP01, then cut it into 12 independent 9:16 first frames.
+10. Create a 12-shot production table that references subject IDs and applies the Cinematic Shot-Design Rule (frame size, angle, composition, lighting, color grade, movement, pacing) to each shot's camera field.
+11. Generate one 4x3 storyboard/first-frame grid for EP01, then cut it into 12 independent 9:16 first frames. Precheck for PPT-look before finalizing: layered depth and varied frame size across the sequence.
 12. Write clip contracts and reference role maps.
-13. Write `salpx / omni_flash` prompts with fixed `duration=10`, or Seedance2 prompts with ordered media references.
+13. Write `salpx / omni_flash` prompts with fixed `duration=10`, or Seedance2 prompts with ordered media references. Apply the Camera-as-Witness Prompt Law selectively where the shot's style calls for realism.
 14. Prepare captions, manifest, and delivery checklist.
 
 ## salpx API Production Rule

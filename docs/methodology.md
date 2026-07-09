@@ -303,3 +303,203 @@ Use a character-reference and candidate route:
 No-person product frames are valid for API smoke tests and product-evidence shots only. They are not the default fallback for visible-face acting shots.
 
 This route is only for self-owned fictional virtual characters. It is not for unlicensed real people, celebrities, influencers, or public figures.
+
+## 16. Cinematic Shot-Design Language (Seven Elements)
+
+AI short drama looks like a slideshow when every shot only proves the picture is pretty. Cinematic feel comes from what a shot does to the audience and how it connects to the shot before and after it.
+
+Before writing camera work for a shot, answer:
+
+```text
+what information does this shot deliver?
+what emotion does it produce?
+how does it relate to the previous shot?
+does it move the story forward?
+does it make the next shot worth waiting for?
+```
+
+Seven elements to set per shot:
+
+```text
+1. 景别 frame size (psychological distance)
+   远景 extreme wide: environment, world, isolation
+   全景 wide/full body: full-body action, spatial relation
+   中景 medium: dialogue, everyday narrative
+   近景 close: emotional intensity
+   特写 close-up: detail, inner change
+   大特写 extreme close-up: shock, fear, key clue
+
+2. 角度 camera angle (psychological position)
+   平视 level: equal, restrained
+   仰拍 low angle: power, heroism
+   俯拍 high angle: helpless, isolated
+   侧面 profile: distant, observing
+   背影 back view: unknown, lonely, departure
+   主观视角 POV: immersive, tense
+
+3. 构图 composition (directs attention)
+   三分法 rule-of-thirds: dialogue, walking, everyday narrative, natural breathing room
+   居中构图 centered: ritual, pressure, character entrance, fate-weight scenes
+   留白构图 negative space: loneliness, loss, emptiness, waiting, helplessness
+
+4. 光影 lighting (sets mood)
+   柔光 soft: warm, romantic, memory
+   硬光 hard: tense, conflict, danger
+   逆光 backlight: mysterious, dreamlike, lonely
+   侧光 side: complicated, conflicted, suspenseful
+   顶光 top: oppressive, cold, uneasy
+   低光 low light: horror, strange, threatening
+
+5. 色调 color grade (emotional register)
+   暖色调 warm -> tenderness, nostalgia, intimacy -> romance, family, memory
+   冷色调 cool -> distance, reason, loneliness -> suspense, sci-fi, urban
+   低饱和 desaturated -> restraint, realism, oppression -> drama, crime, bleak
+   高饱和 saturated -> dreamlike, exaggerated, fairytale -> fantasy, comedy, youth
+
+6. 动势 camera movement (makes the frame happen)
+   推进 push-in: entering, focusing attention
+   拉远 pull-out: detaching, revealing scale
+   跟随 follow: putting the audience inside the action
+   摇移 pan/drift: exploring, discovering
+
+7. 节奏 pacing (controls the audience's breathing)
+   快剪 fast cut: tension
+   慢镜 slow motion: emotion
+   停顿 hold/pause: reflection
+   切黑 cut to black: negative space, ending a beat
+```
+
+Universal pacing law:
+
+```text
+shot duration should shrink while emotional intensity rises
+alternate tight and loose rhythm; a held pause carries more weight than another quick cut
+sound and picture rhythm should move together, not picture cuts alone
+```
+
+Standard emotional arc for an episode or a scene block:
+
+```text
+铺垫期 setup -> 发展期 build -> 冲突期 conflict -> 高潮期 peak -> 回落期 release -> 收尾期 close
+```
+
+### Four Reusable Scene Formulas
+
+Use these as starting templates for the shot production table's `camera:` and `emotion_shift:` fields (Section 6), then adapt to the actual role/scene/evidence subjects. Do not paste a formula verbatim without matching it to the current beat's narrative job.
+
+```text
+情绪递进 emotional build-up:
+远景(交代环境) -> 中景(建立人物) -> 近景(捕捉情绪) -> 特写(强调线索) -> 停顿(制造悬念)
+
+悬疑 suspense:
+冷色调 + 低照度光影 + 前景遮挡 + 缓慢推进 + 角色停顿 + 关键物体特写 + 突然切黑
+
+浪漫 romance:
+暖色调 + 柔光 + 浅景深 + 慢动作 + 眼神特写 + 环境光斑 + 镜头缓慢环绕
+
+压迫 pressure/threat:
+低角度仰拍 + 居中构图 + 硬光阴影 + 低饱和色调 + 人物缓慢逼近 + 镜头轻微后退 + 节奏逐渐加快
+```
+
+### Avoiding the "PPT Look"
+
+AI short drama looks flat and slide-like when shots have no spatial layers. Common mistakes:
+
+```text
+character always dead-center
+background is decoration only, has no narrative job
+frame is too full, no breathing room
+subject has no relationship with environment
+every frame looks like a poster, not a shot
+missing foreground/midground/background layering
+```
+
+Fix by giving every shot three depth layers:
+
+```text
+foreground: doorframe, curtain, tree shadow, passerby, blurred object
+midground: character action
+background: environment info, lighting, architecture, weather
+```
+
+Also vary frame size within a scene instead of holding medium shot for the whole sequence. Example progression for "character returns to an empty room":
+
+```text
+远景: character at the doorway, space feels large and cold
+全景: character walks slowly into the room
+中景: character stops at the table, sees an old photo
+近景: expression changes
+特写: fingertip brushes dust off the photo
+```
+
+This progression carries more story than one static "character standing in room" shot.
+
+## 17. Camera-as-Witness Prompt Law
+
+The strongest AI video prompts do not describe "a beautiful finished picture." They describe a camera recording a real event as it happens, including the camera's own limitations. Drop the "a camera is on-site recording an event" framing and shot logic, timeline logic, and spatial-layer logic all weaken together — keep that framing as the base assumption for every prompt, then decide how much documentary imperfection fits the shot's style.
+
+### Rule 1 — Describe the Shooting Process, Not the Finished Result
+
+Do not write "beautiful picture, perfect composition, soft lighting, cinematic color" as the whole instruction. Write what the camera is doing and where it is imperfect. Realism comes from imperfection, not from a flawless composition.
+
+```text
+use: handheld micro-shake, focus hunting/racking, exposure drifting, mild compression noise/grain
+avoid (as the only instruction): "the picture is beautiful", "perfect composition", "soft lighting", "cinematic color"
+```
+
+This rule is a strong fit for documentary, found-footage, hidden-camera, or emotionally raw handheld scenes. For glossy product hero shots or polished romance/beauty shots, use it selectively — for example a slight handheld shake during a tense confrontation, not during a clean product close-up. Do not apply it as a blanket rule to every shot in a polished commercial short drama.
+
+### Rule 2 — Use Exclusion to Set Boundaries
+
+For every few things a scene "has," name at least one thing it must not have. This keeps the model from drifting toward generic or era-mismatched details.
+
+```text
+example - old apartment corridor scene:
+has: clothesline, utility pole, potted plant, old wall, worn furniture, dim light
+has not: modern storefronts, ads/billboards, modern electronics
+```
+
+### Rule 3 — The Timeline Must Include Camera Behavior, Not Just Character Action
+
+Break the shot into short time segments. Each segment should combine what the character does with what the camera does technically, plus environment interaction. Do not compress the whole shot into one line of character action only.
+
+```text
+weak:
+00:00-00:15 the girl walks in and finds the envelope
+
+strong:
+00:00-00:03 girl walks into the corridor (handheld follow, shake)
+00:03-00:07 the light flickers (exposure drifting)
+00:07-00:10 focus racks to the envelope (focus hunting)
+00:10-00:15 girl stops (frame micro-shake, cut to black)
+```
+
+### Full Prompt Structure Formula
+
+Combine six blocks when writing a director-level shot prompt:
+
+```text
+镜头语言 shot language: frame size + focal length + camera position + movement type + duration
+光影色彩 light & color: light source + light ratio + color grade + mood
+场景细节 scene & detail: setting + props + material + environment detail
+角色表演 character performance: look + action + expression + emotion
+情绪风格 emotional style: emotional register + art style + genre
+技术参数 technical params: aspect ratio + quality + model + other flags
+```
+
+Weak baseline prompt: "a girl works in an office, camera looking at her." (flat, low information, low controllability.)
+
+Director-level prompt example:
+
+```text
+中景，35mm 电影镜头，女孩坐在靠窗办公桌前，侧脸看向屏幕，窗外城市阴天，柔和自然光从侧面打入形成柔和侧逆光，
+背景浅景深虚化，前景有模糊绿植，桌上有咖啡杯和笔记本，整体色调冷静克制，氛围专注略带疲惫，
+镜头缓慢微推进，时长4秒，电影级光影，真实细节，微表情自然。
+```
+
+### How This Fits TJ Short's Existing Rules
+
+- Apply the seven shot-design elements and the four scene formulas when filling the `camera:` and `emotion_shift:` fields of the shot production table (Section 6).
+- Treat camera-as-witness rules 1-3 as an optional realism layer on top of the existing Seedance2 motion rules (Section 9) and model routing rules (Section 10), not a replacement for them. Seedance2's "one camera move per shot, restrained motion" rule and rule 1's "describe imperfection, not perfection" rule reinforce each other.
+- Do not apply rule 1's handheld-imperfection language to official Seedance2 face-compliance candidates (`face_pencil_strong/medium`, `blur_feature`, Section 15). Those candidates already carry strict compliance constraints and should stay clean of camera-defect language unless the shot's story specifically calls for a shaky, threatened point of view.
+- Run the PPT-look check before finalizing a first-frame grid: does every shot have foreground/midground/background layers, and does frame size vary across the 12-shot sequence instead of holding medium shot throughout?

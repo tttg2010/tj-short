@@ -46,6 +46,7 @@ Core rule:
 
 | Version | Key updates |
 |---|---|
+| v0.8.29 | Added a cinematic shot-design rule: seven elements (frame size, angle, composition, lighting, color grade, camera movement, pacing) and four reusable scene formulas (emotional build-up, suspense, romance, pressure) for the shot table's `camera:`/`emotion_shift:` fields; added a camera-as-witness prompt law (shooting process over finished result, exclusion lists, camera behavior on the timeline) as a selective realism layer that does not override existing Seedance2 motion/compliance rules. |
 | v0.8.28 | Added grid-first cost control: generate one 4x3 contact sheet first, then auto-cut 12 independent 9:16 first frames; do not generate 12 standalone first frames upfront unless explicitly requested or the grid/cut workflow fails. |
 | v0.8.27 | Corrected the Seedance2 visible-person first-frame flow: from the grid/first-frame stage, generate `face_pencil` strong / medium / `blur_feature` candidates for the same shot, precheck them one by one, then choose the passing frame with the most complete face and acting information; no-person product frames are only for API smoke tests or product-evidence shots. |
 | v0.8.26 | Added production-ready salpx API flow: `gpt-image-2` image generation, `omni_flash`, `seedance-2-mini-480p`, and Veo video generation, plus a reusable client for submit, poll, and download. |
