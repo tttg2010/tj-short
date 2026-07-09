@@ -1,13 +1,23 @@
 ---
 name: tj-short
-description: Codex ecommerce short-drama skill v0.8.29. Use when the user wants to create product-selling short dramas, generate product-proof scripts, subject libraries, character dossier boards, filed role assets, Seedance2 production references, storyboard grids, first frames, salpx gpt-image-2 images, salpx video prompts, captions, manifests, delivery checklists, cinematic shot design, and Seedance2 visible-face repair inside Codex.
+description: Codex ecommerce short-drama skill v0.8.30. Use when the user wants to create product-selling short dramas, generate product-proof scripts, subject libraries, character dossier boards, filed role assets, Seedance2 production references, storyboard grids, first frames, salpx gpt-image-2 images, salpx video prompts, captions, manifests, delivery checklists, cinematic shot design, script fidelity tracing, and Seedance2 visible-face repair inside Codex.
 ---
 
 # TJ Short
 
 TJ Short is a Codex Skill for ecommerce short dramas.
 
-Version: `short-drama-ecommerce v0.8.29`
+Version: `short-drama-ecommerce v0.8.30`
+
+## v0.8.30 Changelog
+
+- Added `Script Fidelity and Traceability Rule` after two real production failures: a shot table silently dropped 2 of 4 script dialogue lines with no shot ever picking them up, and a first-frame generation added an unrequested prop (a physical invitation card the script never described) that survived review and was inherited into the final video.
+- Added dialogue/action ID tagging (`[D-<scene>-<n>]`, `[A-<scene>-<n>]`) required in the episode script, and a coverage ledger required at the end of Phase 2 mapping every ID to a shot or a stated deliberate cut. 100% coverage is a hard gate before Phase 3.
+- Added a `SOURCE ANCHOR` block requirement: every Phase 4/5 prompt document must open with the exact tagged script lines the shot derives from, so generation happens against the source, not a paraphrase of a paraphrase.
+- Added a containment diff check for every image/video generation: prompts must carry MUST HAVE and MUST NOT HAVE lists, and review must answer a mandatory, non-skippable "what did the output add that the prompt never asked for?" field. First-frame drift is a hard gate (cheap retake); video-level drift is a soft gate (record + human decides) unless it violates an explicit MUST NOT HAVE item, which always escalates to blocking.
+- Added `保真核对.md` to Required Deliverables: one file per episode carrying the coverage ledger and containment diffs.
+- Clarified this adds no dedicated LLM calls: coverage is deterministic ID-string matching, and containment diffs are filled during review that already happens when a human looks at generated output.
+- Source: architecture review by 肖老师 (xiao-laoshi-agent) after two script-fidelity failures surfaced in a real project; see `docs/methodology.md` Section 18 for the full diagnosis and design rationale.
 
 ## v0.8.29 Changelog
 
@@ -201,10 +211,11 @@ Seedance2参考包计划.md
 
 Phase 2: episode and 12-shot production table
 
-- Generate `完整前三集剧本.md` or the requested episode script.
+- Generate `完整前三集剧本.md` or the requested episode script. Tag every dialogue line and plot-relevant action with a stable ID per the Script Fidelity and Traceability Rule.
 - Generate `第1集12镜头分镜表.md`, `镜头契约表.md`, `参考资产角色表.md`, and `generation_manifest.csv`.
 - Each shot must reference role/scene/product/evidence IDs.
 - Apply the Cinematic Shot-Design Rule to each shot's `camera:` and `emotion_shift:` fields; do not leave them as a vague one-line description.
+- Generate the coverage ledger inside `保真核对.md`. Coverage must be 100% (every script ID is `covered` or `deliberately cut (reason: ...)`, none `LOST`) before Phase 3 starts.
 
 Phase 3: role dossier image or Seedance2 reference package
 
@@ -227,12 +238,75 @@ Phase 4: first-frame grid
 - For Seedance2 visible-human routes, official first frames must preserve realistic photographic body, wardrobe, product, props, and scene. Only the face regions may receive `face_pencil` colored-pencil/sketch treatment.
 - Do not generate the official grid as full manga, anime, illustration, commercial storyboard, or cartoon style merely because face review is risky.
 - A full illustrated grid may only be marked `preview_only_style_board`, never `official_first_frame`.
+- Every first-frame/grid-cell prompt must open with the `SOURCE ANCHOR` block for that shot and carry MUST HAVE / MUST NOT HAVE lists per the Script Fidelity and Traceability Rule. After generation, fill the containment check's "what did the output add that the prompt never asked for?" field — never leave it blank. A cell that adds an unrequested element is `drift`: retake it or tighten the prompt before it enters the official first-frame set. This is a hard gate.
 
 Phase 5: model-specific video prompts and submission
 
 - Only now write the full model-specific prompt pack.
 - Use separate prompt rules for `omni_flash`, `seedance2`, and `veo`.
+- Every prompt document must open with the `SOURCE ANCHOR` block for that shot (the exact tagged script lines it derives from) and carry MUST HAVE / MUST NOT HAVE lists.
 - Do not submit video tasks until `generation_manifest.csv` has model route, duration rule, reference rule, prompt syntax rule, face review rule, output ratio, and audio mode.
+- After each video generation, fill the containment check for that clip. Video-level drift is a soft gate — record it and let the user decide whether to retake — unless the drift violates an explicit MUST NOT HAVE item, which always escalates to a hard block.
+
+## Script Fidelity and Traceability Rule
+
+The script -> shot table -> first frame -> video prompt pipeline is a chain of lossy compressions. Without this rule, nothing catches what a stage drops or what a generation silently adds. See `docs/methodology.md` Section 18 for the full diagnosis. This rule exists because both failure modes have happened in production: a shot table dropped 2 of 4 script dialogue lines with no shot ever picking them up, and a first-frame generation added a prop the script never described, and it survived review into the final video.
+
+### Dialogue/Action ID Tagging (Phase 2)
+
+Tag every dialogue line and plot-relevant action in the episode script with a stable ID:
+
+```text
+[D-<scene>-<n>] for dialogue, e.g. [D-S3-01] 苏晴："想什么呢，请柬都不回？"
+[A-<scene>-<n>] for key non-dialogue actions, e.g. [A-S3-01] 手机屏幕亮起婚礼请柬确认消息（一条手机短信，非纸质）
+```
+
+Every shot table `dialogue_or_lip_sync` field must cite the IDs it carries, not just paraphrase the line.
+
+### Coverage Ledger (hard gate, end of Phase 2)
+
+List every script ID and where it landed:
+
+```text
+source ID -> landed in shot -> status: covered | deliberately cut (reason: ...) | LOST
+```
+
+`LOST` (no shot, no stated reason) is not an allowed terminal state. Coverage must be 100% before Phase 3 starts. This is deterministic ID-string matching — do not spend a dedicated LLM call comparing script to shot table; check whether each ID string appears downstream.
+
+### Source Anchor Block (hard gate, Phase 4/5)
+
+Every image/video prompt document must open with a read-only block pasting the exact tagged script lines that shot derives from, before the actual prompt text:
+
+```text
+# SOURCE ANCHOR (from script, read-only)
+[A-S3-01] 手机屏幕亮起婚礼请柬确认消息（一条手机短信，非纸质）
+---
+# shot prompt
+...
+```
+
+A prompt document missing this block is not a valid production artifact. This is what turns "summarize, then regenerate" into "regenerate against the source" — the generation step sees the original line, including its exclusion constraint, not a paraphrase of a paraphrase.
+
+### Containment Diff (Phase 4 hard gate per cell, Phase 5 soft gate)
+
+Every prompt carries two lists:
+
+```text
+MUST HAVE: what the prompt requires
+MUST NOT HAVE: entities the model tends to invent — physical stand-ins for digital objects, extra people, extra props (this is the existing has/has-not exclusion technique from the Camera-as-Witness Prompt Law, now mandatory, not optional)
+```
+
+After generation, fill this field — it must never be left blank:
+
+```text
+what did the output add that the prompt never asked for? (answer required; write "none" if nothing)
+```
+
+Verdict is binary: `match` or `drift`. No "close enough, ship it." First-frame drift blocks — retake the cheap image rather than let it get inherited and amplified by image-to-video. Video-level drift is recorded and the user decides whether to retake, since video regeneration is the most expensive retry in the pipeline — except a MUST NOT HAVE violation, which always blocks regardless of stage.
+
+### Deliverable
+
+Keep the coverage ledger and every containment diff for one episode in a single `保真核对.md`. Do not fragment fidelity records across many small files, and do not introduce a dedicated LLM call or computer-vision pass for this rule — coverage is a text lookup and containment diffs are filled during the review a human already does when looking at generated output.
 
 ## User-Facing Reply Style
 
@@ -657,8 +731,9 @@ Do not use this process for unlicensed real people, celebrities, influencers, pu
 - Product/prop subject library
 - Evidence subject library
 - Three briefs
-- High-conflict episode script
+- High-conflict episode script with dialogue/action IDs
 - 12-shot production table
+- `保真核对.md`: coverage ledger and containment diffs
 - Three first-frame prompts or images
 - Clip contracts
 - Reference role map

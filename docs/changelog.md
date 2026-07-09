@@ -1,5 +1,18 @@
 # Changelog
 
+## short-drama-ecommerce v0.8.30
+
+Script fidelity and traceability update, triggered by two real production failures in the same episode: a shot table silently dropped 2 of 4 script dialogue lines with no shot ever picking them up, and a first-frame generation added an unrequested prop (a physical invitation card the script never described) that survived review and was inherited into the final video.
+
+- Added `docs/methodology.md` Section 18, "Script Fidelity and Traceability": diagnoses why a multi-stage generation pipeline (script -> shot table -> first frame -> video prompt) loses content and gains unrequested content unless every stage carries a checksum back to the source script. Root cause: no single source of truth, forward-sufficiency-only review, and a "summarize, then regenerate" pattern that only holds the model responsible for what it was shown, not the original source.
+- Added dialogue/action ID tagging (`[D-<scene>-<n>]`, `[A-<scene>-<n>]`) required in the episode script.
+- Added a coverage ledger required at the end of Phase 2, mapping every script ID to a shot or a stated deliberate cut. 100% coverage (no `LOST` entries) is a hard gate before Phase 3.
+- Added a `SOURCE ANCHOR` block requirement: every Phase 4/5 prompt document must open with the exact tagged script lines the shot derives from, turning "regenerate against a paraphrase" into "regenerate against the source."
+- Added a containment diff check for every image/video generation: MUST HAVE / MUST NOT HAVE lists on the prompt, plus a mandatory "what did the output add that the prompt never asked for?" review field that can never be left blank. First-frame drift is a hard gate; video-level drift is a soft gate (record + human decides) unless it violates an explicit MUST NOT HAVE item, which always escalates to blocking.
+- Added `保真核对.md` to Required Deliverables.
+- Confirmed this adds no dedicated LLM calls: coverage is deterministic ID-string matching, containment diffs are filled during review that already happens, and the only real cost increase is retaking a cheap first-frame image instead of discovering drift in an expensive finished video.
+- Source: architecture review by 肖老师 (xiao-laoshi-agent), commissioned after the two script-fidelity failures surfaced in a real project.
+
 ## short-drama-ecommerce v0.8.29
 
 Cinematic shot-design update, distilled from a shared cinematography/prompt-engineering note on AI short-drama shot design.
