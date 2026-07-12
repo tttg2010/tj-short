@@ -1,6 +1,6 @@
-# TJ Short
+# TJ Short | Codex Ecommerce Short-Drama Skill
 
-Codex + salpx relay ecommerce short-drama skill: use Codex to generate product analysis, briefs, scripts, storyboards, first frames, prompts, captions, manifests, and delivery checks, then use salpx relay for `gpt-image-2` image generation and omni, Seedance2, Veo, and other video execution.
+Use Codex to turn a product image into an ecommerce short-drama project: product analysis, character dossier boards, high-conflict scripts, 4x3 first-frame grids, 9:16 shot frames, model-specific prompts, captions, and delivery checks; then use salpx relay for `omni_flash`, Seedance 2.0, Veo, and other image-to-video models.
 
 [中文版本](README.md)
 
@@ -12,7 +12,7 @@ Codex + salpx relay ecommerce short-drama skill: use Codex to generate product a
 
 TJ Short is a public-safe Codex Skill template for ecommerce short dramas. It is not only a writing framework and not only a video API wrapper. It lets Codex move a product image through a complete production chain:
 
-product analysis -> three briefs -> product proof bible -> four libraries plus shot table (role / scene / product-prop / evidence + 12-shot production table) -> character dossier boards -> 9:16 first frames, optionally generated through salpx `gpt-image-2` -> `salpx` video-model prompts (omni fixed at 10 seconds; Seedance2/Veo follow model rules) -> captions and ad cutdown plan.
+product analysis -> three briefs -> product proof bible -> four libraries plus shot table (role / scene / product-prop / evidence + 12-shot production table) -> character dossier boards -> 4x3 first-frame grid -> auto-cut 12 independent 9:16 first frames -> `salpx` video-model prompts (omni fixed at 10 seconds; Seedance2/Veo follow model rules) -> captions and ad cutdown plan.
 
 The split is clear:
 
@@ -154,7 +154,7 @@ Example script: [examples/xiderdl-lucky/ep01-high-conflict.md](examples/xiderdl-
 | Seedance2 filed asset table | Tracks fictional role filing status, filed asset ID placeholder, board version, and provider scope | Required for Seedance2 visible-face routes |
 | High-conflict episode script | 60-90 second episode with a strong first 5 seconds | Yes |
 | 12-shot production table | Each shot references subject libraries and focuses on action, emotion, camera, and dialogue | Yes |
-| Three test first frames | Validates hook, product proof, and ending hook | Yes |
+| Three test first frames | Selects the hook, product-proof, and ending-hook frames from the 4x3 grid cuts for test generation | Yes |
 | Image-to-video prompts | Script-locked prompts for salpx video models | Yes |
 | Clip contracts | Defines what each clip can and cannot do | Yes |
 | Reference role map | Separates first frame, product image, caption, and video reference duties | Yes |
@@ -175,16 +175,17 @@ flowchart TD
   E --> F["Codex writes product proof bible"]
   F --> R["Codex builds four libraries: role / scene / product-prop / evidence"]
   R --> G["Codex writes high-conflict script + 12-shot production table"]
-  G --> H["Codex creates three 9:16 first-frame directions"]
-  H --> I["Codex writes clip contracts + reference role map"]
-  I --> J["Codex compiles salpx video-model prompts"]
-  J --> K["salpx relay executes image-to-video"]
-  K --> L["Returns raw clips"]
-  L --> M["Codex reviews story / product / lip sync / caption plan"]
-  M --> N{"Did the three tests pass?"}
-  N -- "Yes" --> O["Codex expands to all 12 shots"]
-  N -- "No" --> P["Codex one-variable retake or rewrite"]
-  O --> Q["Captions + dubbing + ad cutdowns"]
+  G --> H["Codex creates role reference package + 4x3 first-frame grid"]
+  H --> I["Auto-cuts 12 independent 9:16 first frames and prechecks them"]
+  I --> J["Codex writes clip contracts + reference role map"]
+  J --> K["Codex compiles salpx video-model prompts"]
+  K --> L["salpx relay executes image-to-video"]
+  L --> M["Returns raw clips"]
+  M --> N["Codex reviews story / product / lip sync / caption plan"]
+  N --> O{"Did the three tests pass?"}
+  O -- "Yes" --> P["Codex expands to all 12 shots"]
+  O -- "No" --> Q["Codex one-variable retake or rewrite"]
+  P --> R["Captions + dubbing + ad cutdowns"]
 ```
 
 ## Environment
@@ -335,15 +336,16 @@ Recommended rhythm:
 70-90s: relationship turn + next hook
 ```
 
-### Step 4: Codex Creates Three First Frames
+### Step 4: Create One 4x3 First-Frame Grid, Then Cut 12 9:16 Frames
 
-Do not generate the full episode immediately. Create:
+Do not generate 12 standalone first frames, and do not create three extra images solely for the trial clips. The standard cost-controlled workflow is:
 
-- `HC-01`: strong opening hook
-- `HC-09`: product evidence
-- `HC-12`: ending hook
+1. Generate one cuttable 4x3 grid with 12 cells, one per episode shot.
+2. Auto-cut 12 clean 9:16 first frames and save a cut report.
+3. Precheck each cell for story, role, product, subtitle, and border issues.
+4. Select `HC-01` (opening hook), `HC-09` (product evidence), and `HC-12` (ending hook) from those cuts for the three trial clips.
 
-First frames must be clean 9:16 full-frame images with no subtitles, no inset, no white border, and no blurred background extension.
+Generate a standalone frame only if the grid cannot be cut, a cell fails precheck, the user explicitly requests it, or a selected trial clip needs a higher-quality retake. Official frames must be clean 9:16 full-frame images with no subtitles, inset, white border, or blurred background extension.
 
 ### Step 5: Codex Compiles Prompts And Submits Three Test Clips
 
@@ -450,6 +452,10 @@ This workflow openly credits:
 - **Emily2040/seedance-2.0**: clip contracts, project state capsule, reference role map, one-variable retake
 
 This is not an official distribution of those projects. It is a public-safe reusable practice template.
+
+## Keywords
+
+Codex skill, Codex ecommerce short drama, ecommerce short-drama skill, shoppable short video, AI product video, product image to video, image-to-video, salpx, salpx relay, `omni_flash`, Seedance 2.0, `seedance-2-mini-480p`, Veo, AI video generation, short-drama storyboard, 4x3 first-frame grid, 9:16 first frame, character dossier board, role asset filing, Seedance2 face compliance, `face_pencil`, `blur_feature`, product proof, ecommerce video workflow, short-form commerce, TikTok Shop content, cross-border ecommerce video, prompt engineering.
 
 ## Public Safety
 
