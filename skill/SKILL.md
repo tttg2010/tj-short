@@ -1,6 +1,6 @@
 ---
 name: tj-short
-description: Codex ecommerce short-drama skill v0.8.30. Use when the user wants to create product-selling short dramas, generate product-proof scripts, subject libraries, character dossier boards, filed role assets, Seedance2 production references, storyboard grids, first frames, salpx gpt-image-2 images, salpx video prompts, captions, manifests, delivery checklists, cinematic shot design, script fidelity tracing, and Seedance2 visible-face repair inside Codex.
+description: Codex ecommerce short-drama skill v0.8.30. Use when the user wants to create product-selling short dramas, generate product-proof scripts, subject libraries, character dossier boards, filed role assets, Seedance2 production references, storyboard grids, first frames, salpx gpt-image-2 images, MiniMax H3 video prompts/API calls, captions, manifests, delivery checklists, cinematic shot design, script fidelity tracing, US-market localized scripts/subtitles/CTAs, and Seedance2 visible-face repair inside Codex.
 ---
 
 # TJ Short
@@ -17,6 +17,8 @@ Version: `short-drama-ecommerce v0.8.30`
 - Added a containment diff check for every image/video generation: prompts must carry MUST HAVE and MUST NOT HAVE lists, and review must answer a mandatory, non-skippable "what did the output add that the prompt never asked for?" field. First-frame drift is a hard gate (cheap retake); video-level drift is a soft gate (record + human decides) unless it violates an explicit MUST NOT HAVE item, which always escalates to blocking.
 - Added `保真核对.md` to Required Deliverables: one file per episode carrying the coverage ledger and containment diffs.
 - Clarified this adds no dedicated LLM calls: coverage is deterministic ID-string matching, and containment diffs are filled during review that already happens when a human looks at generated output.
+- Added `US-Market Localization Hard Rule`: when target region is 美国 / US / United States, the story, dialogue, characters, scene text, subtitles, CTA, compliance wording, and project manifest must fit the United States market instead of translating Chinese ecommerce short-drama habits into English.
+- Added current production split: salpx/gpt-image-2 is the default image layer for storyboard grids and first frames; MiniMax H3 is the default video layer for raw clips. salpx video models remain optional alternatives when the user selects them.
 - Source: architecture review by 肖老师 (xiao-laoshi-agent) after two script-fidelity failures surfaced in a real project; see `docs/methodology.md` Section 18 for the full diagnosis and design rationale.
 
 ## v0.8.29 Changelog
@@ -105,13 +107,16 @@ Then test with:
 短剧带货启动
 ```
 
-Full video generation requires a salpx API key. Tell users to register at `https://www.salpx.com`, create or copy their API Key, and put it into local `.env` as `SALPX_API_KEY`. Without a salpx API key, Codex can still generate scripts, storyboards, first frames, prompts, and manifests, but it cannot complete salpx video submission from Codex.
+Image generation through salpx requires a salpx API key. Tell users to register at `https://www.salpx.com`, create or copy their API Key, and put it into local `.env` as `SALPX_API_KEY`.
 
-For production calls, use `docs/salpx-api-production.md` and `scripts/salpx_production_client.py`. The script supports:
+Video generation through MiniMax H3 requires `H3_API_KEY` in the local `.env` or runtime environment. Without H3 credentials, Codex can still generate scripts, storyboards, first frames, prompts, and manifests, but it cannot complete H3 video submission from Codex.
+
+For production image calls, use `docs/salpx-api-production.md` and `scripts/salpx_production_client.py`. For production H3 video calls, use `docs/h3-api-production.md` and `scripts/h3_video_client.py`.
 
 ```text
 image: gpt-image-2 for storyboards, first frames, product-proof images
-video: omni_flash, gemini_omni_flash, seedance-2-mini-480p, and provider-supported Veo model IDs
+video: MiniMax H3 t2va, ref2va, or fl2va
+optional salpx video fallback: omni_flash, gemini_omni_flash, seedance-2-mini-480p, and provider-supported Veo model IDs
 ```
 
 ## Startup Gate Rule
@@ -122,18 +127,19 @@ The first response must start the diagnostic flow:
 
 1. Ask for or inspect the product image/material.
 2. If no product is provided, ask the user for product information before writing any story.
-3. Remind the user that full salpx video submission requires registration at `https://www.salpx.com` and a local `SALPX_API_KEY`.
-4. Produce only a short product diagnosis and three selectable briefs.
-5. End with a copyable next-step line that exposes model choices.
-6. Wait for the user to choose A, B, or C before writing the product proof bible, episode script, storyboard, first frames, or salpx prompts.
+3. Remind the user that salpx image generation requires `SALPX_API_KEY`, and H3 video generation requires `H3_API_KEY`.
+4. Ask or infer the target region. If the user selects 美国 / US / United States / North America for US sale, immediately lock `target_region=US` and apply the US-Market Localization Hard Rule below.
+5. Produce only a short product diagnosis and three selectable briefs.
+6. End with a copyable next-step line that exposes model choices and target region.
+7. Wait for the user to choose A, B, or C before writing the product proof bible, episode script, storyboard, first frames, or salpx prompts.
 
 Startup copyable next-step template:
 
 ```text
-短剧带货：建议下一步（可复制）：短剧带货，选 [A/B/C]，视频模型 salpx / seedance-2-mini-480p（可选 salpx / omni_flash，salpx / seedance-2-fast），产品是：[产品名/产品一句话]
+短剧带货：建议下一步（可复制）：短剧带货，选 [A/B/C]，地区 [中国/美国/其他]，图片模型 salpx / gpt-image-2，视频模型 minimax / h3（可选 salpx / omni_flash、salpx / seedance-2-mini-480p），产品是：[产品名/产品一句话]
 ```
 
-Do not default the copyable next-step line to `salpx / omni_flash` only. Recently, Seedance2 is the priority route, while Omni and Seedance2 Fast should remain visible alternatives.
+Do not default the copyable next-step line to `salpx / omni_flash` only. Current default production is salpx/gpt-image-2 for images and MiniMax H3 for videos. Keep salpx video models visible only as optional alternatives.
 
 If the user says "generate video" before product diagnosis is complete, still follow the gate: product diagnosis -> three briefs -> user chooses A/B/C -> then production.
 
@@ -143,16 +149,21 @@ Codex is the production brain:
 - writes product-proof briefs
 - creates scripts and storyboards
 - generates first-frame directions
-- writes `salpx / omni_flash` prompts
+- writes salpx image prompts and MiniMax H3 video prompts
 - builds caption and delivery plans
 - checks privacy before publishing
 
-salpx is the video execution relay:
+salpx is the image execution relay:
 
 - runs `gpt-image-2` for storyboard grids, first frames, and product-proof images when needed
-- receives clean 9:16 first frames
-- runs `omni_flash`, Seedance 2.0 variants, Veo variants, or another selected video model
-- returns image-to-video clips for review and post-production
+
+MiniMax H3 is the default video execution layer:
+
+- receives clean 9:16 first frames or reference images
+- runs `t2va`, `ref2va`, or `fl2va` routes according to shot needs
+- returns raw clips for review and post-production
+
+salpx video models remain available only when the user explicitly selects that route.
 
 ## Trigger
 
@@ -166,6 +177,8 @@ Use this skill when the user says:
 - 用 Codex 生成短剧带货
 - salpx / omni_flash 图生视频
 - salpx / gpt-image-2 生图
+- minimax / h3 图生视频
+- MiniMax H3 API
 - salpx / seedance-2 / veo 图生视频
 - 产品图生成短剧脚本、首帧、提示词、字幕或投放切片
 
@@ -174,6 +187,51 @@ Use this skill when the user says:
 Do not make the product the hero.
 
 The story must first make the audience care about a person, pet, relationship, or consequence. The product enters later as evidence, a record, a memory object, a relationship token, or a turning point.
+
+## US-Market Localization Hard Rule
+
+When the target region is 美国, US, United States, North America for US sale, or a US marketplace such as TikTok Shop US / Amazon US, do not write a Chinese short-drama script and translate it into English. Rebuild the content for the United States market from the start.
+
+Hard manifest fields:
+
+```text
+target_region: US
+locale_lock_status: locked
+dialogue_language: en-US
+subtitle_language: en-US
+scene_locale: United States
+cta_locale: US ecommerce / TikTok Shop US / Amazon US as selected
+compliance_market: US
+locale_mismatch_status: pass | blocked
+```
+
+Required behavior:
+
+- Dialogue and subtitles default to natural American English unless the user explicitly requests bilingual output. Character names, occupations, relationships, humor, conflict style, and emotional pacing must sound plausible for US short-form ecommerce drama.
+- Scenes must match US everyday life: apartments, suburban homes, kitchens, dorms, garages, local clinics, gyms, pet stores, offices, driveways, sidewalks, school pickup, or other US-appropriate contexts selected for the product.
+- On-screen phone/chat/order scenes must use US-native labels, currency, time format, address style, and CTA wording such as `Shop now`, `Check TikTok Shop`, `Get yours today`, `Available on Amazon`, or user-provided platform language.
+- Product claims must follow US market caution. For medical, supplement, financial, child, pet-health, beauty, safety, or regulated claims, write evidence-based phrasing, avoid guaranteed results, and add review-needed notes where appropriate.
+- Character wardrobe, home layout, appliances, packaging visibility, props, background signage, and scene text must fit the US locale.
+
+Forbidden in US-locked projects unless the user explicitly asks for a Chinese-diaspora setting and labels it as such:
+
+```text
+家人们
+直播间
+橱窗
+点小黄车
+私信我
+加微信
+9块9包邮
+人民币/RMB pricing
+Chinese hospital/community/compound scenes as the default
+Chinese app UI, Chinese delivery lockers, Chinese street signage, or Chinese ecommerce jargon
+```
+
+Locale gate:
+
+- If any script, shot table, first-frame prompt, video prompt, subtitle file, scene text, or CTA contains the forbidden US-mismatch items above, mark `locale_mismatch_status=blocked`, write `invalid_reason=locale_mismatch_us_market`, and fix the artifact before Phase 3, Phase 4, or Phase 5 can continue.
+- The US locale lock does not override script fidelity, subject libraries, Seedance2 face rules, salpx/H3 model rules, or safety checks. It is an additional gate that all downstream artifacts must carry.
 
 ## Strict Phase Gate
 
@@ -189,6 +247,7 @@ Phase 0: startup
 Phase 1: user selects A/B/C
 
 - Create project files instead of dumping the whole package in chat.
+- If `target_region=US`, every file created in this phase must carry the locale manifest fields from the US-Market Localization Hard Rule.
 - Required files:
 
 ```text
@@ -207,13 +266,14 @@ Seedance2参考包计划.md
 
 - For Seedance2 visible-human routes, stop here if the dossier files are missing.
 - Do not generate first-frame grids yet.
-- Do not write full `salpx / omni_flash` or Seedance2 video prompt packs yet, except a short note naming the planned model route.
+- Do not write full MiniMax H3, `salpx / omni_flash`, or Seedance2 video prompt packs yet, except a short note naming the planned model route.
 
 Phase 2: episode and 12-shot production table
 
 - Generate `完整前三集剧本.md` or the requested episode script. Tag every dialogue line and plot-relevant action with a stable ID per the Script Fidelity and Traceability Rule.
 - Generate `第1集12镜头分镜表.md`, `镜头契约表.md`, `参考资产角色表.md`, and `generation_manifest.csv`.
 - Each shot must reference role/scene/product/evidence IDs.
+- If `target_region=US`, every dialogue line, scene note, subtitle source, CTA, and any visible text in the shot table must be en-US and US-localized.
 - Apply the Cinematic Shot-Design Rule to each shot's `camera:` and `emotion_shift:` fields; do not leave them as a vague one-line description.
 - Generate the coverage ledger inside `保真核对.md`. Coverage must be 100% (every script ID is `covered` or `deliberately cut (reason: ...)`, none `LOST`) before Phase 3 starts.
 
@@ -243,7 +303,7 @@ Phase 4: first-frame grid
 Phase 5: model-specific video prompts and submission
 
 - Only now write the full model-specific prompt pack.
-- Use separate prompt rules for `omni_flash`, `seedance2`, and `veo`.
+- Use separate prompt rules for MiniMax H3, `omni_flash`, `seedance2`, and `veo`.
 - Every prompt document must open with the `SOURCE ANCHOR` block for that shot (the exact tagged script lines it derives from) and carry MUST HAVE / MUST NOT HAVE lists.
 - Do not submit video tasks until `generation_manifest.csv` has model route, duration rule, reference rule, prompt syntax rule, face review rule, output ratio, and audio mode.
 - After each video generation, fill the containment check for that clip. Video-level drift is a soft gate — record it and let the user decide whether to retake — unless the drift violates an explicit MUST NOT HAVE item, which always escalates to a hard block.
@@ -545,21 +605,65 @@ Seedance2 reference packaging:
 1. Analyze the product asset or product name.
 2. Produce three ecommerce short-drama briefs.
 3. Let the user choose one brief.
-4. Create the product proof bible.
-5. Build four subject libraries: role, scene, product/prop, and evidence.
-6. Create the required role dossier deliverables for key human roles: `角色主体库.md`, `人物备案板需求.md`, and `Seedance2参考包计划.md`.
-7. If Seedance2 with visible faces is planned and the provider supports it, file the role boards and record filed asset metadata.
-8. Extract Seedance2-ready references from role boards: face close-up, full/half-body wardrobe reference, scene/product references, optional motion/audio references.
-9. Write one high-conflict episode.
-10. Create a 12-shot production table that references subject IDs and applies the Cinematic Shot-Design Rule (frame size, angle, composition, lighting, color grade, movement, pacing) to each shot's camera field.
-11. Generate one 4x3 storyboard/first-frame grid for EP01, then cut it into 12 independent 9:16 first frames. Precheck for PPT-look before finalizing: layered depth and varied frame size across the sequence.
-12. Write clip contracts and reference role maps.
-13. Write `salpx / omni_flash` prompts with fixed `duration=10`, or Seedance2 prompts with ordered media references. Apply the Camera-as-Witness Prompt Law selectively where the shot's style calls for realism.
-14. Prepare captions, manifest, and delivery checklist.
+4. Lock the target region. If it is US, apply the US-Market Localization Hard Rule to all story, scene, caption, CTA, compliance, and manifest artifacts.
+5. Create the product proof bible.
+6. Build four subject libraries: role, scene, product/prop, and evidence.
+7. Create the required role dossier deliverables for key human roles: `角色主体库.md`, `人物备案板需求.md`, and `Seedance2参考包计划.md`.
+8. If Seedance2 with visible faces is planned and the provider supports it, file the role boards and record filed asset metadata.
+9. Extract Seedance2-ready references from role boards: face close-up, full/half-body wardrobe reference, scene/product references, optional motion/audio references.
+10. Write one high-conflict episode.
+11. Create a 12-shot production table that references subject IDs and applies the Cinematic Shot-Design Rule (frame size, angle, composition, lighting, color grade, movement, pacing) to each shot's camera field.
+12. Generate one 4x3 storyboard/first-frame grid for EP01, then cut it into 12 independent 9:16 first frames. Precheck for PPT-look before finalizing: layered depth and varied frame size across the sequence.
+13. Write clip contracts and reference role maps.
+14. Write MiniMax H3 prompts and select `t2va`, `ref2va`, or `fl2va` per shot. If the user explicitly selects salpx video, write `salpx / omni_flash` prompts with fixed `duration=10`, or Seedance2 prompts with ordered media references. Apply the Camera-as-Witness Prompt Law selectively where the shot's style calls for realism.
+15. Prepare captions, manifest, and delivery checklist.
+
+## MiniMax H3 Video Production Rule
+
+Current default production split:
+
+```text
+salpx / gpt-image-2 -> storyboard grids, first frames, product-proof images
+MiniMax H3 -> raw video clips
+```
+
+Before calling H3, read `docs/h3-api-production.md` and confirm:
+
+```text
+H3_API_KEY exists in .env or runtime environment
+H3_BASE_URL defaults to https://h3.zhongbiao.cloud/api
+H3_VIDEO_RESOLUTION defaults to 576P
+H3_VIDEO_DURATION defaults to 5
+H3_VIDEO_STEPS defaults to 10
+H3_VIDEO_ASPECT_RATIO defaults to 9:16
+```
+
+Use `scripts/h3_video_client.py` as the default public-safe helper:
+
+```bash
+python3 scripts/h3_video_client.py --env .env video \
+  --mode ref2va \
+  --reference-image first_frames/EP01-03.png \
+  --prompt "<script-locked 5-second vertical 9:16 video prompt>" \
+  --resolution 576P \
+  --duration 5 \
+  --steps 10 \
+  --aspect-ratio 9:16 \
+  --wait \
+  --out outputs/videos/ep01-shot03-h3.mp4
+```
+
+H3 mode rules:
+
+- `t2va`: text-to-video, only when a first frame is not needed.
+- `ref2va`: default TJ Short route after salpx first-frame generation; pass the accepted first frame or product reference via `referenceImages`.
+- `fl2va`: use `startFrame` and optional `endFrame` when the clip must start and finish on exact frames.
+- Do not combine `startFrame`/`endFrame` with unrelated `referenceImages` unless the latest H3 capability check confirms the route supports it.
+- Every H3 video output must be downloaded, inspected with `ffprobe` or equivalent, and recorded in `generation_manifest.csv` with job ID kept private in public examples.
 
 ## salpx API Production Rule
 
-TJ Short must be able to produce assets after a GitHub install. Do not ship only prompt advice.
+TJ Short must be able to produce image assets after a GitHub install. Do not ship only prompt advice.
 
 Before calling salpx, read `docs/salpx-api-production.md` and confirm:
 
@@ -567,7 +671,7 @@ Before calling salpx, read `docs/salpx-api-production.md` and confirm:
 SALPX_API_KEY exists in .env or runtime environment
 SALPX_BASE_URL defaults to https://www.salpx.com/v1
 SALPX_IMAGE_MODEL defaults to gpt-image-2
-SALPX_VIDEO_MODEL defaults to omni_flash unless the user selected another model
+SALPX_VIDEO_MODEL is optional fallback only when the user selected salpx video
 ```
 
 Use `scripts/salpx_production_client.py` as the default public-safe helper:
@@ -579,14 +683,6 @@ python scripts/salpx_production_client.py --env .env image \
   --size 1024x1792 \
   --out-dir outputs/images \
   --name ep01-shot01
-
-python scripts/salpx_production_client.py --env .env video \
-  --model seedance-2-mini-480p \
-  --image first_frames/ep01-shot03.png \
-  --prompt "<script-locked video prompt>" \
-  --size 480x854 \
-  --duration 7 \
-  --out outputs/videos/ep01-shot03.mp4
 ```
 
 Model mappings:
@@ -602,7 +698,7 @@ veo -> the exact salpx console model ID, recorded in manifest
 Generation rules:
 
 - Image generation uses `POST /images/generations` and saves either `b64_json` or downloaded image URLs into the project directory.
-- Video generation uses `POST /videos`. If the response returns a task ID, poll `/videos/{task_id}`, `/videos/{task_id}/result`, or `/videos/generations/{task_id}` until a video URL appears.
+- salpx video generation is an optional fallback route. Default TJ Short video generation now uses MiniMax H3.
 - Do not echo or write real API keys. Real keys stay only in `.env`, shell env, or CI secrets.
 - Every generated file must be copied into the project directory and recorded in the manifest.
 - Every downloaded video must be inspected for actual duration, width, height, bytes, and whether it can enter final composition.
@@ -611,11 +707,19 @@ Generation rules:
 
 Always choose the video model route before writing generation prompts.
 
-Do not reuse one generic prompt across Omni, Seedance2, and Veo. Each model has different duration assumptions, reference behavior, motion tolerance, audio behavior, and review risks.
+Do not reuse one generic prompt across MiniMax H3, Omni, Seedance2, and Veo. Each model has different duration assumptions, reference behavior, motion tolerance, audio behavior, and review risks.
 
 Model route table:
 
 ```text
+minimax_h3:
+  role: default raw video generation route for TJ Short after salpx first-frame/image production
+  duration: commonly 4-15 seconds; TJ Short default is 5 seconds unless the H3 capability/quote check says otherwise
+  best_for: fast vertical 9:16 trial clips, product-reference clips, first/last-frame continuity tests
+  prompt_style: concise script-locked English or target-locale prompt, no subtitles, no extra props, clear action and camera behavior
+  modes: t2va for pure text, ref2va for accepted salpx first frame/product references, fl2va for start/end-frame control
+  review_focus: job status, downloaded bytes, actual duration/size, containment diff, locale mismatch
+
 omni_flash:
   role: fast image-to-video raw clip generation through salpx
   duration: fixed 10 seconds
@@ -651,7 +755,7 @@ Use `ratio="9:16"` for native vertical output when supported. Use `ratio="adapti
 Before submitting any clip, include `model_route` in the manifest and validate that the prompt follows that route's rules:
 
 ```text
-model_route: omni_flash | seedance2 | veo | other
+model_route: minimax_h3 | omni_flash | seedance2 | veo | other
 duration_rule:
 reference_rule:
 prompt_syntax_rule:
@@ -738,9 +842,11 @@ Do not use this process for unlicensed real people, celebrities, influencers, pu
 - Clip contracts
 - Reference role map
 - `salpx / omni_flash` prompt pack
+- MiniMax H3 prompt pack and job/download record
 - Generation manifest
 - Voiceover and caption list
 - Caption plan
+- US locale manifest and `locale_mismatch_status` when target region is US
 - Release checklist
 
 ## Safety

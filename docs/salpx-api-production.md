@@ -1,8 +1,10 @@
 # salpx API 生产 SOP
 
-适用场景：短剧带货项目需要通过 salpx / NewAPI 兼容接口生成图片和视频，包括 `gpt-image-2` 生图，以及 `omni_flash`、`gemini_omni_flash`、`seedance-2-mini-480p`、Veo 系列模型生视频。
+适用场景：短剧带货项目需要通过 salpx / NewAPI 兼容接口生成图片，尤其是 `gpt-image-2` 生成 4×3 分镜宫格、9:16 首帧和产品证明图。
 
-目标：让 skill 从 GitHub 下载后，不只会写 prompt，还能直接生产宫格图、首帧图和视频段。
+当前 TJ Short 默认生产链路已经调整为：salpx 负责图片，MiniMax H3 API 负责视频。本文档后面的 `omni_flash`、Seedance2、Veo 视频说明保留为可选 fallback 或历史路线；默认视频生产请看 `docs/h3-api-production.md`。
+
+目标：让 skill 从 GitHub 下载后，不只会写 prompt，还能直接生产宫格图、首帧图和产品证明图。
 
 ## 1. 环境变量
 
@@ -14,6 +16,8 @@ export SALPX_BASE_URL="https://www.salpx.com/v1"
 
 # 可选，项目可覆盖
 export SALPX_IMAGE_MODEL="gpt-image-2"
+
+# 可选 fallback，默认视频路线为 MiniMax H3
 export SALPX_VIDEO_MODEL="omni_flash"
 ```
 
@@ -24,7 +28,7 @@ export SALPX_VIDEO_MODEL="omni_flash"
 | 用户说法 | API model 默认值 | 用途 |
 |---|---|---|
 | gpt-image2 / gpt-image-2 | `gpt-image-2` | 宫格图、首帧、产品图再创作 |
-| omni / salpx omni | `omni_flash` | 默认短剧带货图生视频，固定 10 秒策略 |
+| omni / salpx omni | `omni_flash` | 可选 salpx 视频 fallback，固定 10 秒策略 |
 | gemini omni | `gemini_omni_flash` | 用户明确选择 Gemini Omni 时使用 |
 | seedance2-mini-480p | `seedance-2-mini-480p` | Seedance2 mini 480p 图生视频 |
 | veo | 以 salpx 控制台实际模型 ID 为准 | Veo 文生/图生视频 |

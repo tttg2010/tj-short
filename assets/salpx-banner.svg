@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1280" height="260" viewBox="0 0 1280 260" role="img" aria-labelledby="title desc">
   <title id="title">salpx 中转站 banner</title>
-  <desc id="desc">A banner introducing salpx as an image-to-video relay for fixed 10-second omni_flash short-drama clips.</desc>
+  <desc id="desc">A banner introducing salpx first-frame image generation and MiniMax H3 video generation for ecommerce short-drama clips.</desc>
   <defs>
     <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
       <stop offset="0" stop-color="#0b1220"/>
@@ -25,12 +25,12 @@
     <circle cx="110" cy="108" r="9" fill="#7dd3fc"/>
   </g>
   <g transform="translate(250 54)">
-    <text x="0" y="38" font-family="Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="26" fill="#86efac" font-weight="700">salpx 中转站</text>
-    <text x="0" y="88" font-family="Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="44" fill="#ffffff" font-weight="800">把首帧变成 10 秒短剧镜头</text>
-    <text x="0" y="128" font-family="Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="22" fill="#dbeafe">面向 salpx / omni_flash 的图生视频工作流：首帧、镜头契约、剧本锁定、后期字幕分离</text>
+    <text x="0" y="38" font-family="Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="26" fill="#86efac" font-weight="700">salpx 生图 + MiniMax H3 生视频</text>
+    <text x="0" y="88" font-family="Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="44" fill="#ffffff" font-weight="800">分镜首帧到 H3 短剧镜头</text>
+    <text x="0" y="128" font-family="Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="22" fill="#dbeafe">salpx / gpt-image-2 生成首帧，MiniMax H3 执行 t2va / ref2va / fl2va 视频</text>
   </g>
   <g transform="translate(1012 84)">
     <rect width="186" height="74" rx="37" fill="url(#accent)" filter="url(#softShadow)"/>
-    <text x="93" y="47" text-anchor="middle" font-family="Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="24" fill="#07111f" font-weight="800">访问 salpx</text>
+    <text x="93" y="47" text-anchor="middle" font-family="Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="24" fill="#07111f" font-weight="800">生产链路</text>
   </g>
 </svg>

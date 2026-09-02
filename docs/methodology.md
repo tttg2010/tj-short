@@ -188,6 +188,12 @@ Use a few ordered shots rather than a whole episode script. Prefer small continu
 Pick the model route before writing prompts. TJ Short should not use one generic video prompt across all providers.
 
 ```text
+minimax_h3:
+  default TJ Short video route after salpx first-frame/image generation
+  supports t2va, ref2va, and fl2va
+  TJ Short default is 5-second 9:16 raw clips after H3 capability/quote check
+  prompt focuses on the exact shot action, camera behavior, no subtitles, no extra props, and locale lock
+
 omni_flash:
   fixed 10-second raw clips
   driven mainly by the first frame
@@ -205,7 +211,7 @@ veo:
   do not assume Seedance2 media-label syntax unless the provider explicitly supports it
 ```
 
-Recent TJ Short work focuses on Seedance2, but that does not change Omni or Veo rules. The manifest must record `model_route`, `duration_rule`, `reference_rule`, `prompt_syntax_rule`, `face_review_rule`, `output_ratio`, and `audio_mode`.
+Current TJ Short default is salpx `gpt-image-2` for images and MiniMax H3 for video. Seedance2, Omni, and Veo remain model-specific optional routes. The manifest must record `model_route`, `duration_rule`, `reference_rule`, `prompt_syntax_rule`, `face_review_rule`, `output_ratio`, and `audio_mode`.
 
 ## 11. Clip Contract
 
@@ -585,3 +591,47 @@ Rule of thumb: gates get stricter the closer they sit to the source and the chea
 All three mechanisms are designed to add zero extra model calls. The coverage ledger and source anchor are extra output inside a generation TJ Short already runs (the shot table pass, the prompt-writing pass) — a few hundred extra tokens, not a new pass. The containment diff's checklist is generated alongside the prompt; filling it in happens during the human review that already occurs when looking at a produced image or video. The only real cost increase is retaking first frames that fail containment — and that is a deliberate trade: a cheap image retake instead of an expensive video-level failure discovered downstream, which is a net cost reduction, not an increase.
 
 Do not add a dedicated LLM call whose only job is comparing script to shot table, or a computer-vision pass to detect drifted objects in first frames. ID-string matching makes coverage a deterministic lookup, not a judgment call; a human glance at a short, forced-field checklist is enough to catch containment drift. Keep the fidelity record for one episode in a single `保真核对.md` rather than fragmenting it across many small files.
+
+## 19. US-Market Localization Gate
+
+US-market short-drama ecommerce is not "Chinese short drama translated into English." If the project target is 美国, US, United States, TikTok Shop US, Amazon US, or a US consumer segment, locale becomes a production constraint before scriptwriting starts.
+
+The locale gate exists because the wrong culture layer can survive every later stage. A Chinese shopping phrase translated into English may pass grammar review, but it will still feel wrong on TikTok Shop US. The same is true for default Chinese apartment compounds, Chinese hospital scenes, RMB pricing, WeChat CTAs, or Chinese short-drama family/workplace tropes dropped into a US-targeted ad.
+
+### Required Locale Manifest
+
+Every US-locked project should carry these fields in `项目状态胶囊.md` and `generation_manifest.csv`:
+
+```text
+target_region: US
+locale_lock_status: locked
+dialogue_language: en-US
+subtitle_language: en-US
+scene_locale: United States
+cta_locale: US ecommerce / TikTok Shop US / Amazon US as selected
+compliance_market: US
+locale_mismatch_status: pass | blocked
+```
+
+### What Must Be Localized
+
+Localize the actual story world, not only the words:
+
+- people: names, age signals, occupations, household roles, relationship boundaries, humor, conflict style
+- places: apartments, suburban homes, dorms, garages, pet stores, clinics, gyms, offices, driveways, sidewalks, school pickup, and product-relevant US locations
+- commerce: USD, US address/time conventions, platform-native CTA, believable order/chat UI, realistic delivery and return behavior
+- screen text: English phone UI, order labels, on-screen notes, product proof captions, disclaimer text
+- claims: US-appropriate caution for medical, supplement, financial, child, pet-health, beauty, safety, and regulated categories
+
+### Blocking Examples
+
+In a US-locked project, these are locale errors unless the user explicitly chooses a Chinese-diaspora setting:
+
+```text
+家人们 / 直播间 / 橱窗 / 点小黄车 / 加微信 / 私信我
+9块9包邮 / RMB pricing
+default Chinese hospital, residential compound, delivery locker, street sign, or app UI
+Chinese family/workplace short-drama tropes directly translated into English
+```
+
+If any artifact contains these errors, mark it `locale_mismatch_us_market`, fix it before Phase 3/4/5 continues, and keep the corrected version in the project files. The locale gate is additive: it does not weaken script fidelity, subject libraries, salpx/H3 model routing, Seedance2 face rules, or safety checks.
