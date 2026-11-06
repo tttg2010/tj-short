@@ -1,5 +1,13 @@
 # Changelog
 
+## short-drama-ecommerce v0.9.2
+
+Banner 换图。删除 `assets/salpx-banner.svg`（矢量版，画面上仍写着已下线的 MiniMax H3），替换为 `assets/salpx-banner.png`（1280×427）。
+
+- 新图由 salpx `gpt-image-2.5-sunburst` 一次生成，文字与主视觉在同一张图里出，没有后期单独叠加排版。
+- 画面内容对齐当前链路：`salpx` 生图 + Wan 3.0 生视频、2–30 秒直出、原生音轨、口型同步。
+- 中英 README 的图片引用与 alt 文案同步更新。
+
 ## short-drama-ecommerce v0.9.1
 
 默认图片模型从 `gpt-image-2` 升级为 `gpt-image-2.5-sunburst`。

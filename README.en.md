@@ -5,7 +5,7 @@ Use Codex to turn a product image into an ecommerce short-drama project: product
 [中文版本](README.md)
 
 <a href="https://www.salpx.com">
-  <img src="assets/salpx-banner.svg" alt="salpx generates first frames, salpx Wan 3.0 generates short-drama video" width="100%">
+  <img src="assets/salpx-banner.png" alt="salpx generates first frames, salpx Wan 3.0 generates short-drama video (2-30s takes, native audio, lip sync)" width="100%">
 </a>
 
 ## Overview
@@ -48,6 +48,7 @@ Core rule:
 
 | Version | Key updates |
 |---|---|
+| v0.9.2 | Banner replaced. The vector `assets/salpx-banner.svg` (which still described the retired MiniMax H3 route) is removed in favour of `assets/salpx-banner.png` (1280x427), generated end to end by `gpt-image-2.5-sunburst` with typography and imagery in a single pass. It now reflects the current route: salpx images plus Wan 3.0 video, 2-30s takes, native audio, lip sync. |
 | v0.9.1 | Default image model raised from `gpt-image-2` to `gpt-image-2.5-sunburst`. `.env.example`, the image client default, and every SOP step were updated. API shape and flags are unchanged, so projects that pin the old model in `.env` keep working. Optional variants: `gpt-image-2.5-flare`, `gpt-image-2.5-1k`, and the `XY-` 1k/2k/4k lines. |
 | v0.9.0 | **Video layer migration**: MiniMax H3 is retired and salpx Wan 3.0 (`wan3.0-480p/720p/1080p`, plus the independent `wan3.0-hm-*` line) becomes the default and only video route. Images and video now share one `SALPX_API_KEY`. Added `scripts/wan3_video_client.py` (stdlib only; first frame / first+last frame / up to 10 reference images / 5 reference videos / 5 reference audios / document / web link; `--dry-run` quotes without spending) and `docs/wan3-api-production.md`. Video capability expands to 2-30s single takes, native audio, and reference-audio-driven lip-sync and singing. Added a hard cost gate: model, resolution, seconds, and price must be stated and approved before every submission. Deleted the H3 client and docs, dropped all `H3_*` variables, and made the client reject any base URL containing `zhongbiao` or `h3.`. Breaking for projects still calling the H3 route. |
 | v0.8.29 | Added a cinematic shot-design rule: seven elements (frame size, angle, composition, lighting, color grade, camera movement, pacing) and four reusable scene formulas (emotional build-up, suspense, romance, pressure) for the shot table's `camera:`/`emotion_shift:` fields; added a camera-as-witness prompt law (shooting process over finished result, exclusion lists, camera behavior on the timeline) as a selective realism layer that does not override existing Seedance2 motion/compliance rules. |

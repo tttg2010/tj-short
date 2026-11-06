@@ -1,13 +1,13 @@
 ---
 name: tj-short
-description: 电商短剧带货创作总流程 skill v0.9.1。当用户说「短剧带货」「短剧带货启动」「启动短剧带货」「电商短剧」「产品短剧」「带货短剧」「产品图生成短剧」，或要求做产品证明脚本、主体库（角色/场景/产品道具/证据）、人物备案板/角色设定板、Seedance2 参考包与人物备案资产、12 镜头分镜表、首帧宫格、首帧图、salpx / gpt-image-2.5-sunburst 生图、salpx Wan 3.0 视频（文生/首帧/首尾帧/多素材参考：参考图·参考视频·参考音频·文档·网页，单次 2–30 秒直出、原生音轨与口型同步）及其提示词、字幕与投放切片、generation_manifest、交付清单、电影感镜头设计、剧本保真核对（对白/动作 ID 与覆盖台账）、美国市场本地化（脚本/字幕/CTA）、Seedance2 露脸合规修复时，使用本 skill。
+description: 电商短剧带货创作总流程 skill v0.9.2。当用户说「短剧带货」「短剧带货启动」「启动短剧带货」「电商短剧」「产品短剧」「带货短剧」「产品图生成短剧」，或要求做产品证明脚本、主体库（角色/场景/产品道具/证据）、人物备案板/角色设定板、Seedance2 参考包与人物备案资产、12 镜头分镜表、首帧宫格、首帧图、salpx / gpt-image-2.5-sunburst 生图、salpx Wan 3.0 视频（文生/首帧/首尾帧/多素材参考：参考图·参考视频·参考音频·文档·网页，单次 2–30 秒直出、原生音轨与口型同步）及其提示词、字幕与投放切片、generation_manifest、交付清单、电影感镜头设计、剧本保真核对（对白/动作 ID 与覆盖台账）、美国市场本地化（脚本/字幕/CTA）、Seedance2 露脸合规修复时，使用本 skill。
 ---
 
 # TJ Short
 
 TJ Short 是电商短剧带货的完整生产流程 skill，可在 WorkBuddy / Codex 等宿主 agent 里直接安装使用。
 
-Version: `short-drama-ecommerce v0.9.1`
+Version: `short-drama-ecommerce v0.9.2`
 
 ## 安装与调用
 
@@ -37,6 +37,10 @@ Version: `short-drama-ecommerce v0.9.1`
 - 出片产物一律落到**当前项目目录**（`outputs/images`、`outputs/videos` 等）。
 - 安全：脚本只访问 `https://www.salpx.com`，无 `curl | bash`、无 `rm -rf`、无外发用户数据，仅读取用户自填的 API key。
 - 来源：<https://github.com/tttg2010/tj-short>，License 见 `LICENSE`。
+
+## v0.9.2 Changelog
+
+Banner artwork replaced. `assets/salpx-banner.svg` (vector, still describing the retired MiniMax H3 route) is removed and replaced by `assets/salpx-banner.png`, a 1280x427 key visual generated end to end with salpx `gpt-image-2.5-sunburst` — typography and imagery produced in a single generation, not composited afterwards. The new banner carries the current production split (`salpx` images plus Wan 3.0 video), the 2-30s single-take range, native audio, and lip sync. Both READMEs point at the new file.
 
 ## v0.9.1 Changelog
 

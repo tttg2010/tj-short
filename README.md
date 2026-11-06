@@ -5,7 +5,7 @@
 [English Version](README.en.md)
 
 <a href="https://www.salpx.com">
-  <img src="assets/salpx-banner.svg" alt="salpx 生分镜首帧，salpx Wan 3.0 生成短剧视频" width="100%">
+  <img src="assets/salpx-banner.png" alt="salpx 生分镜首帧，salpx Wan 3.0 生成短剧视频（2–30 秒直出 · 原生音轨 · 口型同步）" width="100%">
 </a>
 
 ## 项目简介
@@ -48,6 +48,7 @@ TJ Short 是一个面向 Codex 的「短剧带货 Skill」公开模板。它的�
 
 | 版本 | 重点更新 |
 |---|---|
+| v0.9.2 | Banner 换图：删除矢量版 `assets/salpx-banner.svg`（仍写着已下线的 MiniMax H3），替换为由 `gpt-image-2.5-sunburst` 一次生成、文字与主视觉一体的 `assets/salpx-banner.png`（1280×427），内容对齐当前链路（salpx 生图 + Wan 3.0 生视频、2–30 秒直出、原生音轨、口型同步）。 |
 | v0.9.1 | 默认图片模型从 `gpt-image-2` 升级为 `gpt-image-2.5-sunburst`。`.env.example`、生图客户端默认值和 SOP 步骤统一更新；接口与参数不变，已有 `.env` 写死旧模型的项目继续可用。同系列可选 `gpt-image-2.5-flare`、`gpt-image-2.5-1k` 及 `XY-` 前缀的 1k/2k/4k 线路。 |
 | v0.9.0 | **视频层迁移**：MiniMax H3 下线，默认且唯一的视频路线改为 salpx Wan 3.0（`wan3.0-480p/720p/1080p`，另有独立线路 `wan3.0-hm-*`），图片与视频共用同一个 `SALPX_API_KEY`。新增 `scripts/wan3_video_client.py`（纯标准库，支持首帧/首尾帧/参考图×10/参考视频×5/参考音频×5/文档/网页，`--dry-run` 可只报价不花钱）与 `docs/wan3-api-production.md`。视频能力扩展到 2–30 秒单镜直出、原生音轨、参考音频驱动的口型同步与演唱。新增硬性成本门禁：提交前必须报模型/分辨率/秒数/金额并取得同意。删除 H3 客户端与文档，`H3_*` 变量全部移除，客户端拒绝含 `zhongbiao` / `h3.` 的 base URL。对仍调用 H3 的项目属破坏性变更。 |
 | v0.8.30 | 新增剧本保真与可追溯规则：对白/关键动作加稳定ID，Phase 2末尾生成覆盖核对表（必须100%覆盖，无"丢失"才能进Phase 3）；Phase 4/5提示词必须带SOURCE ANCHOR（原文回溯锚点）+ MUST HAVE/MUST NOT HAVE清单，生成后强制填写"画面/视频多出了什么"；首帧漂移硬阻塞，视频漂移软提醒（违反排除项则硬阻塞）。新增美国市场本地化硬规则：选择美国地区时，剧本、对白、人物、场景字幕、CTA、合规口径必须符合美国语境。新增默认生产链路：salpx 生成分镜/首帧图片，MiniMax H3 API 生成视频。修复真实项目里"分镜表漏对白"和"首帧擅自加道具"两个故障。 |
