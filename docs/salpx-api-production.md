@@ -1,8 +1,8 @@
 # salpx API 生产 SOP
 
-适用场景：短剧带货项目需要通过 salpx / NewAPI 兼容接口生成图片，尤其是 `gpt-image-2` 生成 4×3 分镜宫格、9:16 首帧和产品证明图。
+适用场景：短剧带货项目需要通过 salpx / NewAPI 兼容接口生成图片，尤其是 `gpt-image-2.5-sunburst` 生成 4×3 分镜宫格、9:16 首帧和产品证明图。
 
-当前 TJ Short 生产链路：**salpx `gpt-image-2` 负责图片，salpx Wan 3.0（`wan3.0-*`）负责视频**，两者共用同一个 `SALPX_API_KEY`。
+当前 TJ Short 生产链路：**salpx `gpt-image-2.5-sunburst` 负责图片，salpx Wan 3.0（`wan3.0-*`）负责视频**，两者共用同一个 `SALPX_API_KEY`。
 
 视频的正式说明见 `docs/wan3-api-production.md` 与 `scripts/wan3_video_client.py`。本文档第 4 节以后保留的 `omni_flash` / Seedance2 / Veo 写法属于**非默认的历史路线**，只有当用户明确点名这些模型时才使用；它们与 Wan 3.0 的请求字段不同，不要混用。
 
@@ -19,7 +19,7 @@ export SALPX_API_KEY="your_salpx_api_key_here"
 export SALPX_BASE_URL="https://www.salpx.com/v1"
 
 # 可选，项目可覆盖
-export SALPX_IMAGE_MODEL="gpt-image-2"
+export SALPX_IMAGE_MODEL="gpt-image-2.5-sunburst"
 
 # 视频默认路线：salpx Wan 3.0
 export SALPX_VIDEO_MODEL="wan3.0-720p"
@@ -31,7 +31,7 @@ export SALPX_VIDEO_MODEL="wan3.0-720p"
 
 | 用户说法 | API model 默认值 | 用途 |
 |---|---|---|
-| gpt-image2 / gpt-image-2 | `gpt-image-2` | 宫格图、首帧、产品图再创作 |
+| gpt-image2 / gpt-image-2.5-sunburst | `gpt-image-2.5-sunburst` | 宫格图、首帧、产品图再创作 |
 | wan3 / 万相3.0 | `wan3.0-720p`（另 480p / 1080p / hm 三档） | **默认视频层**，2–30 秒，原生音轨 |
 | omni / salpx omni | `omni_flash` | 历史路线，固定 10 秒策略 |
 | gemini omni | `gemini_omni_flash` | 用户明确选择 Gemini Omni 时使用 |
@@ -40,7 +40,7 @@ export SALPX_VIDEO_MODEL="wan3.0-720p"
 
 Veo 的具体模型 ID 可能随 salpx 渠道变化。不要在 skill 里死写唯一 ID；项目 manifest 必须记录实际 `model_name`，例如 `veo3`、`veo-3`、`veo2` 或 salpx 控制台显示的完整 ID。
 
-## 3. gpt-image-2 生图
+## 3. gpt-image-2.5-sunburst 生图
 
 默认 endpoint：
 
@@ -54,7 +54,7 @@ Content-Type: application/json
 
 ```json
 {
-  "model": "gpt-image-2",
+  "model": "gpt-image-2.5-sunburst",
   "prompt": "vertical 9:16 cinematic short-drama first frame...",
   "size": "1024x1792",
   "n": 1
@@ -255,7 +255,7 @@ model_provider,model_name,generation_mode,source_frame,prompt_path,api_duration_
 ## 9. 最小生产流程
 
 1. 读 `.env`，确认 `SALPX_API_KEY` 和 `SALPX_BASE_URL`。
-2. gpt-image-2 生成宫格或首帧，保存进项目目录。
+2. gpt-image-2.5-sunburst 生成宫格或首帧，保存进项目目录。
 3. 如果是 Seedance2 可见人物镜头，同一镜头生成 `face_pencil_strong`、`face_pencil_medium`、`blur_feature` 三候选。
 4. 逐张做 Seedance2 预检测；在通过候选里选人脸和表演信息最完整的一张。
 5. 切 9:16 独立首帧，坏首帧隔离到 `rejected/`，失败原因写入 manifest。

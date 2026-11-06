@@ -1,13 +1,13 @@
 ---
 name: tj-short
-description: 电商短剧带货创作总流程 skill v0.9.0。当用户说「短剧带货」「短剧带货启动」「启动短剧带货」「电商短剧」「产品短剧」「带货短剧」「产品图生成短剧」，或要求做产品证明脚本、主体库（角色/场景/产品道具/证据）、人物备案板/角色设定板、Seedance2 参考包与人物备案资产、12 镜头分镜表、首帧宫格、首帧图、salpx / gpt-image-2 生图、salpx Wan 3.0 视频（文生/首帧/首尾帧/多素材参考：参考图·参考视频·参考音频·文档·网页，单次 2–30 秒直出、原生音轨与口型同步）及其提示词、字幕与投放切片、generation_manifest、交付清单、电影感镜头设计、剧本保真核对（对白/动作 ID 与覆盖台账）、美国市场本地化（脚本/字幕/CTA）、Seedance2 露脸合规修复时，使用本 skill。
+description: 电商短剧带货创作总流程 skill v0.9.1。当用户说「短剧带货」「短剧带货启动」「启动短剧带货」「电商短剧」「产品短剧」「带货短剧」「产品图生成短剧」，或要求做产品证明脚本、主体库（角色/场景/产品道具/证据）、人物备案板/角色设定板、Seedance2 参考包与人物备案资产、12 镜头分镜表、首帧宫格、首帧图、salpx / gpt-image-2.5-sunburst 生图、salpx Wan 3.0 视频（文生/首帧/首尾帧/多素材参考：参考图·参考视频·参考音频·文档·网页，单次 2–30 秒直出、原生音轨与口型同步）及其提示词、字幕与投放切片、generation_manifest、交付清单、电影感镜头设计、剧本保真核对（对白/动作 ID 与覆盖台账）、美国市场本地化（脚本/字幕/CTA）、Seedance2 露脸合规修复时，使用本 skill。
 ---
 
 # TJ Short
 
 TJ Short 是电商短剧带货的完整生产流程 skill，可在 WorkBuddy / Codex 等宿主 agent 里直接安装使用。
 
-Version: `short-drama-ecommerce v0.9.0`
+Version: `short-drama-ecommerce v0.9.1`
 
 ## 安装与调用
 
@@ -29,7 +29,7 @@ Version: `short-drama-ecommerce v0.9.0`
     --first-frame first_frames/EP01-03.png --wait --out outputs/videos/ep01-03.mp4
   ```
 
-- 唯一付费凭证：`SALPX_API_KEY`。同一个 key 同时管生图（`gpt-image-2`）和视频（`wan3.0-*`）。注册：<https://www.salpx.com>
+- 唯一付费凭证：`SALPX_API_KEY`。同一个 key 同时管生图（`gpt-image-2.5-sunburst`）和视频（`wan3.0-*`）。注册：<https://www.salpx.com>
   - 取 key 顺序：环境变量 → `--env` 指定的文件（项目 `.env`）→ `~/.config/salpx/credentials.env`。
   - 不要把真 key 写进 skill 文件、提示词、manifest 或聊天输出。
   - **视频只走 salpx**。`H3_API_KEY` / `h3.zhongbiao.cloud` 已废弃，脚本与文档已删除；客户端检测到 base URL 含 `zhongbiao` 或 `h3.` 会直接报错退出。
@@ -37,6 +37,15 @@ Version: `short-drama-ecommerce v0.9.0`
 - 出片产物一律落到**当前项目目录**（`outputs/images`、`outputs/videos` 等）。
 - 安全：脚本只访问 `https://www.salpx.com`，无 `curl | bash`、无 `rm -rf`、无外发用户数据，仅读取用户自填的 API key。
 - 来源：<https://github.com/tttg2010/tj-short>，License 见 `LICENSE`。
+
+## v0.9.1 Changelog
+
+Default image model raised from `gpt-image-2` to `gpt-image-2.5-sunburst`.
+
+- `SALPX_IMAGE_MODEL` now defaults to `gpt-image-2.5-sunburst` in `.env.example`, in `scripts/salpx_production_client.py`, and in every prompt template and SOP step.
+- Documented the available salpx image variants: `gpt-image-2.5-flare`, `gpt-image-2.5-1k`, and the `XY-` prefixed 1k/2k/4k lines; `gpt-image-2` remains selectable as the previous generation.
+- No API shape change: still `POST /v1/images/generations`, same `--size` / `--out-dir` / `--name` flags. Existing `.env` files that pin `SALPX_IMAGE_MODEL=gpt-image-2` keep working.
+- Same credential: one `SALPX_API_KEY` covers image and video.
 
 ## v0.9.0 Changelog
 
@@ -157,7 +166,7 @@ Video generation uses salpx Wan 3.0 (`wan3.0-*`) and needs the same `SALPX_API_K
 For production image calls, use `docs/salpx-api-production.md` and `scripts/salpx_production_client.py`. For production Wan 3.0 video calls, use `docs/wan3-api-production.md` and `scripts/wan3_video_client.py`.
 
 ```text
-image: gpt-image-2 for storyboards, first frames, product-proof images
+image: gpt-image-2.5-sunburst for storyboards, first frames, product-proof images
 video: salpx Wan 3.0 (wan3.0-480p / wan3.0-720p / wan3.0-1080p, or the -hm- line), 2-30s per clip, native audio
 optional alternative video routes: omni_flash, gemini_omni_flash, seedance-2x, and provider-supported Veo model IDs
 ```
@@ -179,10 +188,10 @@ The first response must start the diagnostic flow:
 Startup copyable next-step template:
 
 ```text
-短剧带货：建议下一步（可复制）：短剧带货，选 [A/B/C]，地区 [中国/美国/其他]，图片模型 salpx / gpt-image-2，视频模型 salpx / wan3.0-720p（可选 wan3.0-1080p、wan3.0-hm-*、omni_flash、seedance-2x），产品是：[产品名/产品一句话]
+短剧带货：建议下一步（可复制）：短剧带货，选 [A/B/C]，地区 [中国/美国/其他]，图片模型 salpx / gpt-image-2.5-sunburst，视频模型 salpx / wan3.0-720p（可选 wan3.0-1080p、wan3.0-hm-*、omni_flash、seedance-2x），产品是：[产品名/产品一句话]
 ```
 
-Current default production is salpx/gpt-image-2 for images and salpx Wan 3.0 (`wan3.0-720p` as the cost/quality default) for videos. Video must never route through a non-salpx host.
+Current default production is salpx/gpt-image-2.5-sunburst for images and salpx Wan 3.0 (`wan3.0-720p` as the cost/quality default) for videos. Video must never route through a non-salpx host.
 
 If the user says "generate video" before product diagnosis is complete, still follow the gate: product diagnosis -> three briefs -> user chooses A/B/C -> then production.
 
@@ -198,7 +207,7 @@ WorkBuddy is the production brain:
 
 salpx is the execution relay for both image and video:
 
-- image: runs `gpt-image-2` for storyboard grids, first frames, and product-proof images
+- image: runs `gpt-image-2.5-sunburst` for storyboard grids, first frames, and product-proof images
 - video: runs `wan3.0-*` for raw clips — text-to-video, first-frame, first+last-frame, or Omni reference (reference images / videos / audio / document / web link)
 - returns raw clips for review and post-production
 
@@ -214,7 +223,7 @@ Use this skill when the user says:
 - 用 Codex 生成短剧带货
 - 用 WorkBuddy 生成短剧带货
 - salpx / wan3.0 图生视频
-- salpx / gpt-image-2 生图
+- salpx / gpt-image-2.5-sunburst 生图
 - wan3 / 万相3.0 / wan3.0-720p / wan3.0-1080p 视频
 - 30 秒视频直出、多图参考、视频参考、声音参考、人物唱歌对口型
 - salpx / omni_flash / seedance-2 / veo 图生视频
@@ -661,7 +670,7 @@ Seedance2 reference packaging:
 Current default production split:
 
 ```text
-salpx / gpt-image-2 -> storyboard grids, first frames, product-proof images
+salpx / gpt-image-2.5-sunburst -> storyboard grids, first frames, product-proof images
 salpx / Wan 3.0 (wan3.0-*) -> raw video clips, with native audio
 ```
 
@@ -748,7 +757,7 @@ Before calling salpx, read `docs/salpx-api-production.md` and confirm:
 ```text
 SALPX_API_KEY exists in .env or runtime environment
 SALPX_BASE_URL defaults to https://www.salpx.com/v1
-SALPX_IMAGE_MODEL defaults to gpt-image-2
+SALPX_IMAGE_MODEL defaults to gpt-image-2.5-sunburst
 SALPX_VIDEO_MODEL is optional fallback only when the user selected salpx video
 ```
 
@@ -756,7 +765,7 @@ Use `scripts/salpx_production_client.py` as the default public-safe helper:
 
 ```bash
 python scripts/salpx_production_client.py --env .env image \
-  --model gpt-image-2 \
+  --model gpt-image-2.5-sunburst \
   --prompt "<storyboard or first-frame prompt>" \
   --size 1024x1792 \
   --out-dir outputs/images \
@@ -766,7 +775,9 @@ python scripts/salpx_production_client.py --env .env image \
 Model mappings:
 
 ```text
-gpt-image2 / gpt-image-2 -> gpt-image-2
+gpt-image-2.5-sunburst -> gpt-image-2.5-sunburst (default)
+gpt-image-2 / gpt-image2 -> previous generation, optional
+gpt-image-2.5-flare / gpt-image-2.5-1k -> optional salpx variants
 omni / salpx omni -> omni_flash
 gemini omni -> gemini_omni_flash
 seedance2-mini-480p -> seedance-2-mini-480p

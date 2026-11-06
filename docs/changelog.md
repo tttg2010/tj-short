@@ -1,5 +1,14 @@
 # Changelog
 
+## short-drama-ecommerce v0.9.1
+
+默认图片模型从 `gpt-image-2` 升级为 `gpt-image-2.5-sunburst`。
+
+- `.env.example`、`scripts/salpx_production_client.py`、SKILL.md 的提示词模板与 SOP 步骤，`SALPX_IMAGE_MODEL` 默认值统一改为 `gpt-image-2.5-sunburst`。
+- 补充可用图片模型变体说明：`gpt-image-2.5-flare`、`gpt-image-2.5-1k`，以及 `XY-` 前缀的 1k/2k/4k 线路；`gpt-image-2` 保留为上一代可选。
+- 接口形态不变：仍是 `POST /v1/images/generations`，`--size` / `--out-dir` / `--name` 参数不变。已有 `.env` 里写死 `SALPX_IMAGE_MODEL=gpt-image-2` 的项目继续可用。
+- 凭证不变：一个 `SALPX_API_KEY` 同时覆盖图片与视频。
+
 ## short-drama-ecommerce v0.9.0
 
 视频层迁移：MiniMax H3 下线，salpx Wan 3.0 上线。对仍在调用 H3 路线的项目属破坏性变更。

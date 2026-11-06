@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""salpx image client for TJ Short (gpt-image-2).
+"""salpx image client for TJ Short (gpt-image-2.5-sunburst).
 
 图片只走 https://www.salpx.com/v1/images/generations。
 视频不走这里 —— 用同目录的 `wan3_video_client.py`（salpx Wan 3.0）。
@@ -99,7 +99,7 @@ def extension_from_url(url: str, fallback: str) -> str:
 def generate_image(args):
     http = require_requests()
     base_url = normalize_base_url(os.environ.get("SALPX_BASE_URL", DEFAULT_BASE_URL))
-    model = args.model or os.environ.get("SALPX_IMAGE_MODEL", "gpt-image-2")
+    model = args.model or os.environ.get("SALPX_IMAGE_MODEL", "gpt-image-2.5-sunburst")
     body = {"model": model, "prompt": args.prompt, "size": args.size, "n": args.n}
     if args.reference:
         body["image"] = data_uri(Path(args.reference))
@@ -142,7 +142,7 @@ def generate_image(args):
 
 def main():
     parser = argparse.ArgumentParser(
-        description="salpx image client (gpt-image-2) for TJ Short. "
+        description="salpx image client (gpt-image-2.5-sunburst) for TJ Short. "
                     "Video: use wan3_video_client.py instead.")
     parser.add_argument("--env", default=".env", help="optional project .env path")
     sub = parser.add_subparsers(dest="cmd", required=True)

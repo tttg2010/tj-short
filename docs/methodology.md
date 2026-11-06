@@ -212,7 +212,7 @@ veo:
   do not assume Seedance2 media-label syntax unless the provider explicitly supports it
 ```
 
-Current TJ Short default is salpx `gpt-image-2` for images and salpx Wan 3.0 (`wan3.0-720p`) for video. Seedance2, Omni, and Veo remain model-specific optional routes. The manifest must record `model_route`, `duration_rule`, `reference_rule`, `prompt_syntax_rule`, `face_review_rule`, `output_ratio`, and `audio_mode`.
+Current TJ Short default is salpx `gpt-image-2.5-sunburst` for images and salpx Wan 3.0 (`wan3.0-720p`) for video. Seedance2, Omni, and Veo remain model-specific optional routes. The manifest must record `model_route`, `duration_rule`, `reference_rule`, `prompt_syntax_rule`, `face_review_rule`, `output_ratio`, and `audio_mode`.
 
 ## 11. Clip Contract
 

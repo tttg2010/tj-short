@@ -10,7 +10,7 @@
 | **OnlyShot** | 更完整的短剧带货方法论和项目化出片体系 | 规则密、经验多、覆盖从脚本到出片复盘；对“广告小剧情”识别强 | 体系较重，新用户需要时间理解；不一定是公开可直接安装的轻量包 | 团队级短剧带货 SOP、复杂项目复盘 | 只想快速试一个产品钩子的用户 |
 | **short-drama** | 通用短剧创作、分镜和出片流程 | 短剧结构完整，适合娱乐短剧、爽剧、系列化叙事 | 带货转化、产品证据和 CTA 不是默认核心 | 娱乐短剧、剧情 IP、系列故事 | 明确以成交/投放为第一目标的产品短剧 |
 | **Emily2040/seedance-2.0** | 视频生成生产纪律：镜头契约、状态胶囊、参考资产职责、单变量补拍 | 对视频生成稳定性帮助大；能减少乱补拍和连续性漂移 | 更偏视频生成 OS，不负责完整带货剧本和产品证明 | 已经进入视频生成阶段，需要控质量和复盘 | 还没有产品定位、剧本和转化目标的早期项目 |
-| **salpx 中转站 / gpt-image-2** | 分镜宫格、首帧和产品证明图执行通道 | 适合把 Codex 的分镜提示词变成 4×3 宫格和 9:16 首帧 | 不负责判断剧情是否能卖；不负责字幕、剪辑和 Wan 3.0 视频生成 | 需要把脚本/分镜落成首帧图片 | 期待生图模型自动理解整集商业逻辑 |
+| **salpx 中转站 / gpt-image-2.5-sunburst** | 分镜宫格、首帧和产品证明图执行通道 | 适合把 Codex 的分镜提示词变成 4×3 宫格和 9:16 首帧 | 不负责判断剧情是否能卖；不负责字幕、剪辑和 Wan 3.0 视频生成 | 需要把脚本/分镜落成首帧图片 | 期待生图模型自动理解整集商业逻辑 |
 | **salpx Wan 3.0** | 默认且唯一的视频执行通道 | 2–30 秒整数直出，支持首帧、首尾帧、参考图×10/参考视频×5/参考音频×5，原生音轨与口型同步；与生图共用 SALPX_API_KEY | 不负责剧本、分镜、字幕、产品证明和合规判断 | 已有干净首帧和剧本锁定 prompt，需要生成 raw clip | 还没有分镜、首帧或 prompt 的早期项目 |
 | **通用剪辑工具** | 剪辑、字幕、配音、合成和发布 | 后期能力强，适合精修成片 | 不负责产品诊断、剧本结构和图生视频提示词 | raw clips 已生成后的成片包装 | 从零开始做短剧带货策略 |
 
@@ -22,7 +22,7 @@
 | **OnlyShot** | Larger ecommerce short-drama methodology and production system | Deep rules, strong project delivery, strong anti-ad-story guardrails, covers postmortems | Heavier system, slower for new users, not necessarily a lightweight public install package | Team SOPs and complex ecommerce short-drama production | Users who only need a quick product-hook test |
 | **short-drama** | General short-drama creation, story structure, storyboard and production workflow | Strong drama structure, good for entertainment series and IP-style stories | Conversion, product proof, and CTA are not the default center | Entertainment short dramas and serialized story projects | Product-first campaigns where sales proof is the main objective |
 | **Emily2040/seedance-2.0** | Video generation operating discipline: clip contracts, state capsules, reference roles, one-variable retakes | Helps stabilize video generation and reduce random rerolls | More of a video-generation OS than a complete ecommerce script system | Projects already in video generation and quality-control phase | Early projects without product proof, script, or conversion target |
-| **salpx relay / gpt-image-2** | Storyboard-grid, first-frame, and product-proof image route | Turns Codex shot prompts into 4x3 grids and clean 9:16 first frames | Does not decide whether the story sells; does not handle captions, editing, or Wan 3.0 video generation | Users who need production images from scripts/storyboards | Users expecting an image model to infer the full business logic |
+| **salpx relay / gpt-image-2.5-sunburst** | Storyboard-grid, first-frame, and product-proof image route | Turns Codex shot prompts into 4x3 grids and clean 9:16 first frames | Does not decide whether the story sells; does not handle captions, editing, or Wan 3.0 video generation | Users who need production images from scripts/storyboards | Users expecting an image model to infer the full business logic |
 | **salpx Wan 3.0** | Default and only video execution route | Integer 2-30s takes; first frame, first+last frame, or up to 10 reference images / 5 reference videos / 5 reference audios; native audio and lip sync; shares SALPX_API_KEY with image generation | Does not write scripts, captions, product proof, or compliance checks | Users with accepted first frames and script-locked prompts | Early projects without storyboard, first frame, or prompt |
 | **General editing tools** | Editing, subtitles, dubbing, compositing and publishing | Strong post-production capability | Does not provide product diagnosis, script structure or I2V prompts | Packaging raw clips into final videos | Starting a product short-drama strategy from scratch |
 
@@ -31,13 +31,13 @@
 TJ Short 的强项不是“比所有项目都完整”，而是把最关键的一段链路压短：
 
 ```text
-产品图 -> Codex 内短剧带货项目 -> salpx / gpt-image-2 首帧 -> salpx Wan 3.0 三镜试生 -> 可判断是否继续投入
+产品图 -> Codex 内短剧带货项目 -> salpx / gpt-image-2.5-sunburst 首帧 -> salpx Wan 3.0 三镜试生 -> 可判断是否继续投入
 ```
 
 如果你要做完整团队级体系，OnlyShot 和 short-drama 更重、更全。
 
 如果你已经有剧本和首帧，只缺视频生产纪律，Emily2040/seedance-2.0 的思路更关键。
 
-如果你只需要首帧图片，salpx / gpt-image-2 就是执行层；如果你只需要视频生成，salpx Wan 3.0 就是执行层，不需要 TJ Short。
+如果你只需要首帧图片，salpx / gpt-image-2.5-sunburst 就是执行层；如果你只需要视频生成，salpx Wan 3.0 就是执行层，不需要 TJ Short。
 
 如果你想在 Codex 里把一个产品快速变成可执行短剧带货项目，TJ Short 的价值最高。

@@ -1,6 +1,6 @@
 # TJ Short | Codex Ecommerce Short-Drama Skill
 
-Use Codex to turn a product image into an ecommerce short-drama project: product analysis, target-region lock, character dossier boards, high-conflict scripts, 4x3 first-frame grids, 9:16 shot frames, model-specific prompts, captions, and delivery checks. The current default production route uses salpx `gpt-image-2` for storyboard/first-frame images and salpx Wan 3.0 (`wan3.0-*`) for video clips.
+Use Codex to turn a product image into an ecommerce short-drama project: product analysis, target-region lock, character dossier boards, high-conflict scripts, 4x3 first-frame grids, 9:16 shot frames, model-specific prompts, captions, and delivery checks. The current default production route uses salpx `gpt-image-2.5-sunburst` for storyboard/first-frame images and salpx Wan 3.0 (`wan3.0-*`) for video clips.
 
 [中文版本](README.md)
 
@@ -12,12 +12,12 @@ Use Codex to turn a product image into an ecommerce short-drama project: product
 
 TJ Short is a public-safe Codex Skill template for ecommerce short dramas. It is not only a writing framework and not only a video API wrapper. It lets Codex move a product image through a complete production chain:
 
-product analysis -> target-region lock -> three briefs -> product proof bible -> four libraries plus shot table (role / scene / product-prop / evidence + 12-shot production table) -> character dossier boards -> salpx `gpt-image-2` 4x3 first-frame grid -> auto-cut 12 independent 9:16 first frames -> salpx Wan 3.0 prompts/API submission (text / first frame / first+last frame / multi-reference) -> captions and ad cutdown plan.
+product analysis -> target-region lock -> three briefs -> product proof bible -> four libraries plus shot table (role / scene / product-prop / evidence + 12-shot production table) -> character dossier boards -> salpx `gpt-image-2.5-sunburst` 4x3 first-frame grid -> auto-cut 12 independent 9:16 first frames -> salpx Wan 3.0 prompts/API submission (text / first frame / first+last frame / multi-reference) -> captions and ad cutdown plan.
 
 The split is clear:
 
 - **Codex is the production brain**: judgment, writing, files, prompts, manifests, captions, reviews, and privacy checks.
-- **salpx is the image execution relay**: runs `gpt-image-2` for product-proof images, storyboard grids, and clean 9:16 first frames.
+- **salpx is the image execution relay**: runs `gpt-image-2.5-sunburst` for product-proof images, storyboard grids, and clean 9:16 first frames.
 - **salpx Wan 3.0 is the default and only video execution layer**: takes accepted first frames or reference materials plus script-locked prompts and returns raw clips. Images and video share one `SALPX_API_KEY`.
 
 ## Skill Card
@@ -48,6 +48,7 @@ Core rule:
 
 | Version | Key updates |
 |---|---|
+| v0.9.1 | Default image model raised from `gpt-image-2` to `gpt-image-2.5-sunburst`. `.env.example`, the image client default, and every SOP step were updated. API shape and flags are unchanged, so projects that pin the old model in `.env` keep working. Optional variants: `gpt-image-2.5-flare`, `gpt-image-2.5-1k`, and the `XY-` 1k/2k/4k lines. |
 | v0.9.0 | **Video layer migration**: MiniMax H3 is retired and salpx Wan 3.0 (`wan3.0-480p/720p/1080p`, plus the independent `wan3.0-hm-*` line) becomes the default and only video route. Images and video now share one `SALPX_API_KEY`. Added `scripts/wan3_video_client.py` (stdlib only; first frame / first+last frame / up to 10 reference images / 5 reference videos / 5 reference audios / document / web link; `--dry-run` quotes without spending) and `docs/wan3-api-production.md`. Video capability expands to 2-30s single takes, native audio, and reference-audio-driven lip-sync and singing. Added a hard cost gate: model, resolution, seconds, and price must be stated and approved before every submission. Deleted the H3 client and docs, dropped all `H3_*` variables, and made the client reject any base URL containing `zhongbiao` or `h3.`. Breaking for projects still calling the H3 route. |
 | v0.8.29 | Added a cinematic shot-design rule: seven elements (frame size, angle, composition, lighting, color grade, camera movement, pacing) and four reusable scene formulas (emotional build-up, suspense, romance, pressure) for the shot table's `camera:`/`emotion_shift:` fields; added a camera-as-witness prompt law (shooting process over finished result, exclusion lists, camera behavior on the timeline) as a selective realism layer that does not override existing Seedance2 motion/compliance rules. |
 | v0.8.28 | Added grid-first cost control: generate one 4x3 contact sheet first, then auto-cut 12 independent 9:16 first frames; do not generate 12 standalone first frames upfront unless explicitly requested or the grid/cut workflow fails. |
@@ -66,7 +67,7 @@ Full history: [docs/changelog.md](docs/changelog.md)
 
 - It is a Codex Skill, not just documentation
 - Codex handles strategy, scripts, storyboards, first frames, prompts, and delivery checklists
-- salpx executes `gpt-image-2` image generation for storyboards and first frames; salpx Wan 3.0 generates video clips from accepted first frames or reference materials and prompts
+- salpx executes `gpt-image-2.5-sunburst` image generation for storyboards and first frames; salpx Wan 3.0 generates video clips from accepted first frames or reference materials and prompts
 - US-targeted projects are rebuilt for US characters, locations, dialogue, captions, CTAs, and platform context instead of translating Chinese ecommerce short-drama habits
 - Avoids the weak "pain point -> product -> happy customer -> CTA" ad pattern
 - Builds conflict, misunderstanding, and relationship pressure before product explanation
@@ -224,7 +225,7 @@ flowchart TD
 | Git | Clone and version control |
 | Python | Python 3.9+ |
 | Python dependency | `requests` |
-| Image service | salpx relay / `gpt-image-2` |
+| Image service | salpx relay / `gpt-image-2.5-sunburst` |
 | Video service | salpx relay / Wan 3.0 (single route, shares the image key) |
 | Recommended model | Default: `salpx / wan3.0-720p`; optional: `wan3.0-1080p`, `wan3.0-hm-*`, `omni_flash`, `seedance-2-mini-480p`, Veo variants |
 | Aspect ratio | 9:16 |
@@ -243,7 +244,7 @@ flowchart TD
 | `docs/methodology.md` | Ecommerce short-drama methodology |
 | `docs/privacy-and-release.md` | Public-release privacy and key checklist |
 | `docs/seedance2-face-compliance.md` | Seedance2 visible-face, face_pencil, and blur_feature compliance notes |
-| `docs/salpx-api-production.md` | salpx API guide for gpt-image-2 storyboard grids, first frames, and product-proof images |
+| `docs/salpx-api-production.md` | salpx API guide for gpt-image-2.5-sunburst storyboard grids, first frames, and product-proof images |
 | `docs/wan3-api-production.md` | salpx Wan 3.0 guide: model and price ladder, billing and holds, material combination rules, submit, poll, download, error map |
 | `examples/xiderdl-lucky/` | Sanitized sample script and screenshots |
 | `prompts/omni-fixed-10s-template.md` | salpx / omni_flash fixed 10-second prompt template |
@@ -270,12 +271,12 @@ After installing or updating the Skill, restart Codex. Otherwise Codex may still
 重新启动codex！
 ```
 
-To fully test production from Codex, register at [salpx.com](https://www.salpx.com) and get an API key. Image generation (`gpt-image-2`) and video generation (`wan3.0-*`) share that single key. Put it in local `.env`:
+To fully test production from Codex, register at [salpx.com](https://www.salpx.com) and get an API key. Image generation (`gpt-image-2.5-sunburst`) and video generation (`wan3.0-*`) share that single key. Put it in local `.env`:
 
 ```env
 SALPX_API_KEY=your_salpx_api_key
 SALPX_BASE_URL=https://www.salpx.com/v1
-SALPX_IMAGE_MODEL=gpt-image-2
+SALPX_IMAGE_MODEL=gpt-image-2.5-sunburst
 SALPX_VIDEO_MODEL=wan3.0-720p
 ```
 
@@ -319,7 +320,7 @@ Recommended starter:
 After Codex gives A/B/C briefs, copy the next step:
 
 ```text
-短剧带货，选 A，地区 美国，图片模型 salpx / gpt-image-2，视频模型 salpx / wan3.0-720p（可选 wan3.0-1080p、wan3.0-hm-*、omni_flash、seedance-2-mini-480p），产品是：your product in one sentence
+短剧带货，选 A，地区 美国，图片模型 salpx / gpt-image-2.5-sunburst，视频模型 salpx / wan3.0-720p（可选 wan3.0-1080p、wan3.0-hm-*、omni_flash、seedance-2-mini-480p），产品是：your product in one sentence
 ```
 
 Codex should analyze the product and produce three briefs first. It should not jump straight into a full script.
@@ -383,11 +384,11 @@ Generate a standalone frame only if the grid cannot be cut, a cell fails prechec
 
 ### Step 5: Codex Compiles Prompts, salpx Generates Images, Wan 3.0 Generates Video
 
-If you need to generate storyboards, first frames, or product-proof images first, use `gpt-image-2`:
+If you need to generate storyboards, first frames, or product-proof images first, use `gpt-image-2.5-sunburst`:
 
 ```bash
 python3 scripts/salpx_production_client.py --env .env image \
-  --model gpt-image-2 \
+  --model gpt-image-2.5-sunburst \
   --prompt "vertical 9:16 ecommerce short-drama first frame..." \
   --size 1024x1792 \
   --out-dir outputs/images \
@@ -502,7 +503,7 @@ This is not an official distribution of those projects. It is a public-safe reus
 
 ## Keywords
 
-Codex skill, Codex ecommerce short drama, ecommerce short-drama skill, shoppable short video, AI product video, product image to video, image-to-video, salpx Wan 3.0, wan3.0, 30-second video, multi-reference, reference video, reference audio, lip sync, salpx, salpx relay, `gpt-image-2`, `omni_flash`, Seedance 2.0, `seedance-2-mini-480p`, Veo, AI video generation, short-drama storyboard, 4x3 first-frame grid, 9:16 first frame, character dossier board, role asset filing, Seedance2 face compliance, `face_pencil`, `blur_feature`, US-market localization, product proof, ecommerce video workflow, short-form commerce, TikTok Shop content, cross-border ecommerce video, prompt engineering.
+Codex skill, Codex ecommerce short drama, ecommerce short-drama skill, shoppable short video, AI product video, product image to video, image-to-video, salpx Wan 3.0, wan3.0, 30-second video, multi-reference, reference video, reference audio, lip sync, salpx, salpx relay, `gpt-image-2.5-sunburst`, `omni_flash`, Seedance 2.0, `seedance-2-mini-480p`, Veo, AI video generation, short-drama storyboard, 4x3 first-frame grid, 9:16 first frame, character dossier board, role asset filing, Seedance2 face compliance, `face_pencil`, `blur_feature`, US-market localization, product proof, ecommerce video workflow, short-form commerce, TikTok Shop content, cross-border ecommerce video, prompt engineering.
 
 ## Public Safety
 
