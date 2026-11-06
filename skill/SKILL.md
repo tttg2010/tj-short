@@ -1,13 +1,56 @@
 ---
 name: tj-short
-description: Codex ecommerce short-drama skill v0.8.30. Use when the user wants to create product-selling short dramas, generate product-proof scripts, subject libraries, character dossier boards, filed role assets, Seedance2 production references, storyboard grids, first frames, salpx gpt-image-2 images, MiniMax H3 video prompts/API calls, captions, manifests, delivery checklists, cinematic shot design, script fidelity tracing, US-market localized scripts/subtitles/CTAs, and Seedance2 visible-face repair inside Codex.
+description: 电商短剧带货创作总流程 skill v0.9.0。当用户说「短剧带货」「短剧带货启动」「启动短剧带货」「电商短剧」「产品短剧」「带货短剧」「产品图生成短剧」，或要求做产品证明脚本、主体库（角色/场景/产品道具/证据）、人物备案板/角色设定板、Seedance2 参考包与人物备案资产、12 镜头分镜表、首帧宫格、首帧图、salpx / gpt-image-2 生图、salpx Wan 3.0 视频（文生/首帧/首尾帧/多素材参考：参考图·参考视频·参考音频·文档·网页，单次 2–30 秒直出、原生音轨与口型同步）及其提示词、字幕与投放切片、generation_manifest、交付清单、电影感镜头设计、剧本保真核对（对白/动作 ID 与覆盖台账）、美国市场本地化（脚本/字幕/CTA）、Seedance2 露脸合规修复时，使用本 skill。
 ---
 
 # TJ Short
 
-TJ Short is a Codex Skill for ecommerce short dramas.
+TJ Short 是电商短剧带货的完整生产流程 skill，可在 WorkBuddy / Codex 等宿主 agent 里直接安装使用。
 
-Version: `short-drama-ecommerce v0.8.30`
+Version: `short-drama-ecommerce v0.9.0`
+
+## 安装与调用
+
+- 安装位置（WorkBuddy）：`~/.workbuddy/skills/tj-short`（slug=`tj-short`）。本文件里的相对路径 `docs/…`、`scripts/…`、`prompts/…` 都相对这个目录。
+- 宿主映射：下文所有 **Codex** 一律读作当前宿主 agent（WorkBuddy / Codex 均可），流程与方法论与宿主无关。
+- 依赖：
+  - `python3` / `ffmpeg` / `ffprobe`。
+  - `scripts/wan3_video_client.py` 是纯标准库，任何 python3 都能直接跑；`scripts/salpx_production_client.py`（生图）需要 `requests`。
+- 调用方式：
+
+  ```bash
+  # 生图（分镜宫格 / 首帧 / 产品证明图）
+  python3 scripts/salpx_production_client.py --env .env image \
+    --prompt "..." --out-dir outputs/images --name ep01-shot01
+
+  # 视频（以首帧图生视频为例）
+  python3 scripts/wan3_video_client.py --env .env video \
+    --model wan3.0-720p --prompt "..." --duration 8 --ratio 9:16 \
+    --first-frame first_frames/EP01-03.png --wait --out outputs/videos/ep01-03.mp4
+  ```
+
+- 唯一付费凭证：`SALPX_API_KEY`。同一个 key 同时管生图（`gpt-image-2`）和视频（`wan3.0-*`）。注册：<https://www.salpx.com>
+  - 取 key 顺序：环境变量 → `--env` 指定的文件（项目 `.env`）→ `~/.config/salpx/credentials.env`。
+  - 不要把真 key 写进 skill 文件、提示词、manifest 或聊天输出。
+  - **视频只走 salpx**。`H3_API_KEY` / `h3.zhongbiao.cloud` 已废弃，脚本与文档已删除；客户端检测到 base URL 含 `zhongbiao` 或 `h3.` 会直接报错退出。
+- 生图/生视频会**真实扣费**。提交任何生成任务之前，先把模型、张数/条数、时长、预计金额报给用户并取得同意；用户只要脚本和提示词时，不要擅自出图。`--dry-run` 可以先算价不花钱。
+- 出片产物一律落到**当前项目目录**（`outputs/images`、`outputs/videos` 等）。
+- 安全：脚本只访问 `https://www.salpx.com`，无 `curl | bash`、无 `rm -rf`、无外发用户数据，仅读取用户自填的 API key。
+- 来源：<https://github.com/tttg2010/tj-short>，License 见 `LICENSE`。
+
+## v0.9.0 Changelog
+
+Video layer migration: MiniMax H3 out, salpx Wan 3.0 in. This is a breaking change for anything still pointing at the old H3 route.
+
+- Replaced the default and only video route with salpx Wan 3.0 (`wan3.0-480p` / `wan3.0-720p` / `wan3.0-1080p`, plus the independent `wan3.0-hm-*` line). Image and video now share a single credential: `SALPX_API_KEY`.
+- Added `scripts/wan3_video_client.py` (stdlib only, no third-party deps): `video` / `status` / `download` / `models` subcommands; supports `first_frame`, `last_frame`, `reference_image` x10, `reference_video` x5, `reference_audio` x5, `file`, `link`; local assets are auto-encoded to base64; `--dry-run` validates and quotes without spending.
+- Added `docs/wan3-api-production.md`: endpoint, model/price ladder, per-second billing and reference-video hold, material combination rules, request construction, polling and download, error map, prompt guidance.
+- Expanded the video capability set: integer 2-30 second single takes, native audio track, lip-sync and singing driven by reference audio, multi-reference identity lock across images/video/audio.
+- Added a hard cost gate: model, resolution, output seconds, whether a reference video is attached, and the computed price must be stated to the user before every submission.
+- Removed `scripts/h3_video_client.py`, `docs/h3-api-production.md`, and `scripts/submit_salpx_omni_i2v.py`; dropped all `H3_*` variables from `.env.example`; the client now rejects any base URL containing `zhongbiao` or `h3.`.
+- Narrowed `scripts/salpx_production_client.py` to image generation only; its `video` subcommand now points at the Wan 3.0 client.
+- Rewrote the video production section of `SKILL.md` as `salpx Wan 3.0 Video Production Rule`, including the price ladder, material constraints, and the 30-second budget rule.
+- Breaking: projects that still call the H3 route, pass `H3_API_KEY`, or parse H3 job payloads must migrate to `SALPX_API_KEY` + `wan3.0-*`.
 
 ## v0.8.30 Changelog
 
@@ -18,7 +61,7 @@ Version: `short-drama-ecommerce v0.8.30`
 - Added `保真核对.md` to Required Deliverables: one file per episode carrying the coverage ledger and containment diffs.
 - Clarified this adds no dedicated LLM calls: coverage is deterministic ID-string matching, and containment diffs are filled during review that already happens when a human looks at generated output.
 - Added `US-Market Localization Hard Rule`: when target region is 美国 / US / United States, the story, dialogue, characters, scene text, subtitles, CTA, compliance wording, and project manifest must fit the United States market instead of translating Chinese ecommerce short-drama habits into English.
-- Added current production split: salpx/gpt-image-2 is the default image layer for storyboard grids and first frames; MiniMax H3 is the default video layer for raw clips. salpx video models remain optional alternatives when the user selects them.
+- Added current production split: salpx/gpt-image-2 is the default image layer for storyboard grids and first frames; MiniMax H3 was the default video layer for raw clips. salpx video models remain optional alternatives when the user selects them.（v0.9.0 起视频层统一走 salpx Wan 3.0，MiniMax H3 已弃用。）
 - Source: architecture review by 肖老师 (xiao-laoshi-agent) after two script-fidelity failures surfaced in a real project; see `docs/methodology.md` Section 18 for the full diagnosis and design rationale.
 
 ## v0.8.29 Changelog
@@ -93,13 +136,13 @@ Version: `short-drama-ecommerce v0.8.30`
 
 ## Install Reload Rule
 
-After installing or updating this skill, the user must restart Codex before testing the trigger phrase. Codex may keep an old skill cache until restart.
+After installing or updating this skill, reload WorkBuddy (new session) before testing the trigger phrase. The host may keep an old skill cache until reload.
 
-User-facing reminder, repeat exactly:
+User-facing reminder:
 
-重新启动codex！
-重新启动codex！
-重新启动codex！
+```text
+短剧带货 skill 已装好，新开一个会话（或重启 WorkBuddy）后再测触发词。
+```
 
 Then test with:
 
@@ -109,14 +152,14 @@ Then test with:
 
 Image generation through salpx requires a salpx API key. Tell users to register at `https://www.salpx.com`, create or copy their API Key, and put it into local `.env` as `SALPX_API_KEY`.
 
-Video generation through MiniMax H3 requires `H3_API_KEY` in the local `.env` or runtime environment. Without H3 credentials, Codex can still generate scripts, storyboards, first frames, prompts, and manifests, but it cannot complete H3 video submission from Codex.
+Video generation uses salpx Wan 3.0 (`wan3.0-*`) and needs the same `SALPX_API_KEY`. Without it, WorkBuddy can still generate scripts, storyboards, first frames, prompts, and manifests, but it cannot submit video tasks.
 
-For production image calls, use `docs/salpx-api-production.md` and `scripts/salpx_production_client.py`. For production H3 video calls, use `docs/h3-api-production.md` and `scripts/h3_video_client.py`.
+For production image calls, use `docs/salpx-api-production.md` and `scripts/salpx_production_client.py`. For production Wan 3.0 video calls, use `docs/wan3-api-production.md` and `scripts/wan3_video_client.py`.
 
 ```text
 image: gpt-image-2 for storyboards, first frames, product-proof images
-video: MiniMax H3 t2va, ref2va, or fl2va
-optional salpx video fallback: omni_flash, gemini_omni_flash, seedance-2-mini-480p, and provider-supported Veo model IDs
+video: salpx Wan 3.0 (wan3.0-480p / wan3.0-720p / wan3.0-1080p, or the -hm- line), 2-30s per clip, native audio
+optional alternative video routes: omni_flash, gemini_omni_flash, seedance-2x, and provider-supported Veo model IDs
 ```
 
 ## Startup Gate Rule
@@ -127,7 +170,7 @@ The first response must start the diagnostic flow:
 
 1. Ask for or inspect the product image/material.
 2. If no product is provided, ask the user for product information before writing any story.
-3. Remind the user that salpx image generation requires `SALPX_API_KEY`, and H3 video generation requires `H3_API_KEY`.
+3. Remind the user that both salpx image generation and salpx Wan 3.0 video generation require the same `SALPX_API_KEY`.
 4. Ask or infer the target region. If the user selects 美国 / US / United States / North America for US sale, immediately lock `target_region=US` and apply the US-Market Localization Hard Rule below.
 5. Produce only a short product diagnosis and three selectable briefs.
 6. End with a copyable next-step line that exposes model choices and target region.
@@ -136,34 +179,28 @@ The first response must start the diagnostic flow:
 Startup copyable next-step template:
 
 ```text
-短剧带货：建议下一步（可复制）：短剧带货，选 [A/B/C]，地区 [中国/美国/其他]，图片模型 salpx / gpt-image-2，视频模型 minimax / h3（可选 salpx / omni_flash、salpx / seedance-2-mini-480p），产品是：[产品名/产品一句话]
+短剧带货：建议下一步（可复制）：短剧带货，选 [A/B/C]，地区 [中国/美国/其他]，图片模型 salpx / gpt-image-2，视频模型 salpx / wan3.0-720p（可选 wan3.0-1080p、wan3.0-hm-*、omni_flash、seedance-2x），产品是：[产品名/产品一句话]
 ```
 
-Do not default the copyable next-step line to `salpx / omni_flash` only. Current default production is salpx/gpt-image-2 for images and MiniMax H3 for videos. Keep salpx video models visible only as optional alternatives.
+Current default production is salpx/gpt-image-2 for images and salpx Wan 3.0 (`wan3.0-720p` as the cost/quality default) for videos. Video must never route through a non-salpx host.
 
 If the user says "generate video" before product diagnosis is complete, still follow the gate: product diagnosis -> three briefs -> user chooses A/B/C -> then production.
 
-Codex is the production brain:
+WorkBuddy is the production brain:
 
 - analyzes product assets
 - writes product-proof briefs
 - creates scripts and storyboards
 - generates first-frame directions
-- writes salpx image prompts and MiniMax H3 video prompts
+- writes salpx image prompts and salpx Wan 3.0 video prompts
 - builds caption and delivery plans
 - checks privacy before publishing
 
-salpx is the image execution relay:
+salpx is the execution relay for both image and video:
 
-- runs `gpt-image-2` for storyboard grids, first frames, and product-proof images when needed
-
-MiniMax H3 is the default video execution layer:
-
-- receives clean 9:16 first frames or reference images
-- runs `t2va`, `ref2va`, or `fl2va` routes according to shot needs
+- image: runs `gpt-image-2` for storyboard grids, first frames, and product-proof images
+- video: runs `wan3.0-*` for raw clips — text-to-video, first-frame, first+last-frame, or Omni reference (reference images / videos / audio / document / web link)
 - returns raw clips for review and post-production
-
-salpx video models remain available only when the user explicitly selects that route.
 
 ## Trigger
 
@@ -175,11 +212,12 @@ Use this skill when the user says:
 - ecommerce short drama
 - product short drama
 - 用 Codex 生成短剧带货
-- salpx / omni_flash 图生视频
+- 用 WorkBuddy 生成短剧带货
+- salpx / wan3.0 图生视频
 - salpx / gpt-image-2 生图
-- minimax / h3 图生视频
-- MiniMax H3 API
-- salpx / seedance-2 / veo 图生视频
+- wan3 / 万相3.0 / wan3.0-720p / wan3.0-1080p 视频
+- 30 秒视频直出、多图参考、视频参考、声音参考、人物唱歌对口型
+- salpx / omni_flash / seedance-2 / veo 图生视频
 - 产品图生成短剧脚本、首帧、提示词、字幕或投放切片
 
 ## Core Rule
@@ -231,7 +269,7 @@ Chinese app UI, Chinese delivery lockers, Chinese street signage, or Chinese eco
 Locale gate:
 
 - If any script, shot table, first-frame prompt, video prompt, subtitle file, scene text, or CTA contains the forbidden US-mismatch items above, mark `locale_mismatch_status=blocked`, write `invalid_reason=locale_mismatch_us_market`, and fix the artifact before Phase 3, Phase 4, or Phase 5 can continue.
-- The US locale lock does not override script fidelity, subject libraries, Seedance2 face rules, salpx/H3 model rules, or safety checks. It is an additional gate that all downstream artifacts must carry.
+- The US locale lock does not override script fidelity, subject libraries, Seedance2 face rules, salpx/Wan 3.0 model rules, or safety checks. It is an additional gate that all downstream artifacts must carry.
 
 ## Strict Phase Gate
 
@@ -266,7 +304,7 @@ Seedance2参考包计划.md
 
 - For Seedance2 visible-human routes, stop here if the dossier files are missing.
 - Do not generate first-frame grids yet.
-- Do not write full MiniMax H3, `salpx / omni_flash`, or Seedance2 video prompt packs yet, except a short note naming the planned model route.
+- Do not write full Wan 3.0, `salpx / omni_flash`, or Seedance2 video prompt packs yet, except a short note naming the planned model route.
 
 Phase 2: episode and 12-shot production table
 
@@ -303,7 +341,7 @@ Phase 4: first-frame grid
 Phase 5: model-specific video prompts and submission
 
 - Only now write the full model-specific prompt pack.
-- Use separate prompt rules for MiniMax H3, `omni_flash`, `seedance2`, and `veo`.
+- Use separate prompt rules for Wan 3.0, `omni_flash`, `seedance2`, and `veo`.
 - Every prompt document must open with the `SOURCE ANCHOR` block for that shot (the exact tagged script lines it derives from) and carry MUST HAVE / MUST NOT HAVE lists.
 - Do not submit video tasks until `generation_manifest.csv` has model route, duration rule, reference rule, prompt syntax rule, face review rule, output ratio, and audio mode.
 - After each video generation, fill the containment check for that clip. Video-level drift is a soft gate — record it and let the user decide whether to retake — unless the drift violates an explicit MUST NOT HAVE item, which always escalates to a hard block.
@@ -615,51 +653,91 @@ Seedance2 reference packaging:
 11. Create a 12-shot production table that references subject IDs and applies the Cinematic Shot-Design Rule (frame size, angle, composition, lighting, color grade, movement, pacing) to each shot's camera field.
 12. Generate one 4x3 storyboard/first-frame grid for EP01, then cut it into 12 independent 9:16 first frames. Precheck for PPT-look before finalizing: layered depth and varied frame size across the sequence.
 13. Write clip contracts and reference role maps.
-14. Write MiniMax H3 prompts and select `t2va`, `ref2va`, or `fl2va` per shot. If the user explicitly selects salpx video, write `salpx / omni_flash` prompts with fixed `duration=10`, or Seedance2 prompts with ordered media references. Apply the Camera-as-Witness Prompt Law selectively where the shot's style calls for realism.
+14. Write salpx Wan 3.0 prompts and pick the mode per shot: `text_to_video`, `first_frame`, `first_last_frame`, or `reference` (reference_image / reference_video / reference_audio). Declare `duration` (integer 2-30) and `ratio` up front, and tag references as 图1/图2、视频1、音频1 inside the prompt. Apply the Camera-as-Witness Prompt Law selectively where the shot's style calls for realism.
 15. Prepare captions, manifest, and delivery checklist.
 
-## MiniMax H3 Video Production Rule
+## salpx Wan 3.0 Video Production Rule
 
 Current default production split:
 
 ```text
 salpx / gpt-image-2 -> storyboard grids, first frames, product-proof images
-MiniMax H3 -> raw video clips
+salpx / Wan 3.0 (wan3.0-*) -> raw video clips, with native audio
 ```
 
-Before calling H3, read `docs/h3-api-production.md` and confirm:
+Video must never route through any host other than `https://www.salpx.com/v1`. `h3.zhongbiao.cloud` and `H3_API_KEY` are dead: do not call them, do not reference them in manifests, do not ask the user for that key.
+
+Before submitting, read `docs/wan3-api-production.md` and confirm:
 
 ```text
-H3_API_KEY exists in .env or runtime environment
-H3_BASE_URL defaults to https://h3.zhongbiao.cloud/api
-H3_VIDEO_RESOLUTION defaults to 576P
-H3_VIDEO_DURATION defaults to 5
-H3_VIDEO_STEPS defaults to 10
-H3_VIDEO_ASPECT_RATIO defaults to 9:16
+SALPX_API_KEY exists in env -> project .env -> ~/.config/salpx/credentials.env
+SALPX_BASE_URL defaults to https://www.salpx.com/v1
+SALPX_VIDEO_MODEL defaults to wan3.0-720p
+endpoint is POST /v1/videos (never /v1/chat/completions)
+duration is an integer 2-30, and it is stated to the user before submission
 ```
 
-Use `scripts/h3_video_client.py` as the default public-safe helper:
+Model ladder (resolution is carried by the model name; `size` / `resolution` in the body are ignored):
+
+| model | resolution | price (CNY/s) | 5s | 10s | 30s |
+|---|---|---|---|---|---|
+| `wan3.0-480p` | 480P | ¥0.21 | ¥1.05 | ¥2.10 | ¥6.30 |
+| `wan3.0-720p` | 720P | ¥0.42 | ¥2.10 | ¥4.20 | ¥12.60 |
+| `wan3.0-1080p` | 1080P | ¥0.84 | ¥4.20 | ¥8.40 | ¥25.20 |
+| `wan3.0-hm-480p` | 480P | ¥0.28 | ¥1.40 | ¥2.80 | ¥8.40 |
+| `wan3.0-hm-720p` | 720P | ¥0.56 | ¥2.80 | ¥5.60 | ¥16.80 |
+| `wan3.0-hm-1080p` | 1080P | ¥1.11 | ¥5.55 | ¥11.10 | ¥33.30 |
+
+- `hm` is an independent line with identical parameters, material rules and billing, only a different price. The two lines never fail over into each other.
+- Billed per second. A task with a `reference_video` is billed as `price x (output seconds + reference video seconds)`; the submit-time hold assumes the 15s cap and is settled afterwards.
+- Failed / timed-out / rejected tasks are refunded in full.
+- Cost gate: before every submission, tell the user model, resolution, output seconds, whether a reference video is attached, and the computed price, then wait for consent. A 30s 1080p clip is ¥25.20 — never submit that on assumption.
+
+Request shape (`prompt` top-level, materials under `metadata.media`, each item `{"type": ..., "url": ...}`):
 
 ```bash
-python3 scripts/h3_video_client.py --env .env video \
-  --mode ref2va \
-  --reference-image first_frames/EP01-03.png \
-  --prompt "<script-locked 5-second vertical 9:16 video prompt>" \
-  --resolution 576P \
-  --duration 5 \
-  --steps 10 \
-  --aspect-ratio 9:16 \
+python3 scripts/wan3_video_client.py --env .env video \
+  --model wan3.0-720p \
+  --prompt "<script-locked prompt: 图1 的角色..., 视频1 的运镜..., 音频1 的节奏...>" \
+  --duration 8 \
+  --ratio 9:16 \
+  --first-frame first_frames/EP01-03.png \
   --wait \
-  --out outputs/videos/ep01-shot03-h3.mp4
+  --out outputs/videos/ep01-shot03.mp4
 ```
 
-H3 mode rules:
+Other flags: `--last-frame`, `--ref-image` (repeat up to 10), `--ref-video` (repeat up to 5), `--ref-audio` (repeat up to 5), `--ref-file`, `--ref-link`, `--no-audio`, `--seed`, `--poll-interval`, `--timeout`. Local files are auto-converted to `data:{MIME};base64,...`; remote materials must be public direct-download URLs (private, login-gated or hotlink-protected URLs fail the task).
 
-- `t2va`: text-to-video, only when a first frame is not needed.
-- `ref2va`: default TJ Short route after salpx first-frame generation; pass the accepted first frame or product reference via `referenceImages`.
-- `fl2va`: use `startFrame` and optional `endFrame` when the clip must start and finish on exact frames.
-- Do not combine `startFrame`/`endFrame` with unrelated `referenceImages` unless the latest H3 capability check confirms the route supports it.
-- Every H3 video output must be downloaded, inspected with `ffprobe` or equivalent, and recorded in `generation_manifest.csv` with job ID kept private in public examples.
+Modes (decided by which material types you attach):
+
+- `text_to_video`: `prompt` only. Use when no first frame is needed.
+- `first_frame`: one `first_frame` (or the top-level `input_reference` shorthand). Default TJ Short route after salpx first-frame generation.
+- `first_last_frame`: `first_frame` + `last_frame`, when the clip must open and close on exact frames.
+- `reference`: `reference_image` (max 10) / `reference_video` (max 5, 15s total) / `reference_audio` (max 5, 15s total) / `file` (1 document) / `link` (1 public webpage). This is the route for identity lock, product consistency, camera transfer, voice/lip-sync and singing.
+
+Material rules:
+
+- `first_frame` / `last_frame` cannot be mixed with `reference_*`, `file` or `link`. `file` and `link` are mutually exclusive; both can combine with `reference_*`. The three `reference_*` types combine freely.
+- Output is 2-30s. With a `reference_video` attached, reference seconds + output seconds must stay <= 30.
+- Images: JPEG/PNG (no alpha)/BMP/WEBP, side 240-8000 px, aspect <= 8:1, <= 20MB. Video: mp4/mov, 1-15s each, >= 16fps, side 240-4096 px, <= 100MB. Audio: wav/mp3, 1-15s each, <= 15MB.
+- Aspect `ratio`: `adaptive` (default), `16:9`, `9:16`, `4:3`, `3:4`, `1:1`, `21:9`. For short drama always pass `9:16` explicitly when the first frame is not already vertical.
+- `metadata.parameters.audio` defaults to `true`; muted output costs the same, so keep audio on unless the user wants silence.
+- `metadata.parameters.prompt_extend` defaults to `true`.
+
+Prompt rules for Wan 3.0:
+
+- Reference order defines the name: the first `reference_image` is 图1, the first `reference_video` is 视频1, the first `reference_audio` is 音频1. State each asset's job in the prompt ("图1 是女主，图3 是产品包装，视频1 定运镜，音频1 是她的声音").
+- One continuous take reads differently from a multi-shot run: a 20-30s clip needs action beats with a camera reason, not four stitched scenes in prose.
+- For lip-sync / singing, the audio reference is the timing authority: give 1 clean vocal track (<= 15s), state that the mouth must follow 音频1, and keep the face unobstructed and frontal enough for the model to lock the lips.
+- For product shots, 6-8 reference images is the stable zone (subject, material close-ups, in-use scene); more than 8 risks feature conflict, fewer than 6 invites hallucinated details.
+- Keep the camera-as-witness law and MUST HAVE / MUST NOT HAVE lists from the shot-design rules; drift review still applies.
+
+Polling and delivery:
+
+- `GET /v1/videos/{id}` every 15s, total timeout >= 900s. `status` is `queued` / `in_progress` / `completed` / `failed`.
+- The clip URL lives at `metadata.url`, not at the top level. It expires in 24 hours — download immediately into the project directory.
+- Every output must be probed with `ffprobe` for real duration, width, height, bytes, and recorded in `generation_manifest.csv` (`model_route=salpx_wan3`, task id kept private in public examples).
+- Error map: 403 `token quota is not enough` (insufficient balance, reference-video tasks hold 15s up front), 503 `No available channel` (model name typo or token group not enabled), 400 `duration out of range`, 404 (used `/v1/chat/completions`).
 
 ## salpx API Production Rule
 
@@ -698,7 +776,7 @@ veo -> the exact salpx console model ID, recorded in manifest
 Generation rules:
 
 - Image generation uses `POST /images/generations` and saves either `b64_json` or downloaded image URLs into the project directory.
-- salpx video generation is an optional fallback route. Default TJ Short video generation now uses MiniMax H3.
+- salpx video generation is the default and only production video route (Wan 3.0). No other video host is allowed.
 - Do not echo or write real API keys. Real keys stay only in `.env`, shell env, or CI secrets.
 - Every generated file must be copied into the project directory and recorded in the manifest.
 - Every downloaded video must be inspected for actual duration, width, height, bytes, and whether it can enter final composition.
@@ -707,18 +785,18 @@ Generation rules:
 
 Always choose the video model route before writing generation prompts.
 
-Do not reuse one generic prompt across MiniMax H3, Omni, Seedance2, and Veo. Each model has different duration assumptions, reference behavior, motion tolerance, audio behavior, and review risks.
+Do not reuse one generic prompt across Wan 3.0, Omni, Seedance2, and Veo. Each model has different duration assumptions, reference behavior, motion tolerance, audio behavior, and review risks.
 
 Model route table:
 
 ```text
-minimax_h3:
+salpx_wan3:
   role: default raw video generation route for TJ Short after salpx first-frame/image production
-  duration: commonly 4-15 seconds; TJ Short default is 5 seconds unless the H3 capability/quote check says otherwise
-  best_for: fast vertical 9:16 trial clips, product-reference clips, first/last-frame continuity tests
-  prompt_style: concise script-locked English or target-locale prompt, no subtitles, no extra props, clear action and camera behavior
-  modes: t2va for pure text, ref2va for accepted salpx first frame/product references, fl2va for start/end-frame control
-  review_focus: job status, downloaded bytes, actual duration/size, containment diff, locale mismatch
+  duration: integer 2-30 seconds, billed per second; default 5s for trial clips, 8-10s for story beats, up to 30s only when the shot is written as one continuous take
+  best_for: 9:16 vertical short-drama clips, 10-30s continuous takes, product handling, multi-reference identity lock, native audio with lip sync
+  prompt_style: script-locked target-locale prompt, camera behavior + action + sound, no extra props, tag references as 图1/图2/视频1/音频1
+  modes: text_to_video (prompt only), first_frame (input_reference / metadata.media first_frame), first_last_frame (first_frame + last_frame), reference (reference_image x10 / reference_video x5 / reference_audio x5 / file / link)
+  review_focus: task status, downloaded bytes, actual duration/size, containment diff, locale mismatch, audio/lip-sync accuracy
 
 omni_flash:
   role: fast image-to-video raw clip generation through salpx
@@ -755,7 +833,7 @@ Use `ratio="9:16"` for native vertical output when supported. Use `ratio="adapti
 Before submitting any clip, include `model_route` in the manifest and validate that the prompt follows that route's rules:
 
 ```text
-model_route: minimax_h3 | omni_flash | seedance2 | veo | other
+model_route: salpx_wan3 | omni_flash | seedance2 | veo | other
 duration_rule:
 reference_rule:
 prompt_syntax_rule:
@@ -842,7 +920,7 @@ Do not use this process for unlicensed real people, celebrities, influencers, pu
 - Clip contracts
 - Reference role map
 - `salpx / omni_flash` prompt pack
-- MiniMax H3 prompt pack and job/download record
+- salpx Wan 3.0 prompt pack and job/download record
 - Generation manifest
 - Voiceover and caption list
 - Caption plan

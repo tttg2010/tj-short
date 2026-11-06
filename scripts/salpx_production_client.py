@@ -1,41 +1,71 @@
 #!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""salpx image client for TJ Short (gpt-image-2).
+
+图片只走 https://www.salpx.com/v1/images/generations。
+视频不走这里 —— 用同目录的 `wan3_video_client.py`（salpx Wan 3.0）。
+"""
+
 import argparse
 import base64
 import json
 import mimetypes
 import os
-import re
-import time
 from pathlib import Path
 from typing import Optional
 from urllib.parse import urlparse
 
-import requests
-
+try:
+    import requests
+except ImportError:  # pragma: no cover
+    requests = None
 
 DEFAULT_BASE_URL = "https://www.salpx.com/v1"
-VIDEO_URL_RE = re.compile(r"https?://[^\s\"\\]+(?:\.mp4|\.mov|\.webm|\.m3u8)(?:\?[^\s\"\\]*)?")
+CRED_FILE = os.path.expanduser("~/.config/salpx/credentials.env")
 
 
 def normalize_base_url(url: str) -> str:
     url = (url or DEFAULT_BASE_URL).rstrip("/")
     if not url.endswith("/v1"):
         url += "/v1"
+    if "zhongbiao" in url or "h3." in url:
+        raise SystemExit(f"拒绝使用已废弃的端点：{url}。只允许 https://www.salpx.com/v1")
     return url
 
 
-def load_env_file(path: Optional[Path]) -> None:
-    if not path or not path.exists():
-        return
-    for line in path.read_text(errors="ignore").splitlines():
+def read_env_file(path: Optional[Path]) -> dict:
+    values = {}
+    if not path or not Path(path).exists():
+        return values
+    for line in Path(path).read_text(errors="ignore").splitlines():
         line = line.strip()
         if not line or line.startswith("#") or "=" not in line:
             continue
         key, val = line.split("=", 1)
         key = key.strip()
         val = val.strip().strip('"').strip("'")
-        if key and val and key not in os.environ:
-            os.environ[key] = val
+        if key and val:
+            values[key] = val
+    return values
+
+
+def load_env_file(path: Optional[Path]) -> None:
+    """优先级：真实环境变量 > --env 文件 > ~/.config/salpx/credentials.env"""
+    preexisting = dict(os.environ)
+    merged = read_env_file(CRED_FILE)
+    merged.update(read_env_file(path))   # 项目 .env 覆盖本机凭证文件
+    merged.update(preexisting)           # 真实环境变量最高优先
+    for key, val in merged.items():
+        os.environ.setdefault(key, val)
+        if key in preexisting:
+            os.environ[key] = preexisting[key]
+
+
+def require_requests():
+    if requests is None:
+        raise SystemExit("缺少依赖 requests。用托管 venv 运行："
+                         "/Users/zhang/.workbuddy/binaries/python/envs/default/bin/python")
+    return requests
 
 
 def headers() -> dict:
@@ -51,8 +81,9 @@ def data_uri(path: Path) -> str:
 
 
 def save_url(url: str, out_path: Path) -> None:
+    http = require_requests()
     out_path.parent.mkdir(parents=True, exist_ok=True)
-    with requests.get(url, stream=True, timeout=300) as response:
+    with http.get(url, stream=True, timeout=300) as response:
         response.raise_for_status()
         with out_path.open("wb") as file:
             for chunk in response.iter_content(chunk_size=1024 * 1024):
@@ -65,84 +96,14 @@ def extension_from_url(url: str, fallback: str) -> str:
     return suffix if suffix else fallback
 
 
-def find_video_url(obj):
-    def walk(value):
-        if isinstance(value, dict):
-            for key in ("url", "video_url", "videoUrl", "download_url", "output_url", "result_url"):
-                candidate = value.get(key)
-                if isinstance(candidate, str) and candidate.startswith("http"):
-                    return candidate
-            for child in value.values():
-                found = walk(child)
-                if found:
-                    return found
-        elif isinstance(value, list):
-            for child in value:
-                found = walk(child)
-                if found:
-                    return found
-        return None
-
-    found = walk(obj)
-    if found:
-        return found
-    match = VIDEO_URL_RE.search(json.dumps(obj, ensure_ascii=False))
-    return match.group(0) if match else None
-
-
-def get_task_id(obj):
-    if not isinstance(obj, dict):
-        return None
-    for key in ("task_id", "id", "video_id"):
-        if isinstance(obj.get(key), str):
-            return obj[key]
-    data = obj.get("data")
-    if isinstance(data, str):
-        return data
-    if isinstance(data, dict):
-        for key in ("task_id", "id", "video_id"):
-            if isinstance(data.get(key), str):
-                return data[key]
-    return None
-
-
-def poll_video(base_url: str, task_id: str, timeout_s: int = 900):
-    deadline = time.time() + timeout_s
-    endpoints = (
-        f"{base_url}/videos/{task_id}",
-        f"{base_url}/videos/{task_id}/result",
-        f"{base_url}/videos/generations/{task_id}",
-    )
-    last = {}
-    while time.time() < deadline:
-        time.sleep(5)
-        for url in endpoints:
-            try:
-                response = requests.get(url, headers=headers(), timeout=60)
-                try:
-                    data = response.json()
-                except Exception:
-                    data = {"status_code": response.status_code, "text": response.text[:1000], "endpoint": url}
-                last = data if isinstance(data, dict) else {"data": data}
-                if response.status_code != 200:
-                    continue
-                status = str(last.get("status", "")).lower()
-                if status in {"failed", "error", "cancelled", "canceled"}:
-                    return None, last
-                video_url = find_video_url(last)
-                if video_url:
-                    return video_url, last
-                break
-            except Exception as exc:
-                last = {"error": str(exc), "endpoint": url}
-    return None, last
-
-
 def generate_image(args):
+    http = require_requests()
     base_url = normalize_base_url(os.environ.get("SALPX_BASE_URL", DEFAULT_BASE_URL))
     model = args.model or os.environ.get("SALPX_IMAGE_MODEL", "gpt-image-2")
     body = {"model": model, "prompt": args.prompt, "size": args.size, "n": args.n}
-    response = requests.post(f"{base_url}/images/generations", headers=headers(), json=body, timeout=600)
+    if args.reference:
+        body["image"] = data_uri(Path(args.reference))
+    response = http.post(f"{base_url}/images/generations", headers=headers(), json=body, timeout=600)
     try:
         data = response.json()
     except Exception:
@@ -165,78 +126,25 @@ def generate_image(args):
             continue
         outputs.append(str(out_path))
 
-    result = {"ok": bool(outputs), "model": model, "outputs": outputs, "raw_response": data}
+    result = {
+        "ok": bool(outputs),
+        "model": model,
+        "size": args.size,
+        "outputs": outputs,
+        "usage": data.get("usage"),
+    }
     result_path = out_dir / f"{args.name}_result.json"
     result_path.write_text(json.dumps(result, ensure_ascii=False, indent=2), encoding="utf-8")
-    print(json.dumps({"ok": result["ok"], "model": model, "outputs": outputs, "result_path": str(result_path)}, ensure_ascii=False))
-
-
-def generate_video(args):
-    base_url = normalize_base_url(os.environ.get("SALPX_BASE_URL", DEFAULT_BASE_URL))
-    model = args.model or os.environ.get("SALPX_VIDEO_MODEL", "omni_flash")
-    body = {
-        "model": model,
-        "prompt": args.prompt,
-        "aspect_ratio": args.aspect_ratio,
-        "size": args.size,
-        "duration": args.duration,
-    }
-    if args.image:
-        body["image"] = data_uri(Path(args.image))
-
-    started = time.time()
-    response = requests.post(f"{base_url}/videos", headers=headers(), json=body, timeout=600)
-    try:
-        data = response.json()
-    except Exception:
-        data = {"status_code": response.status_code, "text": response.text[:2000]}
-    result = {
-        "ok": False,
-        "model": model,
-        "generation_mode": "image_to_video" if args.image else "text_to_video",
-        "requested_duration_seconds": args.duration,
-        "post_status": response.status_code,
-        "post_response": data,
-    }
-    if response.status_code != 200:
-        write_video_result(args, result)
-        raise SystemExit(1)
-
-    video_url = find_video_url(data)
-    task_id = get_task_id(data)
-    result["task_id"] = task_id
-    if not video_url and task_id:
-        video_url, poll_data = poll_video(base_url, task_id, args.timeout)
-        result["poll_response"] = poll_data
-    if not video_url:
-        result["error"] = "No video URL returned"
-        write_video_result(args, result)
-        raise SystemExit(1)
-
-    out_path = Path(args.out)
-    save_url(video_url, out_path)
-    result.update(
-        {
-            "ok": out_path.exists() and out_path.stat().st_size > 1000,
-            "video_url": video_url,
-            "output_path": str(out_path),
-            "bytes": out_path.stat().st_size if out_path.exists() else 0,
-            "elapsed_seconds": round(time.time() - started, 1),
-        }
-    )
-    write_video_result(args, result)
-    print(json.dumps({"ok": result["ok"], "model": model, "task_id": task_id, "output_path": str(out_path)}, ensure_ascii=False))
-
-
-def write_video_result(args, result: dict):
-    result_path = Path(args.result_json) if args.result_json else Path(args.out).with_suffix(".json")
-    result_path.parent.mkdir(parents=True, exist_ok=True)
-    result_path.write_text(json.dumps(result, ensure_ascii=False, indent=2), encoding="utf-8")
+    print(json.dumps({"ok": result["ok"], "model": model,
+                      "outputs": outputs, "result_path": str(result_path)},
+                     ensure_ascii=False))
 
 
 def main():
-    parser = argparse.ArgumentParser(description="salpx production client for short-drama ecommerce")
-    parser.add_argument("--env", default=".env", help="optional .env path")
+    parser = argparse.ArgumentParser(
+        description="salpx image client (gpt-image-2) for TJ Short. "
+                    "Video: use wan3_video_client.py instead.")
+    parser.add_argument("--env", default=".env", help="optional project .env path")
     sub = parser.add_subparsers(dest="cmd", required=True)
 
     image = sub.add_parser("image")
@@ -246,24 +154,19 @@ def main():
     image.add_argument("--model")
     image.add_argument("--size", default="1024x1792")
     image.add_argument("--n", type=int, default=1)
+    image.add_argument("--reference", help="可选：参考图路径（图生图）")
 
-    video = sub.add_parser("video")
-    video.add_argument("--prompt", required=True)
-    video.add_argument("--out", required=True)
-    video.add_argument("--image")
-    video.add_argument("--model")
-    video.add_argument("--aspect-ratio", default="9:16")
-    video.add_argument("--size", default="720x1280")
-    video.add_argument("--duration", type=int, default=10)
-    video.add_argument("--timeout", type=int, default=900)
-    video.add_argument("--result-json")
+    video = sub.add_parser("video", help="已废弃：视频改用 wan3_video_client.py")
 
     args = parser.parse_args()
     load_env_file(Path(args.env) if args.env else None)
     if args.cmd == "image":
         generate_image(args)
-    elif args.cmd == "video":
-        generate_video(args)
+    else:
+        raise SystemExit(
+            "本脚本只负责生图。视频请用：\n"
+            "  scripts/wan3_video_client.py video --model wan3.0-720p --prompt '...' --duration 8 --ratio 9:16"
+        )
 
 
 if __name__ == "__main__":

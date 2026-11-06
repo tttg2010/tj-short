@@ -2,7 +2,11 @@
 
 适用场景：短剧带货项目需要通过 salpx / NewAPI 兼容接口生成图片，尤其是 `gpt-image-2` 生成 4×3 分镜宫格、9:16 首帧和产品证明图。
 
-当前 TJ Short 默认生产链路已经调整为：salpx 负责图片，MiniMax H3 API 负责视频。本文档后面的 `omni_flash`、Seedance2、Veo 视频说明保留为可选 fallback 或历史路线；默认视频生产请看 `docs/h3-api-production.md`。
+当前 TJ Short 生产链路：**salpx `gpt-image-2` 负责图片，salpx Wan 3.0（`wan3.0-*`）负责视频**，两者共用同一个 `SALPX_API_KEY`。
+
+视频的正式说明见 `docs/wan3-api-production.md` 与 `scripts/wan3_video_client.py`。本文档第 4 节以后保留的 `omni_flash` / Seedance2 / Veo 写法属于**非默认的历史路线**，只有当用户明确点名这些模型时才使用；它们与 Wan 3.0 的请求字段不同，不要混用。
+
+`h3.zhongbiao.cloud` / `H3_API_KEY` 已删除，不要再调用该端点。
 
 目标：让 skill 从 GitHub 下载后，不只会写 prompt，还能直接生产宫格图、首帧图和产品证明图。
 
@@ -17,8 +21,8 @@ export SALPX_BASE_URL="https://www.salpx.com/v1"
 # 可选，项目可覆盖
 export SALPX_IMAGE_MODEL="gpt-image-2"
 
-# 可选 fallback，默认视频路线为 MiniMax H3
-export SALPX_VIDEO_MODEL="omni_flash"
+# 视频默认路线：salpx Wan 3.0
+export SALPX_VIDEO_MODEL="wan3.0-720p"
 ```
 
 如果用户给的 url 是 `https://www.salpx.com`，脚本里统一补成 `https://www.salpx.com/v1`。
@@ -28,7 +32,8 @@ export SALPX_VIDEO_MODEL="omni_flash"
 | 用户说法 | API model 默认值 | 用途 |
 |---|---|---|
 | gpt-image2 / gpt-image-2 | `gpt-image-2` | 宫格图、首帧、产品图再创作 |
-| omni / salpx omni | `omni_flash` | 可选 salpx 视频 fallback，固定 10 秒策略 |
+| wan3 / 万相3.0 | `wan3.0-720p`（另 480p / 1080p / hm 三档） | **默认视频层**，2–30 秒，原生音轨 |
+| omni / salpx omni | `omni_flash` | 历史路线，固定 10 秒策略 |
 | gemini omni | `gemini_omni_flash` | 用户明确选择 Gemini Omni 时使用 |
 | seedance2-mini-480p | `seedance-2-mini-480p` | Seedance2 mini 480p 图生视频 |
 | veo | 以 salpx 控制台实际模型 ID 为准 | Veo 文生/图生视频 |
@@ -90,9 +95,11 @@ previews/drafts/
 
 不要只保留默认下载目录。
 
-## 4. 视频生成通用接口
+## 4. 视频生成通用接口（历史路线，默认请用 Wan 3.0）
 
-默认 endpoint：
+> 默认视频路线是 salpx Wan 3.0，见 `docs/wan3-api-production.md`：请求字段为顶层 `prompt` / `duration` / `ratio` + `metadata.media`，与本节的 `aspect_ratio` / `size` / `image` 写法**不通用**。本节仅适用于 `omni_flash` / `gemini_omni_flash` / `seedance-2-*` / Veo 等旧路线。
+
+endpoint：
 
 ```text
 POST {SALPX_BASE_URL}/videos

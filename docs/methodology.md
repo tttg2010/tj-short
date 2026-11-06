@@ -188,11 +188,12 @@ Use a few ordered shots rather than a whole episode script. Prefer small continu
 Pick the model route before writing prompts. TJ Short should not use one generic video prompt across all providers.
 
 ```text
-minimax_h3:
-  default TJ Short video route after salpx first-frame/image generation
-  supports t2va, ref2va, and fl2va
-  TJ Short default is 5-second 9:16 raw clips after H3 capability/quote check
-  prompt focuses on the exact shot action, camera behavior, no subtitles, no extra props, and locale lock
+salpx_wan3:
+  default and only TJ Short video route after salpx first-frame/image generation
+  integer 2-30s single takes, billed per second; 5s for trials, 8-10s for story beats
+  modes: text_to_video, first_frame, first_last_frame, reference (reference_image x10, reference_video x5 total 15s, reference_audio x5 total 15s, file, link)
+  native audio track, lip-sync and singing driven by reference audio
+  prompt labels materials as 图1/图2, 视频1, 音频1 and assigns each one a job; no subtitles, no extra props, locale lock stays
 
 omni_flash:
   fixed 10-second raw clips
@@ -211,7 +212,7 @@ veo:
   do not assume Seedance2 media-label syntax unless the provider explicitly supports it
 ```
 
-Current TJ Short default is salpx `gpt-image-2` for images and MiniMax H3 for video. Seedance2, Omni, and Veo remain model-specific optional routes. The manifest must record `model_route`, `duration_rule`, `reference_rule`, `prompt_syntax_rule`, `face_review_rule`, `output_ratio`, and `audio_mode`.
+Current TJ Short default is salpx `gpt-image-2` for images and salpx Wan 3.0 (`wan3.0-720p`) for video. Seedance2, Omni, and Veo remain model-specific optional routes. The manifest must record `model_route`, `duration_rule`, `reference_rule`, `prompt_syntax_rule`, `face_review_rule`, `output_ratio`, and `audio_mode`.
 
 ## 11. Clip Contract
 

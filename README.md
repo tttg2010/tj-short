@@ -1,34 +1,34 @@
 # TJ Short | Codex 短剧带货 Skill
 
-用 Codex 把产品图推进为短剧带货项目：产品分析、地区锁定、人物备案板、高冲突脚本、4×3 首帧宫格、9:16 分镜、模型专属提示词、字幕与交付检查；分镜/首帧图片默认通过 salpx 中转站 `gpt-image-2` 生成，视频默认通过 MiniMax H3 API 生成。
+用 Codex 把产品图推进为短剧带货项目：产品分析、地区锁定、人物备案板、高冲突脚本、4×3 首帧宫格、9:16 分镜、模型专属提示词、字幕与交付检查；分镜/首帧图片默认通过 salpx 中转站 `gpt-image-2` 生成，视频默认通过 salpx Wan 3.0（`wan3.0-*`）生成。
 
 [English Version](README.en.md)
 
 <a href="https://www.salpx.com">
-  <img src="assets/salpx-banner.svg" alt="salpx 生分镜首帧，MiniMax H3 生成短剧视频" width="100%">
+  <img src="assets/salpx-banner.svg" alt="salpx 生分镜首帧，salpx Wan 3.0 生成短剧视频" width="100%">
 </a>
 
 ## 项目简介
 
 TJ Short 是一个面向 Codex 的「短剧带货 Skill」公开模板。它的核心不是单纯写剧本，也不是单纯调用视频模型，而是在 Codex 里把短剧带货从产品图一路推进到可执行交付物：
 
-产品分析 -> 地区锁定 -> 三个 brief -> 产品证明圣经 -> 四库一表（角色 / 场景 / 产品道具 / 证据 + 12 镜头生产表）-> 人物备案板 -> salpx `gpt-image-2` 生成 4×3 首帧宫格 -> 自动切 12 张 9:16 首帧 -> MiniMax H3 视频提示词/API 提交（t2va/ref2va/fl2va）-> 字幕与投放切片计划。
+产品分析 -> 地区锁定 -> 三个 brief -> 产品证明圣经 -> 四库一表（角色 / 场景 / 产品道具 / 证据 + 12 镜头生产表）-> 人物备案板 -> salpx `gpt-image-2` 生成 4×3 首帧宫格 -> 自动切 12 张 9:16 首帧 -> salpx Wan 3.0 视频提示词/API 提交（文生 / 首帧 / 首尾帧 / 多素材参考）-> 字幕与投放切片计划。
 
 这里的分工很明确：
 
-- **Codex 是生产大脑**：负责判断、写作、落文件、提示词、manifest、字幕、复盘和隐私检查。
+- **Codex（或 WorkBuddy 等宿主 agent）是生产大脑**：负责判断、写作、落文件、提示词、manifest、字幕、复盘和隐私检查。
 - **salpx 中转站是图片执行层**：负责用 `gpt-image-2` 生成产品证明图、分镜宫格和干净 9:16 首帧。
-- **MiniMax H3 是默认视频执行层**：负责把 Codex 锁定的首帧/参考图和 prompt 生成 raw clip；salpx 视频模型保留为可选路线。
+- **salpx Wan 3.0 是默认且唯一的视频执行层**：负责把锁定的首帧/参考素材和 prompt 生成 raw clip；图片与视频共用同一个 `SALPX_API_KEY`。
 
 ## Skill Card
 
 | 项目 | 说明 |
 |---|---|
-| 一句话定位 | 在 Codex 里自动生成短剧带货项目，通过 salpx 生成分镜/首帧图片，再通过 MiniMax H3 生成视频 |
+| 一句话定位 | 在 Codex 里自动生成短剧带货项目，通过 salpx 生成分镜/首帧图片，再通过 salpx Wan 3.0 生成视频 |
 | 输入 | 产品图、产品名、目标人群、产品动作、可信证据、CTA |
 | 输出 | brief、产品证明圣经、单集剧本、分镜、首帧、视频模型提示词、字幕计划、投放切片、美国市场本地化清单 |
 | 第一阶段成功标准 | 先跑通 1 集正片 + 2 条投放切片，而不是一开始做大系列 |
-| 推荐视频路线 | 默认 `minimax / h3`；可选 `salpx / omni_flash`、Seedance2、Veo |
+| 推荐视频路线 | 默认 `salpx / wan3.0-720p`；可选 `wan3.0-1080p`、`wan3.0-hm-*`、`omni_flash`、Seedance2、Veo |
 | 不适用 | 只有硬广需求、没有产品动作、没有可信证据、想直接承诺疗效或收益的项目 |
 
 它适合：
@@ -36,7 +36,7 @@ TJ Short 是一个面向 Codex 的「短剧带货 Skill」公开模板。它的�
 - 宠物食品、宠物用品、消费品、工具类产品的短剧种草
 - 需要先做 1 集正片 + 2 条投放切片验证的团队
 - 想在 Codex 里把产品图自动变成短剧项目文件的创作者
-- 想用 salpx 生成分镜/首帧图片，再用 MiniMax H3 API 做视频的创作者
+- 想用 salpx 生成分镜/首帧图片，再用 salpx Wan 3.0 做视频（含 30 秒直出、多图/视频/音频参考）的创作者
 - 面向 TikTok Shop US、Amazon US 或美国本土消费者做短剧带货的团队
 - 想把短剧带货流程沉淀成 Skill、模板或团队 SOP 的项目
 
@@ -48,6 +48,7 @@ TJ Short 是一个面向 Codex 的「短剧带货 Skill」公开模板。它的�
 
 | 版本 | 重点更新 |
 |---|---|
+| v0.9.0 | **视频层迁移**：MiniMax H3 下线，默认且唯一的视频路线改为 salpx Wan 3.0（`wan3.0-480p/720p/1080p`，另有独立线路 `wan3.0-hm-*`），图片与视频共用同一个 `SALPX_API_KEY`。新增 `scripts/wan3_video_client.py`（纯标准库，支持首帧/首尾帧/参考图×10/参考视频×5/参考音频×5/文档/网页，`--dry-run` 可只报价不花钱）与 `docs/wan3-api-production.md`。视频能力扩展到 2–30 秒单镜直出、原生音轨、参考音频驱动的口型同步与演唱。新增硬性成本门禁：提交前必须报模型/分辨率/秒数/金额并取得同意。删除 H3 客户端与文档，`H3_*` 变量全部移除，客户端拒绝含 `zhongbiao` / `h3.` 的 base URL。对仍调用 H3 的项目属破坏性变更。 |
 | v0.8.30 | 新增剧本保真与可追溯规则：对白/关键动作加稳定ID，Phase 2末尾生成覆盖核对表（必须100%覆盖，无"丢失"才能进Phase 3）；Phase 4/5提示词必须带SOURCE ANCHOR（原文回溯锚点）+ MUST HAVE/MUST NOT HAVE清单，生成后强制填写"画面/视频多出了什么"；首帧漂移硬阻塞，视频漂移软提醒（违反排除项则硬阻塞）。新增美国市场本地化硬规则：选择美国地区时，剧本、对白、人物、场景字幕、CTA、合规口径必须符合美国语境。新增默认生产链路：salpx 生成分镜/首帧图片，MiniMax H3 API 生成视频。修复真实项目里"分镜表漏对白"和"首帧擅自加道具"两个故障。 |
 | v0.8.29 | 新增电影感分镜规则：景别/角度/构图/光影/色调/动势/节奏七要素 + 情绪递进/悬疑/浪漫/压迫四公式，用于填 12 镜头表的 `camera:`/`emotion_shift:`；新增摄影机行为日志三铁律（拍摄过程而非画面结果、排除法划边界、时间线含摄影机行为）作为可选写实层，不覆盖现有 Seedance2 动作/合规规则。 |
 | v0.8.28 | 新增宫格优先成本控制：先生成 4×3 宫格/contact sheet，再自动切 12 张 9:16 首帧；禁止一开始逐张单独生成 12 个首帧，除非用户明确要求或宫格切图失败。 |
@@ -66,15 +67,15 @@ TJ Short 是一个面向 Codex 的「短剧带货 Skill」公开模板。它的�
 
 - 它是 Codex Skill，不只是文档：能指导 Codex 逐步产出真实项目文件
 - Codex 负责策略、剧本、分镜、首帧、提示词和交付清单
-- salpx 中转站负责生成分镜宫格、首帧和产品证明图；MiniMax H3 API 负责生成视频素材
+- salpx 中转站负责生成分镜宫格、首帧和产品证明图；salpx Wan 3.0 负责生成视频素材
 - 美国地区项目不做中文短剧直译，必须按美国人物、场景、对白、字幕、CTA 和平台语境重写
 - 不写「痛点 -> 产品 -> 满意 -> 下单」的广告小剧情
 - 前 30%-50% 先建立冲突、误会和关系压力
 - 产品后置为证据位：喂养记录、操作过程、前后行为、关键物证
 - 图生视频前先做三镜试生：剧情钩子、产品证据位、结尾追更钩子
 - 首帧生产默认宫格优先：先用一张 4×3 宫格出 12 个镜头，再切 12 张 9:16；单张首帧只用于失败格、补拍格或三镜试生精修
-- H3 默认 5 秒 9:16 raw clip（以能力/报价接口为准）；omni 固定 10 秒作为可选路线，节奏压缩交给后期剪辑
-- 不同视频模型分开处理：H3 选择 `t2va/ref2va/fl2va`；Seedance2 用 `图片1/视频1/音频1` 和主体定义；omni 只写首帧之后的动作；Veo 走电影镜头和场景语言
+- Wan 3.0 单次 2–30 秒整数直出，默认 5 秒做试片、8–10 秒做剧情段；omni 固定 10 秒作为可选路线，节奏压缩交给后期剪辑
+- 不同视频模型分开处理：Wan 3.0 按素材类型选 `text_to_video` / `first_frame` / `first_last_frame` / `reference`，提示词里用 图1/图2、视频1、音频1 指派素材职责；Seedance2 用 `图片1/视频1/音频1` 和主体定义；omni 只写首帧之后的动作；Veo 走电影镜头和场景语言
 - Seedance2 可见人脸优先走“人物备案板 -> 平台备案 -> 备案资产引用”；不把水印当成备案证明
 - Seedance2 可见人物项目必须先有人物备案板交付物：`角色主体库.md`、`人物备案板需求.md`、`Seedance2参考包计划.md`
 - 严格分阶段：启动只做产品诊断和 A/B/C；选方案后先生成项目文件和人物备案板交付物；之后才做分镜、宫格、视频 prompt 和提交
@@ -183,12 +184,12 @@ Seedance2 可见人物正式首帧从宫格/首帧阶段就按三候选处理：
 | 单集高冲突剧本 | 60-90 秒短剧正片，前 5 秒强冲突 | 必需 |
 | 12 镜头生产表 | 每个 shot 引用主体库，只写动作、情绪、镜头和对白 | 必需 |
 | 三张试生首帧 | 从 4×3 宫格切出的首帧中选钩子、产品证据位、结尾钩子先试生 | 必需 |
-| 图生视频提示词 | 给 MiniMax H3 执行的剧本锁定 prompt；salpx 视频为可选路线 | 必需 |
+| 图生视频提示词 | 给 salpx Wan 3.0 执行的剧本锁定 prompt（声明 duration / ratio / 素材编号） | 必需 |
 | 镜头契约表 | 写清每镜头只做什么、保留什么给后续 | 必需 |
 | 参考资产角色表 | 区分首帧、产品图、字幕、视频参考各自职责 | 必需 |
 | generation manifest | 记录模型、首帧、提示词、任务状态和输出路径 | 必需 |
 | 口播与字幕清单 | 后期字幕和配音的信息源 | 必需 |
-| 字幕合成计划 | 确保 H3 / 可选模型 raw 视频后期加字幕 | 必需 |
+| 字幕合成计划 | 确保 Wan 3.0 raw 视频后期加字幕 | 必需 |
 | 投放切片脚本 | 从正片中拆 35-60 秒广告素材 | 推荐 |
 | 可发布性评分表 | 判断是否可发、可审片或必须重写 | 推荐 |
 
@@ -206,8 +207,8 @@ flowchart TD
   G --> H["Codex 生成角色参考包 + 4×3 首帧宫格"]
   H --> I["自动切 12 张 9:16 首帧，并完成预检"]
   I --> J["Codex 生成镜头契约 + 参考资产角色表"]
-  J --> K["Codex 编译 MiniMax H3 视频 prompt"]
-  K --> L["H3 API 执行 t2va/ref2va/fl2va"]
+  J --> K["Codex 编译 salpx Wan 3.0 视频 prompt"]
+  K --> L["salpx /v1/videos 执行 首帧·首尾帧·多素材参考"]
   L --> M["返回 raw clips"]
   M --> N["Codex 审片：剧情 / 产品 / 口型 / 字幕计划"]
   N --> O{"三镜试生通过？"}
@@ -225,10 +226,10 @@ flowchart TD
 | Python | Python 3.9+ |
 | Python 依赖 | `requests` |
 | 图片服务 | salpx 中转站 / `gpt-image-2` |
-| 视频服务 | 默认 MiniMax H3 API；salpx 视频模型为可选路线 |
-| 推荐模型 | 默认 `minimax / h3`；可选 `salpx / omni_flash`、`seedance-2-mini-480p`、Veo variants |
+| 视频服务 | salpx 中转站 / Wan 3.0（唯一路线，与生图共用 key） |
+| 推荐模型 | 默认 `salpx / wan3.0-720p`；可选 `wan3.0-1080p`、`wan3.0-hm-*`、`omni_flash`、`seedance-2-mini-480p`、Veo variants |
 | 视频比例 | 9:16 |
-| 单镜头时长 | H3 默认 5 秒并以报价/能力接口确认为准；omni 可选固定 10 秒；Seedance2/Veo 按模型规则 |
+| 单镜头时长 | Wan 3.0 为 2–30 秒整数（按秒计费），默认 5 秒试片 / 8–10 秒剧情段；omni 可选固定 10 秒；Seedance2/Veo 按模型规则 |
 | 字幕策略 | 生成阶段不内嵌字幕，后期加字幕 |
 
 ## 仓库内容
@@ -244,12 +245,11 @@ flowchart TD
 | `docs/privacy-and-release.md` | 公开发布前隐私与 key 检查清单 |
 | `docs/seedance2-face-compliance.md` | Seedance2 可见人脸、face_pencil、blur_feature 合规经验 |
 | `docs/salpx-api-production.md` | salpx API 生产说明：gpt-image-2 生成宫格图、首帧和产品证明图 |
-| `docs/h3-api-production.md` | MiniMax H3 API 生产说明：t2va/ref2va/fl2va、报价、提交、轮询、下载 |
+| `docs/wan3-api-production.md` | salpx Wan 3.0 生产说明：模型与单价、计费与预扣、素材组合规则、提交、轮询、下载、错误码 |
 | `examples/xiderdl-lucky/` | 脱敏案例脚本和截图 |
 | `prompts/omni-fixed-10s-template.md` | salpx / omni_flash 固定 10 秒提示词模板 |
-| `scripts/salpx_production_client.py` | 通用 salpx 生图客户端；salpx 生视频保留为可选 fallback |
-| `scripts/h3_video_client.py` | MiniMax H3 视频提交、轮询、下载客户端 |
-| `scripts/submit_salpx_omni_i2v.py` | 旧版 omni 图生视频提交脚本样例 |
+| `scripts/salpx_production_client.py` | salpx 生图客户端（`gpt-image-2`） |
+| `scripts/wan3_video_client.py` | salpx Wan 3.0 视频提交、轮询、下载客户端（纯标准库） |
 
 ## 如何安装
 
@@ -261,6 +261,8 @@ mkdir -p ~/.codex/skills/tj-short
 cp tj-short/skill/SKILL.md ~/.codex/skills/tj-short/SKILL.md
 ```
 
+如果使用 WorkBuddy，把 `skill/SKILL.md` 连同 `docs/`、`scripts/`、`prompts/`、`assets/`、`examples/`、`.env.example` 一起放到 `~/.workbuddy/skills/tj-short/`，重开一个会话即可生效，不需要额外的安装命令。
+
 安装或更新 Skill 后，必须重新启动 Codex，否则 Codex 可能还在使用旧缓存：
 
 ```text
@@ -269,16 +271,18 @@ cp tj-short/skill/SKILL.md ~/.codex/skills/tj-short/SKILL.md
 重新启动codex！
 ```
 
-要在 Codex 里完整尝试短剧带货生产，请先到 [salpx.com](https://www.salpx.com) 中转站注册用户，获取 API Key 用于生图；再准备 MiniMax H3 API Key 用于生视频。填入本地 `.env`：
+要在 Codex 里完整尝试短剧带货生产，请先到 [salpx.com](https://www.salpx.com) 中转站注册用户，获取 API Key。生图（`gpt-image-2`）和视频（`wan3.0-*`）共用这一个 key。填入本地 `.env`：
 
 ```env
 SALPX_API_KEY=你的_salpx_api_key
 SALPX_BASE_URL=https://www.salpx.com/v1
-H3_API_KEY=你的_h3_api_key
-H3_BASE_URL=https://h3.zhongbiao.cloud/api
+SALPX_IMAGE_MODEL=gpt-image-2
+SALPX_VIDEO_MODEL=wan3.0-720p
 ```
 
-没有 salpx API Key 时，Codex 仍可生成产品分析、剧本、分镜、首帧提示词和 manifest，但不能完整提交图片生成。没有 H3 API Key 时，Codex 仍可完成视频 prompt 和 manifest，但不能提交 H3 视频任务。
+取 key 顺序：环境变量 → `--env` 指定的项目 `.env` → `~/.config/salpx/credentials.env`。
+
+没有 salpx API Key 时，Codex 仍可生成产品分析、剧本、分镜、首帧提示词和 manifest，但不能提交图片或视频任务。
 
 然后在 Codex 里直接说：
 
@@ -301,7 +305,7 @@ python3 -m pip install requests
 cp .env.example .env
 ```
 
-然后到 [salpx.com](https://www.salpx.com) 注册用户并获取 API Key，在本地 `.env` 填入 salpx 生图配置；再填入你的 H3 视频配置。参考 `.env.example`，真实 key 只保存在本地。
+然后到 [salpx.com](https://www.salpx.com) 注册用户并获取 API Key，在本地 `.env` 填入 `SALPX_API_KEY`——生图和生视频共用这一个 key。参考 `.env.example`，真实 key 只保存在本地。
 
 注意：`.env` 已在 `.gitignore` 中，真实 key 不应提交到 GitHub。
 
@@ -318,7 +322,7 @@ cp .env.example .env
 产品诊断给出 A/B/C 后，再复制下一步：
 
 ```text
-短剧带货，选 A，地区 美国，图片模型 salpx / gpt-image-2，视频模型 minimax / h3（可选 salpx / omni_flash、salpx / seedance-2-mini-480p），产品是：你的产品一句话
+短剧带货，选 A，地区 美国，图片模型 salpx / gpt-image-2，视频模型 salpx / wan3.0-720p（可选 wan3.0-1080p、wan3.0-hm-*、omni_flash、seedance-2-mini-480p），产品是：你的产品一句话
 ```
 
 Codex 接下来应该先分析产品素材，并给出三个可选 brief，而不是直接写完整剧本。
@@ -328,7 +332,7 @@ Codex 接下来应该先分析产品素材，并给出三个可选 brief，而�
 - 只要说 `短剧带货启动`，Codex 第一轮不能直接生成完整制作包。
 - 没有产品图或产品信息时，Codex 必须先问产品，不能凭空写职场、穿搭、情感等泛化案例。
 - 即使你说“生成视频”，也要先走：产品诊断 -> 3 个 brief -> 选择 A/B/C。
-- 完整提交 salpx 视频任务前，需要先到 [salpx.com](https://www.salpx.com) 注册并把 API Key 放进本地 `.env`。
+- 完整提交 salpx 视频任务前（`wan3.0-*`），需要先到 [salpx.com](https://www.salpx.com) 注册并把 API Key 放进本地 `.env`；提交前会先报价，29 秒以上的 1080p 任务必须明确同意。
 
 ### Step 1：Codex 做产品诊断
 
@@ -380,7 +384,7 @@ Codex 接下来应该先分析产品素材，并给出三个可选 brief，而�
 
 只有宫格无法切图、某一格预检失败、用户明确要求独立首帧，或三镜试生需要精修时，才单独补拍该镜头。正式首帧必须是干净 9:16 全屏图，不要字幕、画中画、白边框或模糊补边。
 
-### Step 5：Codex 编译 prompt，salpx 生图，H3 生视频
+### Step 5：Codex 编译 prompt，salpx 生图，Wan 3.0 生视频
 
 如果需要先生成宫格、首帧或产品证明图，使用 `gpt-image-2`：
 
@@ -393,46 +397,63 @@ python3 scripts/salpx_production_client.py --env .env image \
   --name ep01-shot01
 ```
 
-视频默认提交到 MiniMax H3，常用 `ref2va`：把 salpx 通过预检的 9:16 首帧作为参考图，H3 生成 raw clip。
+视频统一走 salpx Wan 3.0（`wan3.0-*`），与生图共用同一个 `SALPX_API_KEY`。最常用的是首帧图生视频：把通过预检的 9:16 首帧作为 `first_frame`，生成 raw clip。
 
 ```bash
-python3 scripts/h3_video_client.py --env .env video \
-  --mode ref2va \
-  --reference-image path/to/first-frame.png \
-  --prompt "5-second vertical 9:16 US TikTok Shop short-drama clip, no subtitles, no extra props..." \
-  --resolution 576P \
-  --duration 5 \
-  --steps 10 \
-  --aspect-ratio 9:16 \
-  --wait \
-  --out outputs/shot-h3.mp4
-```
-
-需要严格首尾帧时使用 H3 `fl2va`：
-
-```bash
-python3 scripts/h3_video_client.py --env .env video \
-  --mode fl2va \
-  --start-frame path/to/first-frame.png \
-  --end-frame path/to/last-frame.png \
-  --prompt "Animate naturally from the first frame and finish on the last frame. No subtitles." \
-  --wait \
-  --out outputs/shot-h3.mp4
-```
-
-salpx 视频模型仍可作为可选路线：`omni_flash` 固定 10 秒；Seedance2 与 Veo 按模型规则提交。当前默认不再把 salpx 视频作为主路径。
-
-旧版 omni-only 示例仍保留：
-
-```bash
-python3 scripts/submit_salpx_omni_i2v.py \
-  --env .env \
+python3 scripts/wan3_video_client.py --env .env video \
+  --model wan3.0-720p \
+  --prompt "8-second vertical 9:16 US TikTok Shop short-drama clip, no subtitles, no extra props..." \
+  --duration 8 \
+  --ratio 9:16 \
   --first-frame path/to/first-frame.png \
-  --prompt-file path/to/prompt.txt \
-  --output outputs/shot.mp4
+  --wait \
+  --out outputs/videos/shot-01.mp4
 ```
 
-Veo 模型 ID 以 salpx 控制台实际可用 ID 为准；如果该 Veo 路线不支持图生视频，就移除 `--image`，按文生视频提交，并在 manifest 写 `generation_mode=text_to_video`。
+需要严格首尾帧时补 `--last-frame`（`first_last_frame` 模式，不能与参考素材混用）：
+
+```bash
+python3 scripts/wan3_video_client.py --env .env video \
+  --model wan3.0-720p \
+  --prompt "Animate naturally from the first frame and finish on the last frame. No subtitles." \
+  --duration 6 --ratio 9:16 \
+  --first-frame path/to/first-frame.png \
+  --last-frame path/to/last-frame.png \
+  --wait --out outputs/videos/shot-01.mp4
+```
+
+需要身份锁定、运镜迁移、声音或口型同步时走 reference 模式（参考图最多 10 张；参考视频最多 5 段、合计 15 秒；参考音频最多 5 段、合计 15 秒）：
+
+```bash
+python3 scripts/wan3_video_client.py --env .env video \
+  --model wan3.0-1080p \
+  --prompt "图1 是女主，图2 是产品包装；视频1 定运镜；音频1 是她的声音，口型贴合音频1" \
+  --duration 10 --ratio 9:16 \
+  --ref-image path/to/character.png \
+  --ref-image path/to/product.png \
+  --ref-video path/to/dance.mp4 \
+  --ref-audio path/to/voice.mp3 \
+  --wait --out outputs/videos/shot-01.mp4
+```
+
+价格与门禁：
+
+| 模型 | 分辨率 | 单价（元/秒） | 5 秒 | 10 秒 | 30 秒 |
+|---|---|---|---|---|---|
+| `wan3.0-480p` | 480P | 0.21 | 1.05 | 2.10 | 6.30 |
+| `wan3.0-720p` | 720P | 0.42 | 2.10 | 4.20 | 12.60 |
+| `wan3.0-1080p` | 1080P | 0.84 | 4.20 | 8.40 | 25.20 |
+| `wan3.0-hm-480p` | 480P | 0.28 | 1.40 | 2.80 | 8.40 |
+| `wan3.0-hm-720p` | 720P | 0.56 | 2.80 | 5.60 | 16.80 |
+| `wan3.0-hm-1080p` | 1080P | 1.11 | 5.55 | 11.10 | 33.30 |
+
+带参考视频时按「出片秒数 + 参考视频秒数」计费，提交时先按 15 秒上限预扣、完成后结算；失败或超时全额退还。`--dry-run` 可以先校验素材并算出价格，不产生费用。
+
+提交前必须先把模型、分辨率、秒数、是否带参考视频和金额报给用户并取得同意——30 秒 1080p 是 ¥25.20，不允许默认提交。
+
+完整说明见 [docs/wan3-api-production.md](docs/wan3-api-production.md)。
+
+`omni_flash`（固定 10 秒）与 Seedance2 / Veo 仍作为可选历史路线保留，请求字段与 Wan 3.0 不同，不要混用。
 
 ### Step 6：Codex 审片
 
@@ -484,7 +505,7 @@ Veo 模型 ID 以 salpx 控制台实际可用 ID 为准；如果该 Veo 路线�
 
 ## Keywords / 关键词
 
-Codex 短剧带货、短剧带货 Skill、AI 短剧生成、AI 带货视频、产品图生视频、商品图生视频、MiniMax H3、H3 API、salpx、salpx 中转站、`gpt-image-2`、`omni_flash`、Seedance 2.0、`seedance-2-mini-480p`、Veo、图生视频、AI 视频生成、短剧分镜、4×3 首帧宫格、9:16 首帧、人物备案板、角色主体库、Seedance2 人脸合规、`face_pencil`、`blur_feature`、美国市场本地化、产品证明、带货脚本、短视频电商、TikTok Shop 内容、跨境电商视频、Codex Skill、Prompt 工程。
+Codex 短剧带货、短剧带货 Skill、AI 短剧生成、AI 带货视频、产品图生视频、商品图生视频、salpx Wan 3.0、wan3.0、Wan 3.0、万相 3.0、30 秒视频直出、多图参考、视频参考、声音参考、口型同步、salpx、salpx 中转站、`gpt-image-2`、`omni_flash`、Seedance 2.0、`seedance-2-mini-480p`、Veo、图生视频、AI 视频生成、短剧分镜、4×3 首帧宫格、9:16 首帧、人物备案板、角色主体库、Seedance2 人脸合规、`face_pencil`、`blur_feature`、美国市场本地化、产品证明、带货脚本、短视频电商、TikTok Shop 内容、跨境电商视频、Codex Skill、Prompt 工程。
 
 ## 公开安全
 

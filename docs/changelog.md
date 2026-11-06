@@ -1,5 +1,19 @@
 # Changelog
 
+## short-drama-ecommerce v0.9.0
+
+视频层迁移：MiniMax H3 下线，salpx Wan 3.0 上线。对仍在调用 H3 路线的项目属破坏性变更。
+
+- 默认且唯一的视频路线改为 salpx Wan 3.0（`wan3.0-480p` / `wan3.0-720p` / `wan3.0-1080p`，另有独立线路 `wan3.0-hm-*`）。图片与视频共用同一个凭证 `SALPX_API_KEY`。
+- 新增 `scripts/wan3_video_client.py`（纯标准库）：`video` / `status` / `download` / `models` 四个子命令；支持 `first_frame`、`last_frame`、`reference_image`×10、`reference_video`×5、`reference_audio`×5、`file`、`link`；本地素材自动转 base64；`--dry-run` 只校验和报价，不产生费用。
+- 新增 `docs/wan3-api-production.md`：端点、模型与单价阶梯、按秒计费与参考视频预扣、素材组合规则、请求构造、轮询与下载、错误码表、提示词写法。
+- 视频能力扩展：2–30 秒整数单镜直出、原生音轨、参考音频驱动的口型同步与演唱、多参考素材（图/视频/音频）身份锁定。
+- 新增硬性成本门禁：每次提交前必须向用户说明模型、分辨率、出片秒数、是否带参考视频、以及算出的价格，取得同意后才提交。
+- 删除 `scripts/h3_video_client.py`、`docs/h3-api-production.md`、`scripts/submit_salpx_omni_i2v.py`；`.env.example` 移除全部 `H3_*`；客户端对含 `zhongbiao` 或 `h3.` 的 base URL 直接报错退出。
+- `scripts/salpx_production_client.py` 收窄为纯生图，`video` 子命令改为提示使用 Wan 3.0 客户端。
+- `SKILL.md` 的视频生产章节整体重写为 `salpx Wan 3.0 Video Production Rule`，含价格阶梯、素材约束与 30 秒预算规则。
+- 破坏性：仍调用 H3 路线、传入 `H3_API_KEY` 或解析 H3 任务返回体的项目，需迁移到 `SALPX_API_KEY` + `wan3.0-*`。
+
 ## short-drama-ecommerce v0.8.30
 
 Script fidelity and traceability update, triggered by two real production failures in the same episode: a shot table silently dropped 2 of 4 script dialogue lines with no shot ever picking them up, and a first-frame generation added an unrequested prop (a physical invitation card the script never described) that survived review and was inherited into the final video.
